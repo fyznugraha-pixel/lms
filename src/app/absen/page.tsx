@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ScanLine, MapPin, CalendarClock, UserCircle2 } from "lucide-react";
+import { ScanLine, MapPin, CalendarClock, UserCircle2, Clock } from "lucide-react";
 
 export default function AbsenHomePage() {
   const [jadwal, setJadwal] = useState<any[]>([]);
