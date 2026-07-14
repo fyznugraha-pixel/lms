@@ -5,13 +5,16 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   const session = await getSession();
   
-  if (session.userRole !== "SUPER_ADMIN") {
+  if (session.userRole !== "SUPER_ADMIN" && session.userRole !== "ADMIN_KAMPUS") {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
   }
 
   try {
+    const whereClause = session.userRole === "ADMIN_KAMPUS" ? { id: session.kampusId! } : {};
+    
     const kampus = await prisma.kampus.findMany({
-      orderBy: { createdAt: "desc" }
+      where: whereClause,
+      orderBy: { namaKampus: "asc" }
     });
     return NextResponse.json({ success: true, data: kampus });
   } catch (error: any) {

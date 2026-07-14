@@ -5,12 +5,18 @@ import prisma from "@/lib/prisma";
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   
-  if (session.userRole !== "SUPER_ADMIN") {
+  if (session.userRole !== "SUPER_ADMIN" && session.userRole !== "ADMIN_KAMPUS") {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
   }
 
   try {
     const { id } = await params;
+    
+    // Admin Kampus HANYA boleh edit kampus-nya sendiri
+    if (session.userRole === "ADMIN_KAMPUS" && session.kampusId !== id) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
+
     const body = await req.json();
     const { namaKampus, kodeKampus, subdomain, latitude, longitude, radiusMeter } = body;
 

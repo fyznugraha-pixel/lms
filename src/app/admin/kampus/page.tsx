@@ -11,6 +11,7 @@ export default function KampusPage() {
   const [kampusList, setKampusList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string>("ADMIN_KAMPUS"); // Default aman
   const [formData, setFormData] = useState({
     id: "",
     namaKampus: "",
@@ -37,6 +38,7 @@ export default function KampusPage() {
   };
 
   useEffect(() => {
+    fetch("/api/auth/me").then(r => r.json()).then(d => setUserRole(d.userRole));
     fetchKampus();
   }, []);
 
@@ -112,13 +114,15 @@ export default function KampusPage() {
           <h1 className="text-2xl font-bold font-heading text-slate-900">Data Kampus</h1>
           <p className="text-slate-500 text-sm mt-1">Kelola master data kampus dan koordinat geofencing</p>
         </div>
-        <button 
-          onClick={() => openModal()}
-          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center transition-colors"
-        >
-          <Plus size={16} className="mr-2" />
-          Tambah Kampus
-        </button>
+        {userRole === "SUPER_ADMIN" && (
+          <button 
+            onClick={() => openModal()}
+            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center transition-colors"
+          >
+            <Plus size={16} className="mr-2" />
+            Tambah Kampus
+          </button>
+        )}
       </div>
 
       <div className="glass-panel rounded-xl overflow-hidden border border-slate-200">
@@ -149,12 +153,14 @@ export default function KampusPage() {
                     <td className="px-6 py-4">{k.radiusMeter}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end space-x-2">
-                        <button onClick={() => openModal(k)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
+                        <button onClick={() => openModal(k)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors" title="Edit Lokasi & Toleransi">
                           <Edit2 size={16} />
                         </button>
-                        <button onClick={() => handleDelete(k.id)} className="p-2 text-danger-500 hover:bg-red-50 rounded-lg transition-colors">
-                          <Trash2 size={16} />
-                        </button>
+                        {userRole === "SUPER_ADMIN" && (
+                          <button onClick={() => handleDelete(k.id)} className="p-2 text-danger-500 hover:bg-red-50 rounded-lg transition-colors" title="Hapus Kampus">
+                            <Trash2 size={16} />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -181,27 +187,30 @@ export default function KampusPage() {
                   <label className="block text-sm font-medium text-slate-700 mb-1">Nama Kampus</label>
                   <input
                     type="text" required
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-900"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-900 disabled:bg-slate-100 disabled:text-slate-500"
                     value={formData.namaKampus}
                     onChange={(e) => setFormData({...formData, namaKampus: e.target.value})}
+                    disabled={userRole !== "SUPER_ADMIN"}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Kode Kampus</label>
                   <input
                     type="text" required
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-900 uppercase"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-900 uppercase disabled:bg-slate-100 disabled:text-slate-500"
                     value={formData.kodeKampus}
                     onChange={(e) => setFormData({...formData, kodeKampus: e.target.value.toUpperCase()})}
+                    disabled={userRole !== "SUPER_ADMIN"}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Subdomain</label>
                   <input
                     type="text" required
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-900 lowercase"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-900 lowercase disabled:bg-slate-100 disabled:text-slate-500"
                     value={formData.subdomain}
                     onChange={(e) => setFormData({...formData, subdomain: e.target.value.toLowerCase()})}
+                    disabled={userRole !== "SUPER_ADMIN"}
                   />
                 </div>
                 <div className="col-span-2">
@@ -210,7 +219,7 @@ export default function KampusPage() {
                     type="number" required min="10"
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-900"
                     value={formData.radiusMeter}
-                    onChange={(e) => setFormData({...formData, radiusMeter: parseInt(e.target.value)})}
+                    onChange={(e) => setFormData({...formData, radiusMeter: e.target.value === '' ? '' as any : parseInt(e.target.value)})}
                   />
                 </div>
                 <div className="col-span-2 mt-2">

@@ -32,6 +32,8 @@ export default function AdminLayout({
     { name: "Jurusan", href: "/admin/jurusan", icon: BookOpen },
     { name: "Kelas", href: "/admin/kelas", icon: Building2 },
     { name: "Mata Kuliah", href: "/admin/matakuliah", icon: GraduationCap },
+    { name: "Plotting Dosen", href: "/admin/plotting", icon: Users },
+    { name: "Jadwal Kuliah", href: "/admin/jadwal", icon: BookOpen },
     { name: "Import Mahasiswa", href: "/admin/master-mahasiswa", icon: FileSpreadsheet },
   ];
 

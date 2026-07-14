@@ -1,0 +1,22 @@
+{
+  "name": "Sistem Absensi Telkom",
+  "short_name": "AbsensiQR",
+  "description": "Sistem Absensi QR Code Berbasis Geofencing",
+  "start_url": "/absen",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

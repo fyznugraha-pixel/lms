@@ -50,7 +50,8 @@ export async function POST(req: NextRequest) {
     // disini kita pakai createMany dengan skipDuplicates)
     const records = data.map((item: any) => ({
       nim: String(item.nim).trim(),
-      nama: String(item.nama).trim(),
+      namaLengkap: String(item.namaLengkap).trim(),
+      prodi: String(item.prodi).trim(),
       kampusId: finalKampusId
     }));
 

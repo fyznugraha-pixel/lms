@@ -10,8 +10,8 @@ export default function KelasPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
-    kodeKelas: "",
     namaKelas: "",
+    angkatan: new Date().getFullYear(),
     jurusanId: ""
   });
 
@@ -45,15 +45,15 @@ export default function KelasPage() {
     if (kelas) {
       setFormData({
         id: kelas.id,
-        kodeKelas: kelas.kodeKelas,
         namaKelas: kelas.namaKelas,
+        angkatan: kelas.angkatan,
         jurusanId: kelas.jurusanId || ""
       });
     } else {
       setFormData({
         id: "",
-        kodeKelas: "",
         namaKelas: "",
+        angkatan: new Date().getFullYear(),
         jurusanId: jurusanList.length > 0 ? jurusanList[0].id : ""
       });
     }
@@ -118,8 +118,8 @@ export default function KelasPage() {
           <table className="w-full text-left text-sm text-slate-600">
             <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-700 uppercase font-medium">
               <tr>
-                <th className="px-6 py-4">Kode Kelas</th>
                 <th className="px-6 py-4">Nama Kelas</th>
+                <th className="px-6 py-4">Angkatan</th>
                 <th className="px-6 py-4">Jurusan</th>
                 <th className="px-6 py-4 text-right">Aksi</th>
               </tr>
@@ -132,9 +132,9 @@ export default function KelasPage() {
               ) : (
                 kelasList.map((k) => (
                   <tr key={k.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4 font-mono font-medium text-slate-700">{k.kodeKelas}</td>
                     <td className="px-6 py-4 font-medium text-slate-900">{k.namaKelas}</td>
-                    <td className="px-6 py-4">{k.jurusan?.namaJurusan || "-"}</td>
+                    <td className="px-6 py-4">{k.angkatan}</td>
+                    <td className="px-6 py-4 text-slate-600">{k.jurusan?.namaJurusan || "-"}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end space-x-2">
                         <button onClick={() => openModal(k)} className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
@@ -164,24 +164,24 @@ export default function KelasPage() {
             
             <form onSubmit={handleSave} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Kode Kelas</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Nama Kelas (Rombel)</label>
                 <input
                   type="text" required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 uppercase outline-none text-slate-900"
-                  value={formData.kodeKelas}
-                  onChange={(e) => setFormData({...formData, kodeKelas: e.target.value.toUpperCase()})}
-                  placeholder="Misal: IF-43-01"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Nama Kelas (Opsional)</label>
-                <input
-                  type="text"
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-slate-900"
                   value={formData.namaKelas}
                   onChange={(e) => setFormData({...formData, namaKelas: e.target.value})}
-                  placeholder="Misal: Kelas Reguler Pagi"
+                  placeholder="Misal: TI-2A"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Angkatan</label>
+                <input
+                  type="number" required min="2000" max="2100"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-slate-900"
+                  value={formData.angkatan}
+                  onChange={(e) => setFormData({...formData, angkatan: parseInt(e.target.value)})}
+                  placeholder="Misal: 2024"
                 />
               </div>
 

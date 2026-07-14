@@ -16,7 +16,7 @@ export async function GET() {
     const mataKuliah = await prisma.mataKuliah.findMany({
       where: whereClause,
       include: { kampus: true },
-      orderBy: { namaMK: "asc" }
+      orderBy: { namaMk: "asc" }
     });
     
     return NextResponse.json({ success: true, data: mataKuliah });
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { kodeMK, namaMK, sks, kampusId } = body;
+    const { kodeMk, namaMk, sks, kampusId } = body;
     const finalKampusId = session.userRole === "ADMIN_KAMPUS" ? session.kampusId : kampusId;
 
     if (!finalKampusId) {
@@ -42,8 +42,8 @@ export async function POST(req: NextRequest) {
 
     const newMataKuliah = await prisma.mataKuliah.create({
       data: {
-        kodeMK,
-        namaMK,
+        kodeMk,
+        namaMk,
         sks: parseInt(sks, 10),
         kampusId: finalKampusId,
       }

@@ -51,13 +51,14 @@ export default function MasterMahasiswaPage() {
       complete: (results) => {
         // Validasi kolom
         const data = results.data as any[];
-        const validData = data.filter(row => row.nim && row.nama).map(row => ({
+        const validData = data.filter(row => row.nim && row.namaLengkap && row.prodi).map(row => ({
           nim: row.nim,
-          nama: row.nama
+          namaLengkap: row.namaLengkap,
+          prodi: row.prodi
         }));
 
         if (validData.length === 0) {
-          alert("Gagal membaca data. Pastikan file CSV memiliki kolom header 'nim' dan 'nama'.");
+          alert("Gagal membaca data. Pastikan file CSV memiliki header: 'nim', 'namaLengkap', dan 'prodi'.");
           return;
         }
 
@@ -126,7 +127,7 @@ export default function MasterMahasiswaPage() {
             Import CSV
           </h2>
           <div className="text-sm text-slate-600">
-            Unggah file `.csv` dengan header: <b>nim</b> dan <b>nama</b>
+            Unggah file `.csv` dengan header: <b>nim</b>, <b>namaLengkap</b>, dan <b>prodi</b>
           </div>
           
           {kampusList.length > 0 && (
@@ -193,6 +194,7 @@ export default function MasterMahasiswaPage() {
                 <tr>
                   <th className="px-6 py-3">NIM</th>
                   <th className="px-6 py-3">Nama Mahasiswa</th>
+                  <th className="px-6 py-3">Program Studi</th>
                   <th className="px-6 py-3">Kampus</th>
                 </tr>
               </thead>
@@ -202,15 +204,16 @@ export default function MasterMahasiswaPage() {
                   parsedData.slice(0, 50).map((p, idx) => (
                     <tr key={idx} className="bg-yellow-50/30">
                       <td className="px-6 py-3 font-mono font-medium text-slate-700">{p.nim}</td>
-                      <td className="px-6 py-3">{p.nama}</td>
+                      <td className="px-6 py-3">{p.namaLengkap}</td>
+                      <td className="px-6 py-3">{p.prodi}</td>
                       <td className="px-6 py-3 text-slate-400 italic">Menunggu import...</td>
                     </tr>
                   ))
                 ) : isLoading ? (
-                  <tr><td colSpan={3} className="text-center py-8 text-slate-500">Memuat data...</td></tr>
+                  <tr><td colSpan={4} className="text-center py-8 text-slate-500">Memuat data...</td></tr>
                 ) : mhsList.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="text-center py-12 text-slate-500">
+                    <td colSpan={4} className="text-center py-12 text-slate-500">
                       <AlertCircle size={32} className="mx-auto text-slate-300 mb-3" />
                       Belum ada data master mahasiswa.<br/>Silakan import melalui panel di sebelah kiri.
                     </td>
@@ -220,7 +223,8 @@ export default function MasterMahasiswaPage() {
                   mhsList.map((m) => (
                     <tr key={m.id} className="hover:bg-slate-50/50">
                       <td className="px-6 py-3 font-mono font-medium text-slate-700">{m.nim}</td>
-                      <td className="px-6 py-3 font-medium text-slate-900">{m.nama}</td>
+                      <td className="px-6 py-3 font-medium text-slate-900">{m.namaLengkap}</td>
+                      <td className="px-6 py-3">{m.prodi}</td>
                       <td className="px-6 py-3">{m.kampus?.namaKampus || "-"}</td>
                     </tr>
                   ))

@@ -10,8 +10,8 @@ export default function MataKuliahPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
-    kodeMK: "",
-    namaMK: "",
+    kodeMk: "",
+    namaMk: "",
     sks: 3,
     kampusId: ""
   });
@@ -46,16 +46,16 @@ export default function MataKuliahPage() {
     if (mk) {
       setFormData({
         id: mk.id,
-        kodeMK: mk.kodeMK,
-        namaMK: mk.namaMK,
+        kodeMk: mk.kodeMk,
+        namaMk: mk.namaMk,
         sks: mk.sks,
         kampusId: mk.kampusId || ""
       });
     } else {
       setFormData({
         id: "",
-        kodeMK: "",
-        namaMK: "",
+        kodeMk: "",
+        namaMk: "",
         sks: 3,
         kampusId: kampusList.length > 0 ? kampusList[0].id : ""
       });
@@ -135,8 +135,8 @@ export default function MataKuliahPage() {
               ) : (
                 mkList.map((m) => (
                   <tr key={m.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4 font-mono font-medium text-slate-700">{m.kodeMK}</td>
-                    <td className="px-6 py-4 font-medium text-slate-900">{m.namaMK}</td>
+                    <td className="px-6 py-4 font-mono font-medium text-slate-700">{m.kodeMk}</td>
+                    <td className="px-6 py-4 font-medium text-slate-900">{m.namaMk}</td>
                     <td className="px-6 py-4">{m.sks} SKS</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end space-x-2">
@@ -171,8 +171,8 @@ export default function MataKuliahPage() {
                 <input
                   type="text" required
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 uppercase outline-none text-slate-900"
-                  value={formData.kodeMK}
-                  onChange={(e) => setFormData({...formData, kodeMK: e.target.value.toUpperCase()})}
+                  value={formData.kodeMk}
+                  onChange={(e) => setFormData({...formData, kodeMk: e.target.value.toUpperCase()})}
                   placeholder="Misal: IF1234"
                 />
               </div>
@@ -182,8 +182,8 @@ export default function MataKuliahPage() {
                 <input
                   type="text" required
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none text-slate-900"
-                  value={formData.namaMK}
-                  onChange={(e) => setFormData({...formData, namaMK: e.target.value})}
+                  value={formData.namaMk}
+                  onChange={(e) => setFormData({...formData, namaMk: e.target.value})}
                   placeholder="Misal: Algoritma dan Pemrograman"
                 />
               </div>

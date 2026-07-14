@@ -20,10 +20,11 @@ interface MapPickerProps {
   onChange: (lat: number, lng: number) => void;
 }
 
-function LocationMarker({ position, setPosition }: any) {
+function LocationMarker({ position, setPosition, onChange }: any) {
   useMapEvents({
     click(e) {
       setPosition(e.latlng);
+      onChange(e.latlng.lat, e.latlng.lng);
     },
   });
 
@@ -37,14 +38,17 @@ export default function MapPicker({ latitude, longitude, onChange }: MapPickerPr
     latitude && longitude ? new L.LatLng(latitude, longitude) : null
   );
 
+  // Jika parent mengubah props (misal edit kampus lain), update posisi internal
   useEffect(() => {
-    if (position) {
-      onChange(position.lat, position.lng);
+    if (latitude && longitude) {
+      setPosition(new L.LatLng(latitude, longitude));
+    } else {
+      setPosition(null);
     }
-  }, [position, onChange]);
+  }, [latitude, longitude]);
 
   return (
-    <div className="h-[300px] w-full rounded-lg overflow-hidden border border-slate-300 z-0">
+    <div className="h-[300px] w-full rounded-lg overflow-hidden border border-slate-300 z-0 relative">
       <MapContainer
         center={position || [-6.200000, 106.816666]} // Default Jakarta
         zoom={13}
@@ -55,7 +59,7 @@ export default function MapPicker({ latitude, longitude, onChange }: MapPickerPr
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <LocationMarker position={position} setPosition={setPosition} />
+        <LocationMarker position={position} setPosition={setPosition} onChange={onChange} />
       </MapContainer>
     </div>
   );

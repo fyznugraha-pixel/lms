@@ -11,7 +11,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const { id } = await params;
     const body = await req.json();
-    const { kodeMK, namaMK, sks } = body;
+    const { kodeMk, namaMk, sks } = body;
 
     if (session.userRole === "ADMIN_KAMPUS") {
       const existing = await prisma.mataKuliah.findUnique({ where: { id } });
@@ -22,7 +22,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const updated = await prisma.mataKuliah.update({
       where: { id },
-      data: { kodeMK, namaMK, sks: parseInt(sks, 10) }
+      data: { kodeMk, namaMk, sks: parseInt(sks, 10) }
     });
 
     return NextResponse.json({ success: true, data: updated });

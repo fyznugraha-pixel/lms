@@ -7,6 +7,7 @@ export default function UsersPage() {
   const [usersList, setUsersList] = useState<any[]>([]);
   const [kampusList, setKampusList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userRole, setUserRole] = useState<string>("ADMIN_KAMPUS");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
@@ -43,6 +44,7 @@ export default function UsersPage() {
   };
 
   useEffect(() => {
+    fetch("/api/auth/me").then(r => r.json()).then(d => setUserRole(d.userRole));
     fetchUsers();
     fetchKampus();
   }, []);
@@ -232,16 +234,17 @@ export default function UsersPage() {
                   <option value="MAHASISWA">Mahasiswa</option>
                   <option value="DOSEN">Dosen</option>
                   <option value="ADMIN_KAMPUS">Admin Kampus</option>
-                  <option value="SUPER_ADMIN">Super Admin</option>
+                  {userRole === "SUPER_ADMIN" && <option value="SUPER_ADMIN">Super Admin</option>}
                 </select>
               </div>
 
               {formData.role !== "SUPER_ADMIN" && (
                 <>
-                  {kampusList.length > 0 && (
+                  {userRole === "SUPER_ADMIN" && kampusList.length > 0 && (
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1">Kampus</label>
                       <select
+                        required
                         className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-slate-900 bg-white"
                         value={formData.kampusId}
                         onChange={(e) => setFormData({...formData, kampusId: e.target.value})}

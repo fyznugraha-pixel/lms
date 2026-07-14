@@ -17,8 +17,7 @@ export async function GET() {
 
     const users = await prisma.user.findMany({
       where: whereClause,
-      include: { kampus: true },
-      orderBy: { createdAt: "desc" }
+      include: { kampus: true }
     });
     
     // Hilangkan passwordHash dari response

@@ -11,18 +11,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   try {
     const { id } = await params;
     const body = await req.json();
-    const { kodeKelas, namaKelas } = body;
+    const { namaKelas, angkatan, jurusanId } = body;
 
     if (session.userRole === "ADMIN_KAMPUS") {
-      const existing = await prisma.kelas.findUnique({ where: { id }, include: { jurusan: true } });
-      if (!existing || existing.jurusan.kampusId !== session.kampusId) {
+      const existing = await prisma.kelas.findUnique({ where: { id } });
+      if (!existing || existing.kampusId !== session.kampusId) {
         return NextResponse.json({ success: false, error: "Not found or forbidden" }, { status: 403 });
       }
     }
 
     const updated = await prisma.kelas.update({
       where: { id },
-      data: { kodeKelas, namaKelas }
+      data: { namaKelas, angkatan: parseInt(angkatan, 10), jurusanId }
     });
 
     return NextResponse.json({ success: true, data: updated });

@@ -38,21 +38,25 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { kodeKelas, namaKelas, jurusanId } = body;
+    const { namaKelas, angkatan, jurusanId } = body;
 
-    // Pastikan jurusan yang dipilih ada di kampus admin bersangkutan
-    if (session.userRole === "ADMIN_KAMPUS") {
-      const jurusan = await prisma.jurusan.findUnique({ where: { id: jurusanId }});
-      if (!jurusan || jurusan.kampusId !== session.kampusId) {
-        return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
-      }
+    const jurusan = await prisma.jurusan.findUnique({ where: { id: jurusanId }});
+    if (!jurusan) {
+      return NextResponse.json({ success: false, error: "Jurusan tidak ditemukan" }, { status: 404 });
     }
+
+    if (session.userRole === "ADMIN_KAMPUS" && jurusan.kampusId !== session.kampusId) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
+
+    const finalKampusId = jurusan.kampusId;
 
     const newKelas = await prisma.kelas.create({
       data: {
-        kodeKelas,
         namaKelas,
+        angkatan: parseInt(angkatan, 10),
         jurusanId,
+        kampusId: finalKampusId
       }
     });
 
