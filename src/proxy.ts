@@ -5,7 +5,7 @@ import { verifyToken } from './lib/auth';
 // Rute yang tidak memerlukan otentikasi
 const PUBLIC_PATHS = ['/login', '/_next', '/favicon.ico', '/api/auth/login'];
 
-export async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get('host') || '';
   
