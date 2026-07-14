@@ -81,7 +81,7 @@ export async function POST(request: Request) {
       );
     }
     return NextResponse.json(
-      { success: false, error: { message: 'Terjadi kesalahan internal', code: 'INTERNAL_ERROR' } },
+      { success: false, error: { message: `Terjadi kesalahan internal: ${error instanceof Error ? error.message : String(error)}`, code: 'INTERNAL_ERROR' } },
       { status: 500 }
     );
   }
