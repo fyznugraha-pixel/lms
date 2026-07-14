@@ -19,56 +19,56 @@ async function main() {
   })
   console.log(`Created super admin: ${superAdmin.email}`)
 
-  // 2. Create Kampus 'Unpad'
-  const kampusUnpad = await prisma.kampus.upsert({
-    where: { kodeKampus: 'UNPAD' },
+  // 2. Create Kampus 'Telkom'
+  const kampusTelkom = await prisma.kampus.upsert({
+    where: { kodeKampus: 'TELKOM' },
     update: {},
     create: {
-      namaKampus: 'Universitas Padjadjaran',
-      kodeKampus: 'UNPAD',
-      subdomain: 'unpad',
-      latitude: -6.926128,
-      longitude: 107.774574,
+      namaKampus: 'Telkom University',
+      kodeKampus: 'TELKOM',
+      subdomain: 'telkom',
+      latitude: -6.974001,
+      longitude: 107.630348,
       radiusMeter: 200,
     },
   })
-  console.log(`Created kampus: ${kampusUnpad.namaKampus}`)
+  console.log(`Created kampus: ${kampusTelkom.namaKampus}`)
 
-  // 3. Create Admin untuk Unpad
-  const adminUnpad = await prisma.user.upsert({
-    where: { email: 'admin@unpad.com' },
+  // 3. Create Admin untuk Telkom
+  const adminTelkom = await prisma.user.upsert({
+    where: { email: 'admin@telkom.com' },
     update: {},
     create: {
-      email: 'admin@unpad.com',
+      email: 'admin@telkom.com',
       passwordHash,
       role: 'ADMIN_KAMPUS',
-      kampusId: kampusUnpad.id,
+      kampusId: kampusTelkom.id,
     },
   })
-  console.log(`Created admin kampus: ${adminUnpad.email}`)
+  console.log(`Created admin kampus: ${adminTelkom.email}`)
   
   // 4. Create Dosen & Mahasiswa sample
   const dosen = await prisma.user.upsert({
-    where: { email: 'dosen@unpad.com' },
+    where: { email: 'dosen@telkom.com' },
     update: {},
     create: {
-      email: 'dosen@unpad.com',
+      email: 'dosen@telkom.com',
       passwordHash,
       role: 'DOSEN',
-      kampusId: kampusUnpad.id,
+      kampusId: kampusTelkom.id,
     },
   })
   console.log(`Created dosen: ${dosen.email}`)
 
   const mahasiswa = await prisma.user.upsert({
-    where: { email: 'mhs@unpad.com' },
+    where: { email: 'mhs@telkom.com' },
     update: {},
     create: {
-      email: 'mhs@unpad.com',
+      email: 'mhs@telkom.com',
       passwordHash,
       role: 'MAHASISWA',
-      kampusId: kampusUnpad.id,
-      nim: '140810180001'
+      kampusId: kampusTelkom.id,
+      nim: '1301201234'
     },
   })
   console.log(`Created mahasiswa: ${mahasiswa.email}`)
