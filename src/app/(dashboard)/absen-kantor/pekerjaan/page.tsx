@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import ConfirmModal from "@/components/ConfirmModal";
+import CustomDropdown from "@/components/CustomDropdown";
+import { CheckCircle2, Calendar, AlertTriangle, Link as LinkIcon, Inbox, Lock } from "lucide-react";
 
 export default function PekerjaanPage() {
   const dict = useDictionary();
@@ -99,15 +101,22 @@ export default function PekerjaanPage() {
 
   const handleUpdateTodoStatus = async (id: string, currentStatus: string) => {
     const nextStatus = currentStatus === 'TODO' ? 'IN_PROGRESS' : currentStatus === 'IN_PROGRESS' ? 'DONE' : 'TODO';
+    
+    // Optimistic update for instant UI response
+    setTodos(prev => prev.map(t => t.id === id ? { ...t, status: nextStatus } : t));
+    
     try {
       await fetch(`/api/absen-kantor/todo/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: nextStatus })
       });
+      // Silent refresh in background
       fetchTodos();
     } catch (e) {
-      console.error(e);
+      console.error("Failed to update status:", e);
+      // Revert if error
+      fetchTodos();
     }
   };
 
@@ -202,15 +211,16 @@ export default function PekerjaanPage() {
                 placeholder={dict.work.addPlaceholder}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
               />
-              <select 
+              <CustomDropdown
                 value={prioritasTodo}
-                onChange={(e) => setPrioritasTodo(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 outline-none"
-              >
-                <option value="RENDAH">🟢 {dict.work.priorityLow}</option>
-                <option value="SEDANG">🟡 {dict.work.priorityMedium}</option>
-                <option value="TINGGI">🔴 {dict.work.priorityHigh}</option>
-              </select>
+                onChange={(val) => setPrioritasTodo(val as "RENDAH" | "SEDANG" | "TINGGI")}
+                options={[
+                  { value: 'RENDAH', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-green-500" />{dict.work.priorityLow}</div> },
+                  { value: 'SEDANG', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-yellow-500" />{dict.work.priorityMedium}</div> },
+                  { value: 'TINGGI', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-red-500" />{dict.work.priorityHigh}</div> }
+                ]}
+                className="w-32"
+              />
               <button 
                 type="submit" 
                 disabled={isSubmittingTodo || !judulTodo.trim()}
@@ -248,10 +258,10 @@ export default function PekerjaanPage() {
                         t.prioritas === 'TINGGI' ? 'bg-red-100 text-red-700' : 
                         t.prioritas === 'SEDANG' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
                       }`}>
-                        {t.prioritas}
+                        {t.prioritas === 'TINGGI' ? dict.work.priorityHigh : t.prioritas === 'SEDANG' ? dict.work.priorityMedium : dict.work.priorityLow}
                       </span>
                       <span className="text-[10px] text-gray-400 font-medium">
-                        {t.status === 'TODO' ? 'Belum Dimulai' : t.status === 'IN_PROGRESS' ? 'Sedang Dikerjakan' : 'Selesai'}
+                        {t.status === 'TODO' ? dict.work.statusTodo : t.status === 'IN_PROGRESS' ? dict.work.statusInProgress : dict.work.taskDone}
                       </span>
                     </div>
                   </div>
@@ -351,8 +361,8 @@ export default function PekerjaanPage() {
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
           {feedLogs.length === 0 ? (
             <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center">
-              <div className="text-gray-400 mb-2 text-4xl">📭</div>
-              <p className="text-gray-500 font-medium">Belum ada update kerjaan dari siapapun.</p>
+              <Inbox className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 font-medium">{dict.work.logEmptyFeed}</p>
             </div>
           ) : (
             <div className="grid gap-4">
@@ -370,31 +380,41 @@ export default function PekerjaanPage() {
                     </div>
                     {log.isPrivat && (
                       <span className="px-2.5 py-1 bg-red-50 text-red-600 text-xs font-bold rounded-lg border border-red-100 flex items-center gap-1">
-                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8V7a4 4 0 00-8 0v4h8z" /></svg>
-                        Privat
+                        <Lock className="w-3 h-3" />
+                        {dict.work.logPrivateBadge}
                       </span>
                     )}
                   </div>
                   
                   <div className="space-y-4 text-sm mt-4">
                     <div className="bg-green-50/50 p-4 rounded-xl border border-green-100/50">
-                      <p className="font-bold text-green-800 mb-1 flex items-center gap-1">
-                        <span>✅</span> Dikerjakan Hari Ini
+                      <p className="font-bold text-green-800 mb-1 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-green-600" /> {dict.work.logResult}
                       </p>
                       <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{log.dikerjakanHariIni}</p>
                     </div>
                     <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
-                      <p className="font-bold text-blue-800 mb-1 flex items-center gap-1">
-                        <span>📅</span> Rencana Besok
+                      <p className="font-bold text-blue-800 mb-1 flex items-center gap-1.5">
+                        <Calendar className="w-4 h-4 text-blue-600" /> {dict.work.logTomorrowPlan}
                       </p>
                       <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{log.rencanaBesok}</p>
                     </div>
                     {log.blocker && (
                       <div className="bg-orange-50/50 p-4 rounded-xl border border-orange-100/50">
-                        <p className="font-bold text-orange-800 mb-1 flex items-center gap-1">
-                          <span>⚠️</span> Blocker / Kendala
+                        <p className="font-bold text-orange-800 mb-1 flex items-center gap-1.5">
+                          <AlertTriangle className="w-4 h-4 text-orange-600" /> {dict.work.logObstacle}
                         </p>
                         <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{log.blocker}</p>
+                      </div>
+                    )}
+                    {log.linkLampiran && (
+                      <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-100/50">
+                        <p className="font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                          <LinkIcon className="w-4 h-4 text-slate-600" /> {dict.work.logLink}
+                        </p>
+                        <a href={log.linkLampiran} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                          {log.linkLampiran}
+                        </a>
                       </div>
                     )}
                   </div>

@@ -69,6 +69,8 @@
     "addBtn": "Add",
     "taskDone": "Done",
     "taskPending": "Pending",
+    "statusTodo": "Not Started",
+    "statusInProgress": "In Progress",
     "logFormTitle": "Fill Daily Work Log",
     "logResult": "Work Results / Output",
     "logResultPlaceholder": "Example: Completed dashboard UI, fixed login bug...",

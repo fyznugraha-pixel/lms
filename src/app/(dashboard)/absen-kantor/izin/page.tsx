@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import ConfirmModal from "@/components/ConfirmModal";
+import CustomDropdown from "@/components/CustomDropdown";
+import CustomDatePicker from "@/components/CustomDatePicker";
 
 export default function KaryawanIzinPage() {
   const dict = useDictionary();
@@ -19,8 +21,8 @@ export default function KaryawanIzinPage() {
 
   // Form State
   const [jenis, setJenis] = useState<"IZIN" | "SAKIT">("IZIN");
-  const [tanggalMulai, setTanggalMulai] = useState("");
-  const [tanggalSelesai, setTanggalSelesai] = useState("");
+  const [tanggalMulai, setTanggalMulai] = useState<Date | null>(null);
+  const [tanggalSelesai, setTanggalSelesai] = useState<Date | null>(null);
   const [alasan, setAlasan] = useState("");
   const [lampiranUrl, setLampiranUrl] = useState("");
 
@@ -52,8 +54,8 @@ export default function KaryawanIzinPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           jenis,
-          tanggalMulai,
-          tanggalSelesai,
+          tanggalMulai: tanggalMulai ? tanggalMulai.toISOString() : null,
+          tanggalSelesai: tanggalSelesai ? tanggalSelesai.toISOString() : null,
           alasan,
           lampiranUrl
         })
@@ -61,8 +63,8 @@ export default function KaryawanIzinPage() {
       const result = await res.json();
       if (result.success) {
         setModalConfig({ isOpen: true, title: "Berhasil", message: result.message, type: "alert" });
-        setTanggalMulai("");
-        setTanggalSelesai("");
+        setTanggalMulai(null);
+        setTanggalSelesai(null);
         setAlasan("");
         setLampiranUrl("");
         fetchPengajuan();
@@ -95,33 +97,30 @@ export default function KaryawanIzinPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{dict.leave.type}</label>
-                <select 
-                  value={jenis} 
-                  onChange={(e) => setJenis(e.target.value as "IZIN" | "SAKIT")}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                >
-                  <option value="IZIN">{dict.leave.typeLeave}</option>
-                  <option value="SAKIT">{dict.leave.typeSick}</option>
-                </select>
+                <CustomDropdown
+                  value={jenis}
+                  onChange={(val) => setJenis(val as "IZIN" | "SAKIT")}
+                  options={[
+                    { value: "IZIN", label: dict.leave.typeLeave },
+                    { value: "SAKIT", label: dict.leave.typeSick }
+                  ]}
+                  className="w-full"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{dict.leave.startDate}</label>
-                <input 
-                  type="date" 
-                  required
-                  value={tanggalMulai}
-                  onChange={(e) => setTanggalMulai(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                <CustomDatePicker
+                  selected={tanggalMulai}
+                  onChange={(date) => setTanggalMulai(date)}
+                  className="w-full"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{dict.leave.endDate}</label>
-                <input 
-                  type="date" 
-                  required
-                  value={tanggalSelesai}
-                  onChange={(e) => setTanggalSelesai(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                <CustomDatePicker
+                  selected={tanggalSelesai}
+                  onChange={(date) => setTanggalSelesai(date)}
+                  className="w-full"
                 />
               </div>
               <div>

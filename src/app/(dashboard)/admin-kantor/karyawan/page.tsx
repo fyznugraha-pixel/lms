@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
+import CustomDropdown from "@/components/CustomDropdown";
 
 type Karyawan = {
   id: string;
@@ -167,15 +168,16 @@ export default function KaryawanPage() {
           />
         </div>
         <div className="w-full sm:w-48">
-          <select 
+          <CustomDropdown
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white transition-all"
-          >
-            <option value="all">Semua Status</option>
-            <option value="active">Aktif</option>
-            <option value="inactive">Nonaktif</option>
-          </select>
+            onChange={(val) => setStatusFilter(val as string)}
+            options={[
+              { value: "all", label: "Semua Status" },
+              { value: "active", label: "Aktif" },
+              { value: "inactive", label: "Nonaktif" }
+            ]}
+            className="w-full"
+          />
         </div>
       </div>
 
@@ -303,15 +305,16 @@ export default function KaryawanPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                <select 
+                <CustomDropdown
                   value={formData.role}
-                  onChange={(e) => setFormData({...formData, role: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-                >
-                  <option value="KARYAWAN">Karyawan (Hanya Absen)</option>
-                  <option value="PENANGGUNG_JAWAB_ABSEN">Penanggung Jawab Absen</option>
-                  <option value="ADMIN_KANTOR">Admin Kantor (HR)</option>
-                </select>
+                  onChange={(val) => setFormData({...formData, role: val as string})}
+                  options={[
+                    { value: "KARYAWAN", label: "Karyawan (Hanya Absen)" },
+                    { value: "PENANGGUNG_JAWAB_ABSEN", label: "Penanggung Jawab Absen" },
+                    { value: "ADMIN_KANTOR", label: "Admin Kantor (HR)" }
+                  ]}
+                  className="w-full"
+                />
               </div>
 
               <div className="pt-4 border-t border-gray-100 flex justify-end gap-3 mt-8">

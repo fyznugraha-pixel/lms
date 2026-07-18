@@ -68,7 +68,9 @@
     "addPlaceholder": "Apa yang ingin Anda selesaikan hari ini?",
     "addBtn": "Tambah",
     "taskDone": "Selesai",
-    "taskPending": "Pending",
+    "taskPending": "Tertunda",
+    "statusTodo": "Belum Dimulai",
+    "statusInProgress": "Sedang Dikerjakan",
     "logFormTitle": "Isi Laporan Kerja (Work Log)",
     "logResult": "Hasil Pekerjaan / Output",
     "logResultPlaceholder": "Misal: Menyelesaikan UI dashboard, fix bug login...",
@@ -85,7 +87,15 @@
     "colLink": "Link File",
     "priorityLow": "Rendah",
     "priorityMedium": "Sedang",
-    "priorityHigh": "Tinggi"
+    "priorityHigh": "Tinggi",
+    "logEmptyFeed": "Belum ada update kerjaan dari siapapun.",
+    "logPrivateToggle": "Jadikan Privat",
+    "logPrivateDesc": "(Hanya bisa dilihat Anda dan pimpinan)",
+    "logSaveBtn": "Simpan Jurnal Hari Ini",
+    "logSavingBtn": "Menyimpan...",
+    "logDoneToday": "Dikerjakan Hari Ini",
+    "logTomorrowPlan": "Rencana Besok",
+    "logPrivateBadge": "Privat"
   },
   "leave": {
     "title": "Pengajuan Izin & Sakit",

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
+import CustomDropdown from "@/components/CustomDropdown";
 
 export default function KaryawanRekapPage() {
   const dict = useDictionary();
@@ -48,25 +49,25 @@ export default function KaryawanRekapPage() {
           <h1 className="text-3xl font-bold text-gray-900">{dict.recap.title}</h1>
           <p className="text-gray-500 mt-1">{dict.recap.subtitle}</p>
         </div>
-        <div className="flex gap-3 bg-white p-2 rounded-xl shadow-sm border border-gray-100">
-          <select 
-            value={bulan} 
-            onChange={(e) => setBulan(parseInt(e.target.value))}
-            className="px-4 py-2 border-none bg-gray-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-700"
-          >
-            {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-              <option key={m} value={m}>{new Intl.DateTimeFormat(locale, { month: 'long' }).format(new Date(2000, m - 1, 1))}</option>
-            ))}
-          </select>
-          <select 
-            value={tahun} 
-            onChange={(e) => setTahun(parseInt(e.target.value))}
-            className="px-4 py-2 border-none bg-gray-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-700"
-          >
-            {[tahun - 1, tahun, tahun + 1].map(y => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
+        <div className="flex gap-3">
+          <CustomDropdown
+            value={bulan}
+            onChange={(val) => setBulan(Number(val))}
+            options={Array.from({length: 12}, (_, i) => i + 1).map(m => ({
+              value: m,
+              label: new Intl.DateTimeFormat(locale, { month: 'long' }).format(new Date(2000, m - 1, 1))
+            }))}
+            className="w-40 shadow-sm"
+          />
+          <CustomDropdown
+            value={tahun}
+            onChange={(val) => setTahun(Number(val))}
+            options={[tahun - 1, tahun, tahun + 1].map(y => ({
+              value: y,
+              label: y.toString()
+            }))}
+            className="w-32 shadow-sm"
+          />
         </div>
       </div>
 

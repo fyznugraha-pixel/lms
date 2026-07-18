@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import CustomDropdown from "@/components/CustomDropdown";
 
 export default function AdminRekapPage() {
   const [data, setData] = useState<any>(null);
@@ -152,26 +153,26 @@ export default function AdminRekapPage() {
           <p className="text-gray-500 mt-1">Pantau dan ekspor laporan kehadiran seluruh karyawan.</p>
         </div>
         <div className="flex flex-wrap gap-3 items-center">
-          <div className="flex gap-2 bg-white p-1.5 rounded-xl shadow-sm border border-gray-100">
-            <select 
-              value={bulan} 
-              onChange={(e) => setBulan(parseInt(e.target.value))}
-              className="px-4 py-2 border-none bg-gray-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-700"
-            >
-              {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-                <option key={m} value={m}>{new Intl.DateTimeFormat('id-ID', { month: 'long' }).format(new Date(2000, m - 1, 1))}</option>
-              ))}
-            </select>
-            <select 
-              value={tahun} 
-              onChange={(e) => setTahun(parseInt(e.target.value))}
-              className="px-4 py-2 border-none bg-gray-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-700"
-            >
-              {[tahun - 1, tahun, tahun + 1].map(y => (
-                <option key={y} value={y}>{y}</option>
-              ))}
-            </select>
-          </div>
+          <div className="flex gap-3">
+          <CustomDropdown
+            value={bulan}
+            onChange={(val) => setBulan(Number(val))}
+            options={Array.from({length: 12}, (_, i) => i + 1).map(m => ({
+              value: m,
+              label: new Intl.DateTimeFormat('id-ID', { month: 'long' }).format(new Date(2000, m - 1, 1))
+            }))}
+            className="w-40 shadow-sm"
+          />
+          <CustomDropdown
+            value={tahun}
+            onChange={(val) => setTahun(Number(val))}
+            options={[tahun - 1, tahun, tahun + 1].map(y => ({
+              value: y,
+              label: y.toString()
+            }))}
+            className="w-32 shadow-sm"
+          />
+        </div>
           <button 
             onClick={handleExportXLSX}
             disabled={!data || data.ringkasan.length === 0}

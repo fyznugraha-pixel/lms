@@ -10,15 +10,13 @@ interface LanguageToggleProps {
 }
 
 export default function LanguageToggle({ currentLang }: LanguageToggleProps) {
-  const router = useRouter();
   const [isPending, setIsPending] = useState(false);
 
   const toggleLang = async () => {
     setIsPending(true);
     const newLang = currentLang === "en" ? "id" : "en";
     await setLanguage(newLang);
-    router.refresh(); // Refresh so server components re-render with new cookie
-    setIsPending(false);
+    window.location.reload();
   };
 
   return (
