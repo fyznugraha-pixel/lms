@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useDictionary } from "@/hooks/useDictionary";
+import { useState, useEffect, useRef } from "react";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 export default function PekerjaanPage() {
   const dict = useDictionary();
+  const locale = useLocale();
   const [todos, setTodos] = useState<any[]>([]);
   const [workLog, setWorkLog] = useState<any>(null);
   
@@ -191,9 +192,9 @@ export default function PekerjaanPage() {
                 onChange={(e) => setPrioritasTodo(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 outline-none"
               >
-                <option value="RENDAH">🟢 Rendah</option>
-                <option value="SEDANG">🟡 Sedang</option>
-                <option value="TINGGI">🔴 Tinggi</option>
+                <option value="RENDAH">🟢 {dict.work.priorityLow}</option>
+                <option value="SEDANG">🟡 {dict.work.priorityMedium}</option>
+                <option value="TINGGI">🔴 {dict.work.priorityHigh}</option>
               </select>
               <button 
                 type="submit" 
@@ -260,8 +261,8 @@ export default function PekerjaanPage() {
                 <h2 className="text-lg font-bold text-gray-900">{dict.work.logFormTitle}</h2>
                 <p className="text-sm text-gray-500 mt-1">{dict.dashboard.workLogDesc}</p>
               </div>
-              <div className="bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200 text-xs font-bold text-blue-700">
-                {new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())}
+              <div className="bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200 text-xs font-bold text-blue-700 capitalize">
+                {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())}
               </div>
             </div>
           </div>
@@ -279,13 +280,13 @@ export default function PekerjaanPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Rencana prioritas besok?</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{dict.work.logTomorrow}</label>
               <textarea 
                 required
                 rows={3}
                 value={rencanaBesok}
                 onChange={(e) => setRencanaBesok(e.target.value)}
-                placeholder="Misal: Melanjutkan desain dashboard..."
+                placeholder={dict.work.logTomorrowPlaceholder}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm leading-relaxed"
               />
             </div>
@@ -349,7 +350,7 @@ export default function PekerjaanPage() {
                       </div>
                       <div>
                         <p className="font-bold text-gray-900">{log.karyawan.namaLengkap}</p>
-                        <p className="text-xs text-gray-500">{new Date(log.tanggal).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                        <p className="text-xs text-gray-500 capitalize">{new Date(log.tanggal).toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}</p>
                       </div>
                     </div>
                     {log.isPrivat && (

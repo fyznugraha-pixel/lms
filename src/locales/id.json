@@ -72,13 +72,18 @@
     "logResultPlaceholder": "Misal: Menyelesaikan UI dashboard, fix bug login...",
     "logLink": "Link File / Dokumen (Opsional)",
     "logLinkPlaceholder": "https://docs.google.com/...",
+    "logTomorrow": "Rencana prioritas besok?",
+    "logTomorrowPlaceholder": "Misal: Melanjutkan desain dashboard...",
     "logObstacle": "Kendala / Hambatan",
     "logObstaclePlaceholder": "Misal: Server API down, menunggu desain...",
     "logHistoryTitle": "Riwayat Work Log Anda",
     "noLog": "Belum ada work log yang diisi.",
     "colResult": "Hasil Pekerjaan",
     "colObstacle": "Kendala",
-    "colLink": "Link File"
+    "colLink": "Link File",
+    "priorityLow": "Rendah",
+    "priorityMedium": "Sedang",
+    "priorityHigh": "Tinggi"
   },
   "leave": {
     "title": "Pengajuan Izin & Sakit",

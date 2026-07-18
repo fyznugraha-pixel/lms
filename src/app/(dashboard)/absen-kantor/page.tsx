@@ -24,6 +24,7 @@ type HistoriAbsen = {
 
 export default function KaryawanDashboard() {
   const dict = useDictionary();
+  const locale = useLocale();
   const [data, setData] = useState<{
     absensiHariIni: AbsensiHariIni;
     bisaAbsenMasuk: boolean;
@@ -109,11 +110,11 @@ export default function KaryawanDashboard() {
 
   const formatJam = (isoString: string | null) => {
     if (!isoString) return "--:--";
-    return new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(new Date(isoString));
+    return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(isoString));
   };
 
   const formatTanggal = (isoString: string) => {
-    return new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(isoString));
+    return new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(isoString));
   };
 
   const handleKlarifikasi = async (e: React.FormEvent) => {
@@ -152,13 +153,13 @@ export default function KaryawanDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{dict.sidebar.dashboard}</h1>
-          <p className="text-gray-500 mt-1">
-            {new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(currentTime)}
+          <p className="text-gray-500 mt-1 capitalize">
+            {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(currentTime)}
           </p>
         </div>
         <div className="mt-4 md:mt-0 text-center md:text-right">
           <div className="text-4xl font-black text-blue-600 tracking-tight">
-            {new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(currentTime)}
+            {new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(currentTime)}
           </div>
           <p className="text-sm text-gray-400 font-medium uppercase tracking-widest mt-1">{dict.dashboard.serverTime}</p>
         </div>

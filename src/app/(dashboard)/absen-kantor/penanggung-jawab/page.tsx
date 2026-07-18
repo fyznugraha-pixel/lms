@@ -18,6 +18,8 @@ type SesiAbsen = {
 };
 
 export default function PenanggungJawabDashboard() {
+  const dict = useDictionary();
+  const locale = useLocale();
   const [sesiList, setSesiList] = useState<SesiAbsen[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -142,11 +144,11 @@ export default function PenanggungJawabDashboard() {
                 {sesiList.map((sesi) => (
                   <tr key={sesi.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900">
-                        {new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(sesi.tanggal))}
+                      <div className="whitespace-nowrap text-sm text-gray-900 font-medium capitalize">
+                        {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(sesi.tanggal))}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(new Date(sesi.waktuDibuat))}
+                      <div className="whitespace-nowrap text-sm text-gray-500">
+                        {new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(sesi.waktuDibuat))}
                       </div>
                     </td>
                     <td className="px-6 py-4">

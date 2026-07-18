@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useDictionary } from "@/hooks/useDictionary";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 export default function KaryawanRekapPage() {
   const dict = useDictionary();
+  const locale = useLocale();
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -32,12 +33,12 @@ export default function KaryawanRekapPage() {
   }, [bulan, tahun]);
 
   const formatTanggal = (isoString: string) => {
-    return new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(isoString));
+    return new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(isoString));
   };
   
   const formatJam = (isoString: string | null) => {
     if (!isoString) return "--:--";
-    return new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(new Date(isoString));
+    return new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(isoString));
   };
 
   return (
@@ -54,7 +55,7 @@ export default function KaryawanRekapPage() {
             className="px-4 py-2 border-none bg-gray-50 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-700"
           >
             {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-              <option key={m} value={m}>{new Intl.DateTimeFormat('id-ID', { month: 'long' }).format(new Date(2000, m - 1, 1))}</option>
+              <option key={m} value={m}>{new Intl.DateTimeFormat(locale, { month: 'long' }).format(new Date(2000, m - 1, 1))}</option>
             ))}
           </select>
           <select 
