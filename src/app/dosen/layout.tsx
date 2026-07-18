@@ -8,8 +8,10 @@ import {
   LogOut, 
   Menu, 
   X,
-  BookOpen
+  BookOpen,
+  Key
 } from "lucide-react";
+import ChangePasswordModal from "@/components/ChangePasswordModal";
 
 export default function DosenLayout({
   children,
@@ -17,6 +19,7 @@ export default function DosenLayout({
   children: React.ReactNode;
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -41,9 +44,10 @@ export default function DosenLayout({
 
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transform transition-transform duration-200 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} flex flex-col`}>
         <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800">
-          <h1 className="text-xl font-bold font-heading tracking-wide">
+          <div className="flex items-center gap-2 text-xl font-bold font-heading tracking-wide">
+            <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-8 w-auto object-contain brightness-0 invert" />
             Panel Dosen
-          </h1>
+          </div>
           <button className="lg:hidden text-slate-400 hover:text-white" onClick={() => setIsSidebarOpen(false)}>
             <X size={24} />
           </button>
@@ -69,7 +73,14 @@ export default function DosenLayout({
           })}
         </nav>
 
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-slate-800 space-y-2">
+          <button
+            onClick={() => setIsPasswordModalOpen(true)}
+            className="flex items-center w-full px-4 py-3 text-sm font-medium text-slate-300 rounded-lg hover:bg-slate-800/50 hover:text-white transition-colors"
+          >
+            <Key className="mr-3 h-5 w-5 text-slate-500" />
+            Ubah Password
+          </button>
           <button
             onClick={handleLogout}
             className="flex items-center w-full px-4 py-3 text-sm font-medium text-slate-300 rounded-lg hover:bg-slate-800/50 hover:text-white transition-colors"
@@ -97,7 +108,13 @@ export default function DosenLayout({
             {children}
           </div>
         </div>
+        </div>
       </main>
+
+      <ChangePasswordModal 
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
     </div>
   );
 }

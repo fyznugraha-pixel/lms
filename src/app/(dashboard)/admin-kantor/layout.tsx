@@ -3,6 +3,8 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/auth";
+import DashboardPasswordButton from "@/components/DashboardPasswordButton";
+import AdminKantorSidebarNav from "./AdminKantorSidebarNav";
 
 export default async function AdminKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -18,30 +20,23 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="h-screen bg-gray-50 flex overflow-hidden">
       {/* Sidebar Khusus Kantor */}
-      <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
+      <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col flex-shrink-0">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">TactLink</h2>
-          <p className="text-sm text-gray-500">Admin Office Portal</p>
+          <Link href="/admin-kantor" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-10 w-auto object-contain" />
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">TactLink</h2>
+              <p className="text-sm text-gray-500">Admin Office Portal</p>
+            </div>
+          </Link>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
-          <Link href="/admin-kantor/karyawan" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
-            Manajemen Karyawan
-          </Link>
-          <Link href="/admin-kantor/persetujuan" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
-            Persetujuan Izin & Sakit
-          </Link>
-          <Link href="/admin-kantor/rekap" className="block px-4 py-2.5 bg-blue-50 text-blue-700 font-medium rounded-lg">
-            Rekap & Export CSV
-          </Link>
-          <Link href="/absen-kantor" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg mt-2">
-            Masuk Portal Karyawan
-          </Link>
-        </nav>
+        <AdminKantorSidebarNav />
         <div className="p-4 border-t border-gray-200">
+          <DashboardPasswordButton />
           <form action="/api/auth/logout" method="POST">
-            <button type="submit" className="w-full text-left px-4 py-2 text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors">
+            <button type="submit" className="w-full text-left px-4 py-2 text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center gap-3">
               Keluar
             </button>
           </form>

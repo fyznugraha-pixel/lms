@@ -1,0 +1,168 @@
+import { getSession } from "@/lib/session";
+import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
+import Link from "next/link";
+import { Users, FileText, QrCode, Download, Clock, CheckCircle, XCircle } from "lucide-react";
+
+export default async function AdminKantorDashboard() {
+  const session = await getSession();
+
+  if (!session.userId) {
+    redirect("/login");
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const totalKaryawan = await prisma.user.count({
+    where: { role: "KARYAWAN" }
+  });
+
+  const menungguPersetujuan = await prisma.pengajuanIzin.count({
+    where: { status: "PENDING" }
+  });
+
+  const kehadiranHariIni = await prisma.absensiKantor.count({
+    where: { tanggal: today, status: "HADIR" }
+  });
+
+  const absensiTerbaru = await prisma.absensiKantor.findMany({
+    where: { tanggal: today },
+    orderBy: { waktuAbsenMasuk: 'desc' },
+    take: 5,
+    include: { karyawan: { select: { namaLengkap: true, email: true } } }
+  });
+
+  const pengajuanTerbaru = await prisma.pengajuanIzin.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 4,
+    include: { karyawan: { select: { namaLengkap: true } } }
+  });
+
+  const formatJam = (date: Date | null) => {
+    if (!date) return "--:--";
+    return new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(date);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold font-heading text-slate-900">Dashboard Admin Kantor</h1>
+        <p className="mt-2 text-slate-600">
+          Selamat datang di panel administrasi kantor (internal TactLink). 
+        </p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+          <div className="p-4 bg-blue-50 text-blue-600 rounded-xl">
+            <Users size={28} />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Karyawan</h3>
+            <p className="text-3xl font-black text-gray-900 mt-1">{totalKaryawan}</p>
+          </div>
+        </div>
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+          <div className="p-4 bg-amber-50 text-amber-500 rounded-xl">
+            <FileText size={28} />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Menunggu Izin</h3>
+            <p className="text-3xl font-black text-gray-900 mt-1">{menungguPersetujuan}</p>
+          </div>
+        </div>
+        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+          <div className="p-4 bg-emerald-50 text-emerald-500 rounded-xl">
+            <CheckCircle size={28} />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Hadir Hari Ini</h3>
+            <p className="text-3xl font-black text-gray-900 mt-1">{kehadiranHariIni}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Quick Links */}
+        <div className="lg:col-span-1 space-y-4">
+          <h2 className="text-lg font-bold text-gray-900">Akses Cepat</h2>
+          <div className="grid grid-cols-1 gap-3">
+            <Link href="/admin-kantor/absensi" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all flex items-center gap-4 group">
+              <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <CheckCircle size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">Kelola Sesi Absensi</p>
+                <p className="text-xs text-gray-500">Buka atau tutup sesi absen</p>
+              </div>
+            </Link>
+            
+            <Link href="/admin-kantor/karyawan" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all flex items-center gap-4 group">
+              <div className="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <Users size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Kelola Karyawan</p>
+                <p className="text-xs text-gray-500">Tambah atau nonaktifkan akun</p>
+              </div>
+            </Link>
+
+            <Link href="/admin-kantor/rekap" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all flex items-center gap-4 group">
+              <div className="p-3 bg-green-50 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors">
+                <Download size={20} />
+              </div>
+              <div>
+                <p className="font-bold text-gray-900 group-hover:text-green-600 transition-colors">Export Laporan</p>
+                <p className="text-xs text-gray-500">Unduh rekap bulanan CSV</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        {/* Recent Activities */}
+        <div className="lg:col-span-2 space-y-4">
+          <h2 className="text-lg font-bold text-gray-900">Aktivitas Absensi Hari Ini</h2>
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            {absensiTerbaru.length > 0 ? (
+              <div className="divide-y divide-gray-100">
+                {absensiTerbaru.map((absen) => (
+                  <div key={absen.id} className="p-4 hover:bg-gray-50 transition-colors flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                        {absen.karyawan.namaLengkap?.charAt(0) || "K"}
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-900">{absen.karyawan.namaLengkap}</p>
+                        <p className="text-xs text-gray-500">{absen.karyawan.email}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center justify-end gap-2 text-sm font-medium">
+                        <Clock size={14} className="text-green-500" />
+                        <span className="text-gray-900">In: {formatJam(absen.waktuAbsenMasuk)}</span>
+                      </div>
+                      {absen.waktuAbsenPulang && (
+                        <div className="flex items-center justify-end gap-2 text-sm font-medium mt-1">
+                          <Clock size={14} className="text-orange-500" />
+                          <span className="text-gray-500">Out: {formatJam(absen.waktuAbsenPulang)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-12 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
+                  <Clock className="w-8 h-8 text-gray-300" />
+                </div>
+                <p className="text-gray-500 font-medium">Belum ada karyawan yang absen hari ini.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

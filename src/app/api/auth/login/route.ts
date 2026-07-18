@@ -40,20 +40,32 @@ export async function POST(request: Request) {
 
     // Tenant check
     const isTactLinkRole = ['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR'].includes(user.role);
-    if (user.role !== 'SUPER_ADMIN' && !isTactLinkRole) {
-      if (!subdomain) {
-        return NextResponse.json(
-          { success: false, error: { message: 'Harus diakses melalui subdomain kampus', code: 'NO_SUBDOMAIN' } },
-          { status: 400 }
-        );
-      }
-      
-      // Pastikan kampus ada dan subdomain cocok
-      if (!user.kampus || user.kampus.subdomain !== subdomain) {
-         return NextResponse.json(
-          { success: false, error: { message: 'Akun tidak terdaftar di kampus ini', code: 'WRONG_TENANT' } },
-          { status: 403 }
-        );
+    
+    if (user.role !== 'SUPER_ADMIN') {
+      if (isTactLinkRole) {
+        // Karyawan HANYA boleh login dari subdomain "absensi"
+        if (subdomain !== 'absensi') {
+          return NextResponse.json(
+            { success: false, error: { message: 'Akun ini khusus untuk Absensi Kantor. Silakan akses via absensi.byfayiz.web.id (atau absensi.localhost:3000)', code: 'WRONG_TENANT' } },
+            { status: 403 }
+          );
+        }
+      } else {
+        // Mahasiswa/Dosen/Admin Kampus HANYA boleh login dari subdomain kampusnya
+        if (!subdomain || subdomain === 'absensi') {
+          return NextResponse.json(
+            { success: false, error: { message: 'Harus diakses melalui subdomain kampus Anda', code: 'NO_SUBDOMAIN' } },
+            { status: 400 }
+          );
+        }
+        
+        // Pastikan kampus ada dan subdomain cocok
+        if (!user.kampus || user.kampus.subdomain !== subdomain) {
+           return NextResponse.json(
+            { success: false, error: { message: 'Akun tidak terdaftar di kampus ini', code: 'WRONG_TENANT' } },
+            { status: 403 }
+          );
+        }
       }
     }
 

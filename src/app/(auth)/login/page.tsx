@@ -1,11 +1,14 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
+import Grainient from "@/components/Grainient";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -40,14 +43,14 @@ export default function LoginPage() {
 
       // Redirect berdasarkan role
       const role = data.data.role;
-      if (role === "SUPER_ADMIN" || role === "ADMIN_KAMPUS" || role === "ADMIN_KANTOR") {
+      if (role === "SUPER_ADMIN" || role === "ADMIN_KAMPUS") {
         router.push("/admin");
+      } else if (role === "ADMIN_KANTOR") {
+        router.push("/admin-kantor");
       } else if (role === "DOSEN") {
         router.push("/dosen");
       } else if (role === "KARYAWAN" || role === "PENANGGUNG_JAWAB_ABSEN") {
-        // Asumsi rute untuk dashboard karyawan adalah /kantor atau /absen
-        // Karena prompt bilang "Dashboard utama: tombol Absen Masuk/Pulang" 
-        router.push("/absen");
+        router.push("/absen-kantor");
       } else {
         router.push("/absen");
       }
@@ -59,29 +62,53 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Sisi Kiri: Branding */}
-      <div className="hidden lg:flex w-1/2 bg-blue-900 text-white flex-col justify-between p-12">
-        <div>
-          <h1 className="text-4xl font-extrabold tracking-tight">TactLink</h1>
-          <p className="text-blue-200 mt-2 text-lg">Integrated Attendance & Management System</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#0F172A] relative overflow-hidden p-4">
+      {/* Full Screen Grainient Background */}
+      <div className="absolute inset-0 z-0 opacity-80">
+        <Grainient 
+          color1="#1E3A8A" 
+          color2="#EFC94B" 
+          color3="#0F172A" 
+          className="w-full h-full"
+        />
+      </div>
+
+      {/* Branding - Top Left (Desktop) */}
+      <div className="absolute top-8 left-8 md:top-12 md:left-12 z-10 hidden md:block">
+        <div className="flex items-center gap-4">
+          <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-12 w-auto object-contain bg-white p-2 rounded-xl shadow-lg" />
+          <div className="flex flex-col">
+            <h1 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md">TactLink</h1>
+            <p className="text-white/90 mt-0.5 text-sm font-light drop-shadow-md">Integrated Attendance & Management System</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-2xl font-semibold mb-2">Welcome Back</h2>
-          <p className="text-blue-200">
+      </div>
+
+      {/* Welcome Message - Bottom Left (Desktop) */}
+      <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 z-10 hidden md:block">
+        <div className="bg-white/10 p-6 rounded-3xl backdrop-blur-md border border-white/20 shadow-2xl max-w-sm">
+          <h2 className="text-2xl font-bold mb-2 text-[#EFC94B]">Welcome Back!</h2>
+          <p className="text-blue-50 text-base mb-1">Masuk ke Akun Anda</p>
+          <p className="text-blue-100/80 text-sm">
             Akses portal absensi dan manajemen internal TactLink dengan aman.
           </p>
         </div>
       </div>
 
-      {/* Sisi Kanan: Form Login */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-50 p-8 sm:p-12">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-          
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Masuk ke Akun Anda</h2>
-            <p className="text-sm text-gray-500 mt-2">Masukkan kredensial Anda untuk melanjutkan</p>
-          </div>
+      {/* Login Card */}
+      <div className="w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(45,58,110,0.5)] p-8 sm:p-10 border border-white/20 relative z-10">
+        
+        {/* Mobile Header (Hidden on Desktop) */}
+        <div className="text-center mb-6 flex flex-col items-center md:hidden">
+          <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-16 w-auto object-contain bg-white p-2.5 rounded-2xl shadow-sm mb-5" />
+          <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">TactLink</h2>
+          <p className="text-sm text-gray-500 mt-1 font-medium">Integrated Attendance & Management System</p>
+        </div>
+
+        <div className="text-center mb-8 hidden md:block">
+          <h3 className="text-2xl font-bold text-gray-900">Sign In</h3>
+          <p className="text-sm text-gray-500 mt-1">Masukkan email dan password Anda</p>
+        </div>
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-lg flex items-start">
@@ -110,15 +137,29 @@ export default function LoginPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input
-                type="password"
-                required
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white outline-none transition-all text-gray-900"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Masukkan password"
-              />
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-sm font-medium text-gray-700">Password</label>
+                <Link href="/lupa-password" className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors">
+                  Lupa Password?
+                </Link>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white outline-none transition-all text-gray-900 pr-12"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Masukkan password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             <div className="flex items-center">
@@ -130,14 +171,14 @@ export default function LoginPage() {
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                Ingat saya di device ini (Khusus Karyawan)
+                Ingat saya di device ini
               </label>
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
+              className="w-full py-3 px-4 mt-6 bg-[#394887] hover:bg-[#2D3A6E] active:scale-[0.98] hover:-translate-y-0.5 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none flex justify-center items-center"
             >
               {isLoading ? (
                 <>
@@ -154,7 +195,6 @@ export default function LoginPage() {
           </form>
           
         </div>
-      </div>
     </div>
   );
 }

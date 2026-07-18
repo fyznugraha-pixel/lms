@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Home, Calendar, Clock, LogOut } from "lucide-react";
+import { Home, Calendar, Clock, LogOut, Key } from "lucide-react";
+import ChangePasswordModal from "@/components/ChangePasswordModal";
 
 export default function MobileLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -23,16 +26,26 @@ export default function MobileLayout({ children }: { children: React.ReactNode }
     <div className="flex flex-col min-h-screen bg-slate-50 relative pb-20">
       {/* Top Header */}
       <header className="fixed top-0 left-0 right-0 h-16 bg-white glass-panel flex items-center justify-between px-6 z-40 border-b border-slate-100 shadow-sm">
-        <div className="font-heading font-bold text-lg text-primary-600">
+        <div className="font-heading font-bold text-lg text-primary-600 flex items-center gap-2">
+          <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-8 w-auto object-contain" />
           Absensi<span className="text-slate-800">QR</span>
         </div>
-        <button 
-          onClick={handleLogout}
-          className="text-slate-400 hover:text-danger-500 transition-colors p-2"
-          aria-label="Logout"
-        >
-          <LogOut size={20} />
-        </button>
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={() => setIsPasswordModalOpen(true)}
+            className="text-slate-400 hover:text-blue-500 transition-colors p-2"
+            aria-label="Ubah Password"
+          >
+            <Key size={20} />
+          </button>
+          <button 
+            onClick={handleLogout}
+            className="text-slate-400 hover:text-danger-500 transition-colors p-2"
+            aria-label="Logout"
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
       </header>
 
       {/* Main Content Area */}
@@ -67,6 +80,11 @@ export default function MobileLayout({ children }: { children: React.ReactNode }
       <style dangerouslySetInnerHTML={{__html: `
         .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
       `}} />
+
+      <ChangePasswordModal 
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
     </div>
   );
 }

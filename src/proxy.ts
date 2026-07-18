@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { verifyToken } from './lib/auth';
 
 // Rute yang tidak memerlukan otentikasi
-const PUBLIC_PATHS = ['/login', '/_next', '/favicon.ico', '/api/auth/login'];
+const PUBLIC_PATHS = ['/login', '/_next', '/favicon.ico', '/api/auth/login', '/logo', '/sw.js', '/manifest.json'];
 
 export default async function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
@@ -46,8 +46,12 @@ export default async function proxy(request: NextRequest) {
   const path = url.pathname;
 
   // SUPER_ADMIN bebas akses dashboard manapun, tapi kita asumsikan dashboard mereka di /admin
-  // ADMIN_KAMPUS di /admin, DOSEN di /dosen, MAHASISWA di root atau /absen
-  if (path.startsWith('/admin') && role !== 'SUPER_ADMIN' && role !== 'ADMIN_KAMPUS') {
+  // ADMIN_KAMPUS di /admin, DOSEN di /dosen, MAHASISWA di /absen
+  // ADMIN_KANTOR di /admin-kantor, KARYAWAN di /absen-kantor
+
+  if (path.startsWith('/admin-kantor') && role !== 'SUPER_ADMIN' && role !== 'ADMIN_KANTOR') {
+      return NextResponse.redirect(new URL('/unauthorized', request.url));
+  } else if (path.startsWith('/admin') && !path.startsWith('/admin-kantor') && role !== 'SUPER_ADMIN' && role !== 'ADMIN_KAMPUS') {
       return NextResponse.redirect(new URL('/unauthorized', request.url));
   }
 
@@ -55,7 +59,9 @@ export default async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL('/unauthorized', request.url));
   }
 
-  if (path.startsWith('/absen') || path.startsWith('/jadwal') || path.startsWith('/riwayat')) {
+  if (path.startsWith('/absen-kantor') && role !== 'KARYAWAN' && role !== 'ADMIN_KANTOR' && role !== 'SUPER_ADMIN') {
+      return NextResponse.redirect(new URL('/unauthorized', request.url));
+  } else if ((path.startsWith('/absen') && !path.startsWith('/absen-kantor')) || path.startsWith('/jadwal') || path.startsWith('/riwayat')) {
       if (role !== 'MAHASISWA') {
           return NextResponse.redirect(new URL('/unauthorized', request.url));
       }
@@ -73,7 +79,7 @@ export default async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Jalankan di semua rute kecuali _next/static, image, favicon
-    '/((?!_next/static|_next/image|favicon.ico).*)',
+    // Jalankan di semua rute kecuali _next/static, image, favicon, logo, pwa files
+    '/((?!_next/static|_next/image|favicon.ico|logo|sw\\.js|manifest\\.json).*)',
   ],
 }

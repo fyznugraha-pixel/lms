@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
-export async function POST() {
+export async function POST(request: Request) {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get('refresh_token')?.value;
 
@@ -23,7 +23,11 @@ export async function POST() {
     }
   }
 
-  const response = NextResponse.json({ success: true, data: null });
+  const host = request.headers.get('host') || 'localhost:3000';
+  const protocol = request.headers.get('x-forwarded-proto') || 'http';
+  const redirectUrl = `${protocol}://${host}/login`;
+  
+  const response = NextResponse.redirect(redirectUrl);
   response.cookies.delete('session_token');
   response.cookies.delete('refresh_token');
   return response;

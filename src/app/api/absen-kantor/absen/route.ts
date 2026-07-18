@@ -6,34 +6,27 @@ import { cookies } from 'next/headers';
 
 const absenSchema = z.object({
   jenisAbsen: z.enum(['MASUK', 'PULANG']),
+  kode: z.string().min(1, 'Kode absen wajib diisi'),
 });
-
-async function checkKaryawanAuth() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('session_token')?.value;
-  if (!token) return null;
-  const payload = await verifyToken(token);
-  if (!payload || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
-    return null;
-  }
-  return payload;
-}
 
 export async function POST(request: Request) {
   try {
-    const user = await checkKaryawanAuth();
-    if (!user) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('session_token')?.value;
+    if (!token) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    const user = await verifyToken(token);
+    if (!user || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(user.role as string)) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
+    const userId = user.userId as string;
 
     const body = await request.json();
     const data = absenSchema.parse(body);
-    const userId = user.userId as string;
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // 1. Cari token absen yang valid untuk user ini dan jenis absen ini hari ini
+    // 1. Cari token absen yang valid untuk user ini
     const tokenRecord = await prisma.tokenAbsenKaryawan.findFirst({
       where: {
         karyawanId: userId,
@@ -53,56 +46,47 @@ export async function POST(request: Request) {
     if (!tokenRecord) {
       return NextResponse.json({ 
         success: false, 
-        error: `Sesi absen ${data.jenisAbsen} belum dibuka oleh Penanggung Jawab, atau token Anda sudah kedaluwarsa/digunakan.` 
+        error: `Sesi absen ${data.jenisAbsen} belum dibuka atau sudah kedaluwarsa.` 
       }, { status: 400 });
+    }
+
+    const validCode = tokenRecord.sesiAbsenKantor.id.substring(0, 6).toUpperCase();
+    if (data.kode.toUpperCase() !== validCode) {
+      return NextResponse.json({ success: false, error: 'Kode absen tidak valid atau salah.' }, { status: 400 });
     }
 
     const now = new Date();
 
-    // 2. Transaksi untuk menandai token terpakai dan mencatat absen
+    // 2. Transaksi mencatat absen
     const result = await prisma.$transaction(async (tx) => {
-      // Tandai token isUsed
       await tx.tokenAbsenKaryawan.update({
         where: { id: tokenRecord.id },
         data: { isUsed: true }
       });
 
-      // Cari atau buat record AbsensiKantor untuk hari ini
       let absensi = await tx.absensiKantor.findUnique({
         where: {
-          karyawanId_tanggal: {
-            karyawanId: userId,
-            tanggal: today
-          }
+          karyawanId_tanggal: { karyawanId: userId, tanggal: today }
         }
       });
 
       if (data.jenisAbsen === 'MASUK') {
-        if (absensi) {
-          throw new Error('Anda sudah melakukan absen masuk hari ini.');
-        }
-        
-        // Buat record absen masuk
+        if (absensi) throw new Error('Anda sudah absen masuk hari ini.');
         absensi = await tx.absensiKantor.create({
           data: {
             karyawanId: userId,
             tanggal: today,
             sesiMasukId: tokenRecord.sesiAbsenKantorId,
             waktuAbsenMasuk: now,
-            status: 'HADIR', // Bisa dikembangkan dengan cek jam masuk untuk status TERLAMBAT
+            status: 'HADIR', 
             metode: 'LINK_PERSONAL',
-            isIncomplete: true // karena belum pulang
+            isIncomplete: true
           }
         });
       } else if (data.jenisAbsen === 'PULANG') {
-        if (!absensi) {
-          throw new Error('Anda belum melakukan absen masuk hari ini.');
-        }
-        if (absensi.waktuAbsenPulang) {
-          throw new Error('Anda sudah melakukan absen pulang hari ini.');
-        }
+        if (!absensi) throw new Error('Anda belum absen masuk hari ini.');
+        if (absensi.waktuAbsenPulang) throw new Error('Anda sudah absen pulang hari ini.');
 
-        // Hitung durasi kerja dalam menit
         let durasi = null;
         if (absensi.waktuAbsenMasuk) {
           const diffMs = now.getTime() - new Date(absensi.waktuAbsenMasuk).getTime();
@@ -119,7 +103,6 @@ export async function POST(request: Request) {
           }
         });
       }
-
       return absensi;
     });
 
@@ -128,7 +111,6 @@ export async function POST(request: Request) {
       message: `Berhasil absen ${data.jenisAbsen}!`,
       data: result
     });
-
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ success: false, error: error.issues[0].message }, { status: 400 });
@@ -139,8 +121,11 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
   try {
-    const user = await checkKaryawanAuth();
-    if (!user) {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('session_token')?.value;
+    if (!token) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    const user = await verifyToken(token);
+    if (!user || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(user.role as string)) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
     const userId = user.userId as string;

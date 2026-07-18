@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ConfirmModal from "@/components/ConfirmModal";
 
 type Karyawan = {
   id: string;
@@ -19,6 +20,14 @@ export default function KaryawanPage() {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Modal Confirm & Alert
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" | "amber" }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "alert"
+  });
   
   // Form State
   const [formData, setFormData] = useState({
@@ -91,17 +100,16 @@ export default function KaryawanPage() {
       if (result.success) {
         setIsModalOpen(false);
         fetchKaryawan();
+        setModalConfig({ isOpen: true, title: "Berhasil", message: "Data karyawan berhasil disimpan.", type: "alert" });
       } else {
-        alert(result.error);
+        setModalConfig({ isOpen: true, title: "Gagal", message: result.error || "Gagal menyimpan data", type: "alert", confirmTheme: "red" });
       }
     } catch (error) {
-      alert("Terjadi kesalahan sistem");
+      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem", type: "alert", confirmTheme: "red" });
     }
   };
 
-  const toggleStatus = async (id: string, currentStatus: boolean) => {
-    if (!confirm(`Yakin ingin ${currentStatus ? 'menonaktifkan' : 'mengaktifkan'} karyawan ini?`)) return;
-    
+  const executeToggleStatus = async (id: string, currentStatus: boolean) => {
     try {
       const res = await fetch(`/api/admin-kantor/karyawan/${id}`, {
         method: "PUT",
@@ -113,8 +121,19 @@ export default function KaryawanPage() {
         fetchKaryawan();
       }
     } catch (error) {
-      alert("Terjadi kesalahan sistem");
+      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem", type: "alert", confirmTheme: "red" });
     }
+  };
+
+  const toggleStatus = (id: string, currentStatus: boolean) => {
+    setModalConfig({
+      isOpen: true,
+      title: "Konfirmasi Aksi",
+      message: `Yakin ingin ${currentStatus ? 'menonaktifkan' : 'mengaktifkan'} karyawan ini?`,
+      type: "confirm",
+      confirmTheme: currentStatus ? "red" : "blue",
+      onConfirm: () => executeToggleStatus(id, currentStatus)
+    });
   };
 
   return (
@@ -314,6 +333,20 @@ export default function KaryawanPage() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        showCancel={modalConfig.type === "confirm"}
+        confirmText={modalConfig.type === "confirm" ? "Ya, Lanjutkan" : "Oke"}
+        confirmTheme={modalConfig.confirmTheme || "blue"}
+        onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
+        onConfirm={() => {
+          if (modalConfig.onConfirm) modalConfig.onConfirm();
+          setModalConfig({ ...modalConfig, isOpen: false });
+        }}
+      />
     </div>
   );
 }

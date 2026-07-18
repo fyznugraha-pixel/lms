@@ -2,11 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function ProfilPage() {
   const [sessions, setSessions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "alert"
+  });
 
   const fetchSessions = async () => {
     try {
@@ -27,19 +34,33 @@ export default function ProfilPage() {
   }, []);
 
   const handleLogoutAll = async () => {
-    if (!confirm("PERINGATAN: Anda akan keluar dari semua perangkat yang terhubung (termasuk perangkat ini). Lanjutkan?")) return;
-    
     try {
       const res = await fetch("/api/auth/logout-all", { method: "POST" });
       const result = await res.json();
       if (result.success) {
-        alert("Berhasil keluar dari semua perangkat.");
-        window.location.href = "/absen-kantor/login";
+        setModalConfig({
+          isOpen: true,
+          title: "Berhasil",
+          message: "Berhasil keluar dari semua perangkat.",
+          type: "alert",
+          onConfirm: () => { window.location.href = "/absen-kantor/login"; }
+        });
       }
     } catch (e) {
       console.error(e);
-      alert("Terjadi kesalahan.");
+      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan.", type: "alert" });
     }
+  };
+
+  const confirmLogoutAll = () => {
+    setModalConfig({
+      isOpen: true,
+      title: "Peringatan",
+      message: "Anda akan keluar dari semua perangkat yang terhubung (termasuk perangkat ini). Lanjutkan?",
+      type: "confirm",
+      confirmTheme: "red",
+      onConfirm: handleLogoutAll
+    });
   };
 
   return (
@@ -56,7 +77,7 @@ export default function ProfilPage() {
             <p className="text-sm text-gray-500 mt-1">Daftar perangkat yang mengingat login Anda selama 30 hari.</p>
           </div>
           <button 
-            onClick={handleLogoutAll}
+            onClick={confirmLogoutAll}
             className="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 text-sm border border-red-200 shadow-sm"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,6 +133,20 @@ export default function ProfilPage() {
           )}
         </div>
       </div>
+      
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        showCancel={modalConfig.type === "confirm"}
+        confirmText={modalConfig.type === "confirm" ? "Ya, Lanjutkan" : "Oke"}
+        confirmTheme={modalConfig.confirmTheme || "blue"}
+        onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
+        onConfirm={() => {
+          if (modalConfig.onConfirm) modalConfig.onConfirm();
+          setModalConfig({ ...modalConfig, isOpen: false });
+        }}
+      />
     </div>
   );
 }

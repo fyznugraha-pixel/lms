@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/auth";
+import DashboardPasswordButton from "@/components/DashboardPasswordButton";
 
 export default async function AbsenKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -18,13 +19,16 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
+    <div className="h-screen bg-gray-50 flex flex-col md:flex-row overflow-hidden">
       {/* Sidebar Khusus Kantor */}
       <aside className="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex-shrink-0 flex flex-col">
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">TactLink</h2>
-            <p className="text-sm text-gray-500">Employee Portal</p>
+          <div className="flex items-center gap-3">
+            <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-10 w-auto object-contain" />
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">TactLink</h2>
+              <p className="text-sm text-gray-500">Employee Portal</p>
+            </div>
           </div>
         </div>
         <nav className="flex-1 p-4 space-y-2 overflow-auto">
@@ -66,8 +70,9 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
           )}
         </nav>
         <div className="p-4 border-t border-gray-200">
+          <DashboardPasswordButton />
           <form action="/api/auth/logout" method="POST">
-            <button type="submit" className="w-full text-left px-4 py-2 text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors">
+            <button type="submit" className="w-full text-left px-4 py-2 text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center gap-3">
               Keluar
             </button>
           </form>
