@@ -7,6 +7,8 @@ import DashboardPasswordButton from "@/components/DashboardPasswordButton";
 import LanguageToggle from "@/components/LanguageToggle";
 import SidebarLink from "@/components/SidebarLink";
 import { getDictionary } from "@/lib/dictionaries";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import MobileTopHeader from "@/components/layout/MobileTopHeader";
 
 export default async function AbsenKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -25,9 +27,11 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
   const dict = getDictionary(langCookie);
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col md:flex-row overflow-hidden">
-      {/* Sidebar Khusus Kantor */}
-      <aside className="w-full md:w-64 bg-white border-b md:border-r border-gray-200 flex-shrink-0 flex flex-col">
+    <div className="h-screen bg-gray-50 flex flex-col md:flex-row overflow-hidden pb-16 md:pb-0">
+      <MobileTopHeader langCookie={langCookie} />
+      
+      {/* Sidebar Khusus Kantor (Hidden on Mobile) */}
+      <aside className="hidden md:flex w-64 bg-white border-r border-gray-200 flex-shrink-0 flex-col">
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-10 w-auto object-contain" />
@@ -95,6 +99,8 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
       <main className="flex-1 p-4 md:p-8 overflow-auto">
         {children}
       </main>
+
+      <MobileBottomNav dict={dict} role={payload.role as string} />
     </div>
   );
 }

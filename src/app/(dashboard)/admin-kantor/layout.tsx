@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/auth";
 import DashboardPasswordButton from "@/components/DashboardPasswordButton";
 import AdminKantorSidebarNav from "./AdminKantorSidebarNav";
+import AdminMobileBottomNav from "@/components/layout/AdminMobileBottomNav";
+import MobileTopHeader from "@/components/layout/MobileTopHeader";
 
 export default async function AdminKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -18,9 +20,12 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
   if (!payload || (payload.role !== "ADMIN_KANTOR" && payload.role !== "SUPER_ADMIN")) {
     redirect("/login");
   }
+  const langCookie = cookieStore.get("lang")?.value || "en";
 
   return (
-    <div className="h-screen bg-gray-50 flex overflow-hidden">
+    <div className="h-screen bg-gray-50 flex flex-col md:flex-row overflow-hidden pb-16 md:pb-0">
+      <MobileTopHeader langCookie={langCookie} />
+      
       {/* Sidebar Khusus Kantor */}
       <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col flex-shrink-0">
         <div className="p-6 border-b border-gray-200">
@@ -47,6 +52,8 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
       <main className="flex-1 p-6 md:p-10 overflow-auto">
         {children}
       </main>
+
+      <AdminMobileBottomNav />
     </div>
   );
 }
