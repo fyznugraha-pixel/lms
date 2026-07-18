@@ -137,5 +137,19 @@
     "oldPass": "Password Lama",
     "newPass": "Password Baru",
     "btnSave": "Simpan Perubahan"
+  },
+  "notifications": {
+    "successTitle": "Berhasil",
+    "errorTitle": "Gagal",
+    "warningTitle": "Peringatan",
+    "errorSystem": "Terjadi kesalahan sistem.",
+    "saveSuccess": "Data berhasil disimpan.",
+    "deleteConfirm": "Hapus data ini?",
+    "deleteSuccess": "Data berhasil dihapus.",
+    "reqSuccess": "Pengajuan berhasil dikirim.",
+    "tokenSuccess": "Sesi absensi baru berhasil dibuat.",
+    "logSuccess": "Work Log berhasil disimpan!",
+    "approveConfirm": "Setujui pengajuan ini?",
+    "rejectConfirm": "Tolak pengajuan ini?"
   }
 }

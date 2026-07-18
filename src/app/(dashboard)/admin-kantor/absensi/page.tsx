@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PlusCircle, LogOut, CheckCircle2, Copy } from "lucide-react";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useDictionary } from "@/hooks/useDictionary";
 
 export default function AbsensiAdminPage() {
+  const dict = useDictionary();
   const [sessions, setSessions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -37,7 +39,7 @@ export default function AbsensiAdminPage() {
   const openCreateConfirm = (jenisAbsen: "MASUK" | "PULANG") => {
     setModalConfig({
       isOpen: true,
-      title: "Buka Sesi Absensi",
+      title: dict.notifications?.warningTitle || "Buka Sesi Absensi",
       message: `Anda yakin ingin membuka sesi ${jenisAbsen} hari ini?`,
       type: "confirm",
       confirmTheme: jenisAbsen === "MASUK" ? "blue" : "amber",
@@ -59,13 +61,13 @@ export default function AbsensiAdminPage() {
       });
       const data = await res.json();
       if (data.success) {
-        showAlert("Berhasil", "Sesi absensi berhasil dibuka!");
         fetchSessions();
+        showAlert(dict.notifications?.successTitle || "Berhasil", data.message || "Sesi absensi berhasil dibuat.");
       } else {
-        showAlert("Gagal", data.error?.message || "Gagal membuka sesi.");
+        showAlert(dict.notifications?.errorTitle || "Gagal", data.error || "Gagal membuat sesi absensi.");
       }
     } catch (err) {
-      showAlert("Error", "Terjadi kesalahan jaringan.");
+      showAlert(dict.notifications?.errorTitle || "Error", dict.notifications?.errorSystem || "Terjadi kesalahan sistem saat membuat sesi.");
     } finally {
       setIsCreating(false);
     }

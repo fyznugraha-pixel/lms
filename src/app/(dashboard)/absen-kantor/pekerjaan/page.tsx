@@ -76,6 +76,13 @@ export default function PekerjaanPage() {
     fetchTodos();
     fetchWorkLog();
     fetchFeed();
+
+    // Realtime worklog feed every 15s
+    const feedInterval = setInterval(() => {
+      fetchFeed();
+    }, 15000);
+
+    return () => clearInterval(feedInterval);
   }, []);
 
   const handleAddTodo = async (e: React.FormEvent) => {
@@ -123,8 +130,8 @@ export default function PekerjaanPage() {
   const handleDeleteTodo = async (id: string) => {
     setModalConfig({
       isOpen: true,
-      title: dict.dashboard.warning || "Peringatan",
-      message: "Hapus tugas ini?",
+      title: dict.notifications?.warningTitle || "Peringatan",
+      message: dict.notifications?.deleteConfirm || "Hapus tugas ini?",
       type: "confirm",
       confirmTheme: "red",
       onConfirm: async () => {
@@ -156,10 +163,10 @@ export default function PekerjaanPage() {
       });
       const result = await res.json();
       if (result.success) {
-        setModalConfig({ isOpen: true, title: "Berhasil", message: "Work Log berhasil disimpan!", type: "alert" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: dict.notifications?.logSuccess || "Work Log berhasil disimpan!", type: "alert" });
         fetchWorkLog();
       } else {
-        setModalConfig({ isOpen: true, title: "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
       }
     } finally {
       setIsSubmittingLog(false);
@@ -219,7 +226,7 @@ export default function PekerjaanPage() {
                   { value: 'SEDANG', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-yellow-500" />{dict.work.priorityMedium}</div> },
                   { value: 'TINGGI', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-red-500" />{dict.work.priorityHigh}</div> }
                 ]}
-                className="w-32"
+                className="w-40"
               />
               <button 
                 type="submit" 

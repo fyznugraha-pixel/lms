@@ -15,6 +15,10 @@ const fontOutfit = Outfit({
 export const metadata: Metadata = {
   title: "TactLink",
   description: "Aplikasi Absensi & Manajemen Internal TactLink",
+  icons: {
+    icon: "/logo/LOGO TACTLINK.png",
+    apple: "/logo/LOGO TACTLINK.png",
+  },
 };
 
 export const viewport: Viewport = {

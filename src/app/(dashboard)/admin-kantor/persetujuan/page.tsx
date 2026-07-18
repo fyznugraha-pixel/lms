@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useDictionary } from "@/hooks/useDictionary";
 
 export default function AdminPersetujuanPage() {
+  const dict = useDictionary();
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
@@ -57,13 +59,13 @@ export default function AdminPersetujuanPage() {
       });
       const result = await res.json();
       if (result.success) {
-        setModalConfig({ isOpen: true, title: "Berhasil", message: result.message, type: "alert" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: result.message, type: "alert" });
         fetchPengajuan();
       } else {
-        setModalConfig({ isOpen: true, title: "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
       }
     } catch (error) {
-      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan saat memproses data.", type: "alert", confirmTheme: "red" });
+      setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan saat memproses data.", type: "alert", confirmTheme: "red" });
     } finally {
       setActionLoadingId(null);
     }

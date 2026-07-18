@@ -42,22 +42,22 @@ export default function ProfilPage() {
       if (result.success) {
         setModalConfig({
           isOpen: true,
-          title: "Berhasil",
-          message: "Berhasil keluar dari semua perangkat.",
+          title: dict.notifications?.successTitle || "Berhasil",
+          message: dict.notifications?.saveSuccess || "Berhasil keluar dari semua perangkat.",
           type: "alert",
           onConfirm: () => { window.location.href = "/absen-kantor/login"; }
         });
       }
     } catch (e) {
       console.error(e);
-      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan.", type: "alert" });
+      setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan.", type: "alert" });
     }
   };
 
   const confirmLogoutAll = () => {
     setModalConfig({
       isOpen: true,
-      title: "Peringatan",
+      title: dict.notifications?.warningTitle || "Peringatan",
       message: "Anda akan keluar dari semua perangkat yang terhubung (termasuk perangkat ini). Lanjutkan?",
       type: "confirm",
       confirmTheme: "red",

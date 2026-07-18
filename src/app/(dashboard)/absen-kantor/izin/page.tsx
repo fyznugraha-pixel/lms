@@ -62,17 +62,17 @@ export default function KaryawanIzinPage() {
       });
       const result = await res.json();
       if (result.success) {
-        setModalConfig({ isOpen: true, title: "Berhasil", message: result.message, type: "alert" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: dict.notifications?.reqSuccess || result.message, type: "alert" });
         setTanggalMulai(null);
         setTanggalSelesai(null);
         setAlasan("");
         setLampiranUrl("");
         fetchPengajuan();
       } else {
-        setModalConfig({ isOpen: true, title: "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
       }
-    } catch (error) {
-      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem saat mengirim pengajuan.", type: "alert", confirmTheme: "red" });
+    } catch (e) {
+      setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan sistem saat mengirim pengajuan.", type: "alert", confirmTheme: "red" });
     } finally {
       setIsSubmitting(false);
     }

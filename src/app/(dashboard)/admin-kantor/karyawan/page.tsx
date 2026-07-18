@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
 import CustomDropdown from "@/components/CustomDropdown";
+import { useDictionary } from "@/hooks/useDictionary";
 
 type Karyawan = {
   id: string;
@@ -14,6 +15,7 @@ type Karyawan = {
 };
 
 export default function KaryawanPage() {
+  const dict = useDictionary();
   const [karyawanList, setKaryawanList] = useState<Karyawan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -101,12 +103,12 @@ export default function KaryawanPage() {
       if (result.success) {
         setIsModalOpen(false);
         fetchKaryawan();
-        setModalConfig({ isOpen: true, title: "Berhasil", message: "Data karyawan berhasil disimpan.", type: "alert" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: dict.notifications?.saveSuccess || "Data karyawan berhasil disimpan.", type: "alert" });
       } else {
-        setModalConfig({ isOpen: true, title: "Gagal", message: result.error || "Gagal menyimpan data", type: "alert", confirmTheme: "red" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error || "Gagal menyimpan data", type: "alert", confirmTheme: "red" });
       }
     } catch (error) {
-      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem", type: "alert", confirmTheme: "red" });
+      setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan sistem", type: "alert", confirmTheme: "red" });
     }
   };
 
@@ -122,14 +124,14 @@ export default function KaryawanPage() {
         fetchKaryawan();
       }
     } catch (error) {
-      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem", type: "alert", confirmTheme: "red" });
+      setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan sistem", type: "alert", confirmTheme: "red" });
     }
   };
 
   const toggleStatus = (id: string, currentStatus: boolean) => {
     setModalConfig({
       isOpen: true,
-      title: "Konfirmasi Aksi",
+      title: dict.notifications?.warningTitle || "Konfirmasi Aksi",
       message: `Yakin ingin ${currentStatus ? 'menonaktifkan' : 'mengaktifkan'} karyawan ini?`,
       type: "confirm",
       confirmTheme: currentStatus ? "red" : "blue",

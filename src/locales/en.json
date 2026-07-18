@@ -138,5 +138,19 @@
     "oldPass": "Old Password",
     "newPass": "New Password",
     "btnSave": "Save Changes"
+  },
+  "notifications": {
+    "successTitle": "Success",
+    "errorTitle": "Error",
+    "warningTitle": "Warning",
+    "errorSystem": "A system error occurred.",
+    "saveSuccess": "Data saved successfully.",
+    "deleteConfirm": "Delete this data?",
+    "deleteSuccess": "Data deleted successfully.",
+    "reqSuccess": "Request submitted successfully.",
+    "tokenSuccess": "New attendance session created successfully.",
+    "logSuccess": "Work Log saved successfully!",
+    "approveConfirm": "Approve this request?",
+    "rejectConfirm": "Reject this request?"
   }
 }

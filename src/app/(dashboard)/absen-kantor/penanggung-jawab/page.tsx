@@ -54,7 +54,7 @@ export default function PenanggungJawabDashboard() {
   const handleGenerate = async (jenisAbsen: "MASUK" | "PULANG") => {
     setModalConfig({
       isOpen: true,
-      title: "Konfirmasi Generate Sesi",
+      title: dict.notifications?.warningTitle || "Peringatan",
       message: `Generate sesi absen ${jenisAbsen} untuk semua karyawan aktif hari ini?`,
       type: "confirm",
       confirmTheme: "blue",
@@ -69,13 +69,13 @@ export default function PenanggungJawabDashboard() {
           const result = await res.json();
           
           if (result.success) {
-            setModalConfig({ isOpen: true, title: "Berhasil", message: result.message, type: "alert" });
+            setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: dict.notifications?.tokenSuccess || result.message, type: "alert" });
             fetchSesi(); // Refresh data
           } else {
-            setModalConfig({ isOpen: true, title: "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
+            setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
           }
         } catch (error) {
-          setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem saat generate token.", type: "alert", confirmTheme: "red" });
+          setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan sistem saat generate token.", type: "alert", confirmTheme: "red" });
         } finally {
           setIsGenerating(false);
         }

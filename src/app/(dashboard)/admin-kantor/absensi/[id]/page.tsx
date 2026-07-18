@@ -5,8 +5,10 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle, XCircle, QrCode, X } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useDictionary } from "@/hooks/useDictionary";
 
 export default function SesiAbsensiDetail(props: { params: Promise<{ id: string }> }) {
+  const dict = useDictionary();
   const params = use(props.params);
   const [sesi, setSesi] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,14 +44,14 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
       const res = await fetch(`/api/admin-kantor/absensi/sesi/${params.id}`, { method: "PUT" });
       if (res.ok) fetchSesiDetail();
     } catch (err) {
-      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan", type: "alert" });
+      setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan sistem.", type: "alert" });
     }
   };
 
   const handleCloseClick = () => {
     setModalConfig({
       isOpen: true,
-      title: "Tutup Sesi?",
+      title: dict.notifications?.warningTitle || "Tutup Sesi?",
       message: "Karyawan tidak akan bisa absen lagi dengan barcode sesi ini.",
       type: "confirm",
       confirmTheme: "red",
