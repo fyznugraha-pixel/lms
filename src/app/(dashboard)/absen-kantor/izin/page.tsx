@@ -1,0 +1,225 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+export default function KaryawanIzinPage() {
+  const [pengajuanList, setPengajuanList] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Form State
+  const [jenis, setJenis] = useState<"IZIN" | "SAKIT">("IZIN");
+  const [tanggalMulai, setTanggalMulai] = useState("");
+  const [tanggalSelesai, setTanggalSelesai] = useState("");
+  const [alasan, setAlasan] = useState("");
+  const [lampiranUrl, setLampiranUrl] = useState("");
+
+  const fetchPengajuan = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/absen-kantor/pengajuan?mode=user");
+      const result = await res.json();
+      if (result.success) {
+        setPengajuanList(result.data);
+      }
+    } catch (error) {
+      console.error("Gagal mengambil data", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPengajuan();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/absen-kantor/pengajuan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jenis,
+          tanggalMulai,
+          tanggalSelesai,
+          alasan,
+          lampiranUrl
+        })
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert(result.message);
+        setTanggalMulai("");
+        setTanggalSelesai("");
+        setAlasan("");
+        setLampiranUrl("");
+        fetchPengajuan();
+      } else {
+        alert(result.error);
+      }
+    } catch (error) {
+      alert("Terjadi kesalahan sistem saat mengirim pengajuan.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const formatTanggal = (isoString: string) => {
+    return new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(isoString));
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Pengajuan Izin & Sakit</h1>
+        <p className="text-gray-500 mt-1">Ajukan ketidakhadiran kerja Anda dan pantau status persetujuannya.</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Form Pengajuan */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 className="text-lg font-bold text-gray-900 mb-6 border-b pb-4">Buat Pengajuan Baru</h2>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Jenis Pengajuan</label>
+                <select 
+                  value={jenis} 
+                  onChange={(e) => setJenis(e.target.value as "IZIN" | "SAKIT")}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="IZIN">Izin</option>
+                  <option value="SAKIT">Sakit</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                <input 
+                  type="date" 
+                  required
+                  value={tanggalMulai}
+                  onChange={(e) => setTanggalMulai(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
+                <input 
+                  type="date" 
+                  required
+                  value={tanggalSelesai}
+                  onChange={(e) => setTanggalSelesai(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Alasan Detail</label>
+                <textarea 
+                  required
+                  rows={4}
+                  value={alasan}
+                  onChange={(e) => setAlasan(e.target.value)}
+                  placeholder="Deskripsikan alasan Anda..."
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tautan Bukti (Opsional)</label>
+                <input 
+                  type="url"
+                  value={lampiranUrl}
+                  onChange={(e) => setLampiranUrl(e.target.value)}
+                  placeholder="URL Google Drive / Bukti Foto"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-50"
+              >
+                {isSubmitting ? "Mengirim..." : "Kirim Pengajuan"}
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Riwayat Pengajuan */}
+        <div className="lg:col-span-2">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-6 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900">Riwayat Pengajuan Saya</h2>
+            </div>
+            
+            {isLoading ? (
+              <div className="p-12 text-center text-gray-500">Memuat riwayat pengajuan...</div>
+            ) : pengajuanList.length === 0 ? (
+              <div className="p-12 text-center text-gray-500">Anda belum pernah membuat pengajuan apa pun.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
+                      <th className="px-6 py-4 font-semibold">Jenis</th>
+                      <th className="px-6 py-4 font-semibold">Tanggal (Mulai - Selesai)</th>
+                      <th className="px-6 py-4 font-semibold">Alasan</th>
+                      <th className="px-6 py-4 font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {pengajuanList.map((p) => (
+                      <tr key={p.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${
+                            p.jenis === 'IZIN' ? 'bg-blue-50 text-blue-700' :
+                            p.jenis === 'SAKIT' ? 'bg-red-50 text-red-700' :
+                            'bg-purple-50 text-purple-700'
+                          }`}>
+                            {p.jenis.replace('_', ' ')}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {p.tanggalMulai === p.tanggalSelesai ? (
+                            formatTanggal(p.tanggalMulai)
+                          ) : (
+                            `${formatTanggal(p.tanggalMulai)} s.d ${formatTanggal(p.tanggalSelesai)}`
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <p className="text-sm text-gray-900 truncate max-w-[200px]">{p.alasan}</p>
+                          {p.lampiranUrl && (
+                            <a href={p.lampiranUrl} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline mt-1 block">
+                              Lihat Lampiran
+                            </a>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex flex-col gap-1">
+                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold w-fit ${
+                              p.status === 'DISETUJUI' ? 'bg-green-100 text-green-700' :
+                              p.status === 'DITOLAK' ? 'bg-red-100 text-red-700' :
+                              'bg-yellow-100 text-yellow-700'
+                            }`}>
+                              {p.status}
+                            </span>
+                            {p.catatanApproval && (
+                              <p className="text-xs text-gray-500 truncate max-w-[150px]" title={p.catatanApproval}>
+                                Note: {p.catatanApproval}
+                              </p>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

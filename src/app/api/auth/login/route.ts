@@ -1,18 +1,20 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import prisma from '@/lib/prisma';
 import { signToken } from '@/lib/auth';
 
 const loginSchema = z.object({
   email: z.string().email('Format email tidak valid'),
   password: z.string().min(1, 'Password harus diisi'),
+  rememberMe: z.boolean().optional().default(false),
 });
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password } = loginSchema.parse(body);
+    const { email, password, rememberMe } = loginSchema.parse(body);
 
     const subdomain = request.headers.get('x-subdomain');
 
@@ -37,7 +39,8 @@ export async function POST(request: Request) {
     }
 
     // Tenant check
-    if (user.role !== 'SUPER_ADMIN') {
+    const isTactLinkRole = ['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR'].includes(user.role);
+    if (user.role !== 'SUPER_ADMIN' && !isTactLinkRole) {
       if (!subdomain) {
         return NextResponse.json(
           { success: false, error: { message: 'Harus diakses melalui subdomain kampus', code: 'NO_SUBDOMAIN' } },
@@ -63,14 +66,47 @@ export async function POST(request: Request) {
 
     const response = NextResponse.json({ success: true, data: { role: user.role } });
     
+    // Default session is 1 day, or 15 mins if they use rememberMe (so they use refresh token)
+    const isUsingRememberMe = isTactLinkRole && rememberMe;
+    const maxAgeAccess = isUsingRememberMe ? 15 * 60 : 60 * 60 * 24;
+
     response.cookies.set({
       name: 'session_token',
       value: token,
       httpOnly: true,
       path: '/',
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: maxAgeAccess,
     });
+
+    // Generate refresh token jika remember me
+    if (isUsingRememberMe) {
+      const refreshToken = crypto.randomBytes(32).toString('hex');
+      const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+
+      const sesiLogin = await prisma.sesiLogin.create({
+        data: {
+          userId: user.id,
+          refreshTokenHash,
+          expiresAt,
+          deviceInfo: request.headers.get('user-agent') || 'Unknown',
+          ipAddress: request.headers.get('x-forwarded-for') || 'Unknown',
+        }
+      });
+
+      // Simpan format: id:token
+      const cookieValue = `${sesiLogin.id}:${refreshToken}`;
+
+      response.cookies.set({
+        name: 'refresh_token',
+        value: cookieValue,
+        httpOnly: true,
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      });
+    }
 
     return response;
   } catch (error) {

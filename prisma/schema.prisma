@@ -12,6 +12,9 @@ enum Role {
   DOSEN
   ADMIN_KAMPUS
   SUPER_ADMIN
+  KARYAWAN
+  PENANGGUNG_JAWAB_ABSEN
+  ADMIN_KANTOR
 }
 
 enum StatusKampus {
@@ -63,21 +66,21 @@ enum MetodeAbsensi {
 }
 
 model Kampus {
-  id          String   @id @default(uuid())
+  id          String       @id @default(uuid())
   namaKampus  String
-  kodeKampus  String   @unique
-  subdomain   String   @unique
+  kodeKampus  String       @unique
+  subdomain   String       @unique
   latitude    Float
   longitude   Float
-  radiusMeter Int      @default(100)
+  radiusMeter Int          @default(100)
   status      StatusKampus @default(ACTIVE)
 
-  users             User[]
-  masterMahasiswa   MasterMahasiswa[]
-  jurusan           Jurusan[]
-  kelas             Kelas[]
-  mataKuliah        MataKuliah[]
-  hariLibur         HariLibur[]
+  users           User[]
+  masterMahasiswa MasterMahasiswa[]
+  jurusan         Jurusan[]
+  kelas           Kelas[]
+  mataKuliah      MataKuliah[]
+  hariLibur       HariLibur[]
 }
 
 model User {
@@ -87,49 +90,62 @@ model User {
   email        String  @unique // Global unique
   passwordHash String
   role         Role
+  namaLengkap  String? // Ditambahkan untuk karyawan/admin (opsional karena mahasiswa mungkin pakai MasterMahasiswa)
+  isActive     Boolean @default(true) // Untuk menonaktifkan akun (soft-delete karyawan)
 
-  kampus       Kampus? @relation(fields: [kampusId], references: [id])
-  enrollments  Enrollment[]
-  kelasAjar    KelasMataKuliah[]
-  absensi      Absensi[]
-  absensiLogs  AbsensiLog[]
+  kampus      Kampus?           @relation(fields: [kampusId], references: [id])
+  enrollments Enrollment[]
+  kelasAjar   KelasMataKuliah[]
+  absensi     Absensi[]
+  absensiLogs AbsensiLog[]
+
+  // --- Relasi Baru untuk Modul Kantor ---
+  sesiAbsenDibuat   SesiAbsenKantor[]    @relation("DibuatOlehSesi")
+  tokenAbsenKantor  TokenAbsenKaryawan[] @relation("KaryawanToken")
+  absensiKantor     AbsensiKantor[]      @relation("KaryawanAbsensi")
+  pengajuanIzin     PengajuanIzin[]      @relation("KaryawanPengajuan")
+  pengajuanDiproses PengajuanIzin[]      @relation("AdminPengajuan")
+  exportLog         ExportLog[]          @relation("ExportLogUser")
+  sesiLogin         SesiLogin[]          @relation("UserSesiLogin")
+  workLog           WorkLog[]            @relation("WorkLogKaryawan")
+  todoItem          TodoItem[]           @relation("TodoKaryawan")
 
   @@unique([kampusId, nim])
 }
 
 model MasterMahasiswa {
-  id          String   @id @default(uuid())
+  id          String          @id @default(uuid())
   kampusId    String
   nim         String
   namaLengkap String
   prodi       String
   status      StatusMahasiswa @default(AKTIF)
 
-  kampus      Kampus @relation(fields: [kampusId], references: [id])
+  kampus Kampus @relation(fields: [kampusId], references: [id])
 
   @@unique([kampusId, nim])
 }
 
 model Jurusan {
-  id          String   @id @default(uuid())
+  id          String @id @default(uuid())
   kampusId    String
   namaJurusan String
   kodeJurusan String
 
-  kampus      Kampus   @relation(fields: [kampusId], references: [id])
-  kelas       Kelas[]
+  kampus Kampus  @relation(fields: [kampusId], references: [id])
+  kelas  Kelas[]
 }
 
 model Kelas {
-  id        String   @id @default(uuid())
+  id        String @id @default(uuid())
   kampusId  String
   jurusanId String
   namaKelas String
   angkatan  Int
 
-  kampus    Kampus   @relation(fields: [kampusId], references: [id])
-  jurusan   Jurusan  @relation(fields: [jurusanId], references: [id])
-  
+  kampus  Kampus  @relation(fields: [kampusId], references: [id])
+  jurusan Jurusan @relation(fields: [jurusanId], references: [id])
+
   enrollments     Enrollment[]
   kelasMataKuliah KelasMataKuliah[]
 }
@@ -138,63 +154,63 @@ model Enrollment {
   mahasiswaId String
   kelasId     String
 
-  user        User   @relation(fields: [mahasiswaId], references: [id])
-  kelas       Kelas  @relation(fields: [kelasId], references: [id])
+  user  User  @relation(fields: [mahasiswaId], references: [id])
+  kelas Kelas @relation(fields: [kelasId], references: [id])
 
   @@id([mahasiswaId, kelasId])
 }
 
 model MataKuliah {
-  id         String   @id @default(uuid())
-  kampusId   String
-  kodeMk     String
-  namaMk     String
-  sks        Int
+  id       String @id @default(uuid())
+  kampusId String
+  kodeMk   String
+  namaMk   String
+  sks      Int
 
-  kampus     Kampus   @relation(fields: [kampusId], references: [id])
+  kampus          Kampus            @relation(fields: [kampusId], references: [id])
   kelasMataKuliah KelasMataKuliah[]
 }
 
 model KelasMataKuliah {
-  id           String   @id @default(uuid())
+  id           String @id @default(uuid())
   mataKuliahId String
   kelasId      String
   dosenId      String
 
-  mataKuliah   MataKuliah @relation(fields: [mataKuliahId], references: [id])
-  kelas        Kelas      @relation(fields: [kelasId], references: [id])
-  dosen        User       @relation(fields: [dosenId], references: [id])
+  mataKuliah MataKuliah @relation(fields: [mataKuliahId], references: [id])
+  kelas      Kelas      @relation(fields: [kelasId], references: [id])
+  dosen      User       @relation(fields: [dosenId], references: [id])
 
   jadwalTemplate JadwalTemplate[]
 }
 
 model JadwalTemplate {
-  id                String   @id @default(uuid())
+  id                String               @id @default(uuid())
   kelasMataKuliahId String
   hari              Hari
-  jamMulai          DateTime @db.Time
-  jamSelesai        DateTime @db.Time
+  jamMulai          DateTime             @db.Time
+  jamSelesai        DateTime             @db.Time
   ruangan           String
-  berlakuMulai      DateTime @db.Date
-  berlakuSampai     DateTime @db.Date
+  berlakuMulai      DateTime             @db.Date
+  berlakuSampai     DateTime             @db.Date
   status            StatusJadwalTemplate @default(AKTIF)
 
-  kelasMataKuliah   KelasMataKuliah @relation(fields: [kelasMataKuliahId], references: [id])
-  jadwalSesi        JadwalSesi[]
+  kelasMataKuliah KelasMataKuliah @relation(fields: [kelasMataKuliahId], references: [id])
+  jadwalSesi      JadwalSesi[]
 }
 
 model JadwalSesi {
-  id               String   @id @default(uuid())
+  id               String           @id @default(uuid())
   jadwalTemplateId String
   pertemuanKe      Int
-  tanggal          DateTime @db.Date
-  jamMulai         DateTime @db.Time
-  jamSelesai       DateTime @db.Time
+  tanggal          DateTime         @db.Date
+  jamMulai         DateTime         @db.Time
+  jamSelesai       DateTime         @db.Time
   status           StatusJadwalSesi @default(SCHEDULED)
 
-  jadwalTemplate   JadwalTemplate @relation(fields: [jadwalTemplateId], references: [id])
-  qrTokens         QRToken[]
-  absensi          Absensi[]
+  jadwalTemplate JadwalTemplate @relation(fields: [jadwalTemplateId], references: [id])
+  qrTokens       QRToken[]
+  absensi        Absensi[]
 }
 
 model QRToken {
@@ -204,11 +220,11 @@ model QRToken {
   issuedAt     DateTime @default(now())
   expiresAt    DateTime
 
-  jadwalSesi   JadwalSesi @relation(fields: [jadwalSesiId], references: [id])
+  jadwalSesi JadwalSesi @relation(fields: [jadwalSesiId], references: [id])
 }
 
 model Absensi {
-  id              String   @id @default(uuid())
+  id              String        @id @default(uuid())
   mahasiswaId     String
   jadwalSesiId    String
   waktuAbsen      DateTime?
@@ -219,21 +235,21 @@ model Absensi {
   jarakMeter      Int?
   isLocationValid Boolean?
 
-  user            User       @relation(fields: [mahasiswaId], references: [id])
-  jadwalSesi      JadwalSesi @relation(fields: [jadwalSesiId], references: [id])
-  absensiLogs     AbsensiLog[]
+  user        User         @relation(fields: [mahasiswaId], references: [id])
+  jadwalSesi  JadwalSesi   @relation(fields: [jadwalSesiId], references: [id])
+  absensiLogs AbsensiLog[]
 }
 
 model AbsensiLog {
-  id          String   @id @default(uuid())
-  absensiId   String
-  statusLama  StatusAbsensi
-  statusBaru  StatusAbsensi
-  changedBy   String
-  createdAt   DateTime @default(now())
+  id         String        @id @default(uuid())
+  absensiId  String
+  statusLama StatusAbsensi
+  statusBaru StatusAbsensi
+  changedBy  String
+  createdAt  DateTime      @default(now())
 
-  absensi     Absensi @relation(fields: [absensiId], references: [id])
-  user        User    @relation(fields: [changedBy], references: [id])
+  absensi Absensi @relation(fields: [absensiId], references: [id])
+  user    User    @relation(fields: [changedBy], references: [id])
 }
 
 model HariLibur {
@@ -242,5 +258,182 @@ model HariLibur {
   tanggal    DateTime @db.Date
   keterangan String
 
-  kampus     Kampus @relation(fields: [kampusId], references: [id])
+  kampus Kampus @relation(fields: [kampusId], references: [id])
+}
+
+// ==========================================
+// TAMBAHAN ENUM & MODEL MODUL KANTOR TACTLINK
+// ==========================================
+
+enum JenisAbsenKantor {
+  MASUK
+  PULANG
+}
+
+enum StatusSesiKantor {
+  AKTIF
+  SELESAI
+}
+
+enum StatusAbsensiKantor {
+  HADIR
+  TERLAMBAT
+  ALPHA
+  IZIN
+  SAKIT
+}
+
+enum MetodeAbsensiKantor {
+  LINK_PERSONAL
+  MANUAL_ADMIN
+  PENGAJUAN_KARYAWAN
+}
+
+enum JenisPengajuanIzin {
+  IZIN
+  SAKIT
+  KLARIFIKASI_ABSEN
+}
+
+enum StatusPengajuan {
+  PENDING
+  DISETUJUI
+  DITOLAK
+}
+
+enum PrioritasTodo {
+  RENDAH
+  SEDANG
+  TINGGI
+}
+
+enum StatusTodo {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+// TAMBAHAN MODEL BARU
+
+model SesiAbsenKantor {
+  id           String           @id @default(uuid())
+  tanggal      DateTime         @db.Date
+  jenisAbsen   JenisAbsenKantor
+  dibuatOlehId String
+  waktuDibuat  DateTime         @default(now())
+  status       StatusSesiKantor @default(AKTIF)
+
+  dibuatOleh    User                 @relation("DibuatOlehSesi", fields: [dibuatOlehId], references: [id])
+  tokens        TokenAbsenKaryawan[]
+  absensiMasuk  AbsensiKantor[]      @relation("SesiMasuk")
+  absensiPulang AbsensiKantor[]      @relation("SesiPulang")
+}
+
+model TokenAbsenKaryawan {
+  id                String   @id @default(uuid())
+  sesiAbsenKantorId String
+  karyawanId        String
+  token             String   @unique
+  expiresAt         DateTime
+  isUsed            Boolean  @default(false)
+
+  sesiAbsenKantor SesiAbsenKantor @relation(fields: [sesiAbsenKantorId], references: [id])
+  karyawan        User            @relation("KaryawanToken", fields: [karyawanId], references: [id])
+
+  @@unique([sesiAbsenKantorId, karyawanId])
+}
+
+model AbsensiKantor {
+  id               String              @id @default(uuid())
+  karyawanId       String
+  tanggal          DateTime            @db.Date
+  sesiMasukId      String?
+  sesiPulangId     String?
+  waktuAbsenMasuk  DateTime?
+  waktuAbsenPulang DateTime?
+  status           StatusAbsensiKantor
+  durasiKerja      Int? // Durasi dalam menit
+  isIncomplete     Boolean             @default(false)
+  metode           MetodeAbsensiKantor
+
+  karyawan   User             @relation("KaryawanAbsensi", fields: [karyawanId], references: [id])
+  sesiMasuk  SesiAbsenKantor? @relation("SesiMasuk", fields: [sesiMasukId], references: [id])
+  sesiPulang SesiAbsenKantor? @relation("SesiPulang", fields: [sesiPulangId], references: [id])
+
+  @@unique([karyawanId, tanggal])
+}
+
+model PengajuanIzin {
+  id              String             @id @default(uuid())
+  karyawanId      String
+  jenis           JenisPengajuanIzin
+  tanggalMulai    DateTime           @db.Date
+  tanggalSelesai  DateTime           @db.Date
+  alasan          String
+  lampiranUrl     String?
+  status          StatusPengajuan    @default(PENDING)
+  diprosesOlehId  String?
+  catatanApproval String?
+  adaKonflikAbsen Boolean            @default(false)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  karyawan     User  @relation("KaryawanPengajuan", fields: [karyawanId], references: [id])
+  diprosesOleh User? @relation("AdminPengajuan", fields: [diprosesOlehId], references: [id])
+}
+
+model ExportLog {
+  id           String   @id @default(uuid())
+  exportedById String
+  bulan        Int
+  tahun        Int
+  createdAt    DateTime @default(now())
+
+  exportedBy User @relation("ExportLogUser", fields: [exportedById], references: [id])
+}
+
+model SesiLogin {
+  id               String    @id @default(cuid())
+  userId           String
+  refreshTokenHash String    @unique
+  deviceInfo       String?
+  ipAddress        String?
+  createdAt        DateTime  @default(now())
+  expiresAt        DateTime
+  lastUsedAt       DateTime  @default(now())
+  revokedAt        DateTime?
+
+  user User @relation("UserSesiLogin", fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model WorkLog {
+  id                String   @id @default(uuid())
+  karyawanId        String
+  tanggal           DateTime @db.Date
+  dikerjakanHariIni String
+  rencanaBesok      String
+  blocker           String?
+  isPrivat          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  karyawan User @relation("WorkLogKaryawan", fields: [karyawanId], references: [id])
+
+  @@unique([karyawanId, tanggal])
+}
+
+model TodoItem {
+  id         String        @id @default(uuid())
+  karyawanId String
+  judul      String
+  deskripsi  String?
+  deadline   DateTime?     @db.Date
+  status     StatusTodo    @default(TODO)
+  prioritas  PrioritasTodo @default(SEDANG)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  karyawan User @relation("TodoKaryawan", fields: [karyawanId], references: [id])
 }
