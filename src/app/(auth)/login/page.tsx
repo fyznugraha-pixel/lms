@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type LoginContext = "mahasiswa" | "karyawan";
-
 export default function LoginPage() {
-  const [context, setContext] = useState<LoginContext>("mahasiswa");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -23,7 +20,7 @@ export default function LoginPage() {
       const payload = {
         email,
         password,
-        rememberMe: context === "karyawan" ? rememberMe : false,
+        rememberMe,
       };
 
       const res = await fetch("/api/auth/login", {
@@ -83,35 +80,7 @@ export default function LoginPage() {
           
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-900">Masuk ke Akun Anda</h2>
-            <p className="text-sm text-gray-500 mt-2">Silakan pilih jenis akun untuk melanjutkan</p>
-          </div>
-
-          {/* Toggle Konteks */}
-          <div className="flex bg-gray-100 p-1 rounded-lg mb-6">
-            <button
-              type="button"
-              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-                context === "mahasiswa" ? "bg-white text-gray-900 shadow" : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => {
-                setContext("mahasiswa");
-                setError("");
-              }}
-            >
-              Mahasiswa
-            </button>
-            <button
-              type="button"
-              className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-                context === "karyawan" ? "bg-white text-gray-900 shadow" : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => {
-                setContext("karyawan");
-                setError("");
-              }}
-            >
-              Karyawan & Admin
-            </button>
+            <p className="text-sm text-gray-500 mt-2">Masukkan kredensial Anda untuk melanjutkan</p>
           </div>
 
           {error && (
@@ -152,20 +121,18 @@ export default function LoginPage() {
               />
             </div>
 
-            {context === "karyawan" && (
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Ingat saya di device ini selama 30 hari
-                </label>
-              </div>
-            )}
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                Ingat saya di device ini (Khusus Karyawan)
+              </label>
+            </div>
 
             <button
               type="submit"
