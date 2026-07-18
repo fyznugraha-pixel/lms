@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Briefcase, CalendarClock, User, Menu } from "lucide-react";
+import { Home, Briefcase, CalendarClock, User, FileText } from "lucide-react";
 
 export default function MobileBottomNav({ dict, role }: { dict: any; role: string }) {
   const pathname = usePathname();
@@ -10,13 +10,10 @@ export default function MobileBottomNav({ dict, role }: { dict: any; role: strin
   const navItems = [
     { name: dict.sidebar.dashboard || "Home", href: "/absen-kantor", icon: Home },
     { name: dict.sidebar.workLog || "Pekerjaan", href: "/absen-kantor/pekerjaan", icon: Briefcase },
+    { name: dict.sidebar.myAttendance || "Rekap", href: "/absen-kantor/rekap", icon: FileText },
     { name: dict.sidebar.leaveRequest || "Izin", href: "/absen-kantor/izin", icon: CalendarClock },
     { name: dict.sidebar.profile || "Profil", href: "/absen-kantor/profil", icon: User },
   ];
-
-  if (role === 'ADMIN_KANTOR' || role === 'SUPER_ADMIN' || role === 'PENANGGUNG_JAWAB_ABSEN') {
-    navItems.splice(2, 0, { name: "Admin", href: "/admin-kantor", icon: Menu });
-  }
 
   return (
     <>

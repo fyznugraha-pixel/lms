@@ -9,6 +9,7 @@ import SidebarLink from "@/components/SidebarLink";
 import { getDictionary } from "@/lib/dictionaries";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import MobileTopHeader from "@/components/layout/MobileTopHeader";
+import AdminMobileMenu from "@/components/layout/AdminMobileMenu";
 
 export default async function AbsenKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -96,7 +97,8 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 overflow-auto">
+      <main className="flex-1 p-4 md:p-8 overflow-auto flex flex-col">
+        <AdminMobileMenu role={payload.role as string} dict={dict} />
         {children}
       </main>
 

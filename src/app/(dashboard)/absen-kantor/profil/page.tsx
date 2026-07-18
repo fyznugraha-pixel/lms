@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useDictionary } from "@/hooks/useDictionary";
+import DashboardPasswordButton from "@/components/DashboardPasswordButton";
+import { LogOut } from "lucide-react";
 
 export default function ProfilPage() {
   const dict = useDictionary();
@@ -70,6 +72,18 @@ export default function ProfilPage() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">{dict.profile.title}</h1>
         <p className="text-gray-500 mt-1">{dict.profile.subtitle}</p>
+      </div>
+
+      <div className="md:hidden grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-1">
+          <DashboardPasswordButton label={dict.sidebar.changePassword} />
+        </div>
+        <form action="/api/auth/logout" method="POST" className="bg-white rounded-xl shadow-sm border border-gray-100 p-1">
+          <button type="submit" className="w-full text-left px-4 py-2 flex items-center justify-center gap-2 text-red-600 font-bold hover:bg-red-50 rounded-lg transition-colors">
+            <LogOut size={18} />
+            <span>{dict.sidebar.logout}</span>
+          </button>
+        </form>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
