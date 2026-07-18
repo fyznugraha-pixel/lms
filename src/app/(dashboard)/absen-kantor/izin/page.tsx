@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function KaryawanIzinPage() {
   const dict = useDictionary();
@@ -9,6 +10,12 @@ export default function KaryawanIzinPage() {
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "alert"
+  });
 
   // Form State
   const [jenis, setJenis] = useState<"IZIN" | "SAKIT">("IZIN");
@@ -53,17 +60,17 @@ export default function KaryawanIzinPage() {
       });
       const result = await res.json();
       if (result.success) {
-        alert(result.message);
+        setModalConfig({ isOpen: true, title: "Berhasil", message: result.message, type: "alert" });
         setTanggalMulai("");
         setTanggalSelesai("");
         setAlasan("");
         setLampiranUrl("");
         fetchPengajuan();
       } else {
-        alert(result.error);
+        setModalConfig({ isOpen: true, title: "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
       }
     } catch (error) {
-      alert("Terjadi kesalahan sistem saat mengirim pengajuan.");
+      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem saat mengirim pengajuan.", type: "alert", confirmTheme: "red" });
     } finally {
       setIsSubmitting(false);
     }
@@ -224,6 +231,20 @@ export default function KaryawanIzinPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        showCancel={modalConfig.type === "confirm"}
+        confirmText={modalConfig.type === "confirm" ? "Ya, Lanjutkan" : "Oke"}
+        confirmTheme={modalConfig.confirmTheme || "blue"}
+        onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
+        onConfirm={() => {
+          if (modalConfig.onConfirm) modalConfig.onConfirm();
+          setModalConfig({ ...modalConfig, isOpen: false });
+        }}
+      />
     </div>
   );
 }

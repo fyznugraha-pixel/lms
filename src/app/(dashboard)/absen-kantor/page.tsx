@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import ConfirmModal from "@/components/ConfirmModal";
-import { useDictionary } from "@/hooks/useDictionary";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 type AbsensiHariIni = {
   waktuAbsenMasuk: string | null;

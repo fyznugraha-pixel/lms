@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function PekerjaanPage() {
   const dict = useDictionary();
@@ -18,6 +19,12 @@ export default function PekerjaanPage() {
   const [isSubmittingTodo, setIsSubmittingTodo] = useState(false);
   const [isSubmittingLog, setIsSubmittingLog] = useState(false);
   const [isPrivat, setIsPrivat] = useState(false);
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "alert"
+  });
 
   const [activeTab, setActiveTab] = useState<'SAYA' | 'FEED'>('SAYA');
   const [feedLogs, setFeedLogs] = useState<any[]>([]);
@@ -105,13 +112,21 @@ export default function PekerjaanPage() {
   };
 
   const handleDeleteTodo = async (id: string) => {
-    if (!confirm("Hapus tugas ini?")) return;
-    try {
-      await fetch(`/api/absen-kantor/todo/${id}`, { method: "DELETE" });
-      fetchTodos();
-    } catch (e) {
-      console.error(e);
-    }
+    setModalConfig({
+      isOpen: true,
+      title: dict.dashboard.warning || "Peringatan",
+      message: "Hapus tugas ini?",
+      type: "confirm",
+      confirmTheme: "red",
+      onConfirm: async () => {
+        try {
+          await fetch(`/api/absen-kantor/todo/${id}`, { method: "DELETE" });
+          fetchTodos();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
   };
 
   const handleSaveWorkLog = async (e: React.FormEvent) => {
@@ -132,10 +147,10 @@ export default function PekerjaanPage() {
       });
       const result = await res.json();
       if (result.success) {
-        alert("Work Log berhasil disimpan!");
+        setModalConfig({ isOpen: true, title: "Berhasil", message: "Work Log berhasil disimpan!", type: "alert" });
         fetchWorkLog();
       } else {
-        alert(result.error);
+        setModalConfig({ isOpen: true, title: "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
       }
     } finally {
       setIsSubmittingLog(false);
@@ -390,6 +405,19 @@ export default function PekerjaanPage() {
         </div>
       )}
 
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        showCancel={modalConfig.type === "confirm"}
+        confirmText={modalConfig.type === "confirm" ? "Ya, Hapus" : "Oke"}
+        confirmTheme={modalConfig.confirmTheme || "blue"}
+        onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
+        onConfirm={() => {
+          if (modalConfig.onConfirm) modalConfig.onConfirm();
+          setModalConfig({ ...modalConfig, isOpen: false });
+        }}
+      />
     </div>
   );
 }

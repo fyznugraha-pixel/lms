@@ -1,11 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function AdminPersetujuanPage() {
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "alert"
+  });
 
   const fetchPengajuan = async () => {
     setIsLoading(true);
@@ -50,13 +57,13 @@ export default function AdminPersetujuanPage() {
       });
       const result = await res.json();
       if (result.success) {
-        alert(result.message);
+        setModalConfig({ isOpen: true, title: "Berhasil", message: result.message, type: "alert" });
         fetchPengajuan();
       } else {
-        alert(result.error);
+        setModalConfig({ isOpen: true, title: "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
       }
     } catch (error) {
-      alert("Terjadi kesalahan saat memproses data.");
+      setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan saat memproses data.", type: "alert", confirmTheme: "red" });
     } finally {
       setActionLoadingId(null);
     }
@@ -179,6 +186,20 @@ export default function AdminPersetujuanPage() {
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        showCancel={modalConfig.type === "confirm"}
+        confirmText={modalConfig.type === "confirm" ? "Ya, Lanjutkan" : "Oke"}
+        confirmTheme={modalConfig.confirmTheme || "blue"}
+        onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
+        onConfirm={() => {
+          if (modalConfig.onConfirm) modalConfig.onConfirm();
+          setModalConfig({ ...modalConfig, isOpen: false });
+        }}
+      />
     </div>
   );
 }

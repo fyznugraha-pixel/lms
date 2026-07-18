@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
+import ConfirmModal from "@/components/ConfirmModal";
 
 type SesiAbsen = {
   id: string;
@@ -23,6 +25,12 @@ export default function PenanggungJawabDashboard() {
   const [sesiList, setSesiList] = useState<SesiAbsen[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    type: "alert"
+  });
 
   const fetchSesi = async () => {
     setIsLoading(true);
@@ -44,28 +52,35 @@ export default function PenanggungJawabDashboard() {
   }, []);
 
   const handleGenerate = async (jenisAbsen: "MASUK" | "PULANG") => {
-    if (!confirm(`Generate sesi absen ${jenisAbsen} untuk semua karyawan aktif hari ini?`)) return;
-    
-    setIsGenerating(true);
-    try {
-      const res = await fetch("/api/absen-kantor/sesi", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jenisAbsen }),
-      });
-      const result = await res.json();
-      
-      if (result.success) {
-        alert(result.message);
-        fetchSesi(); // Refresh data
-      } else {
-        alert(result.error);
+    setModalConfig({
+      isOpen: true,
+      title: "Konfirmasi Generate Sesi",
+      message: `Generate sesi absen ${jenisAbsen} untuk semua karyawan aktif hari ini?`,
+      type: "confirm",
+      confirmTheme: "blue",
+      onConfirm: async () => {
+        setIsGenerating(true);
+        try {
+          const res = await fetch("/api/absen-kantor/sesi", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jenisAbsen }),
+          });
+          const result = await res.json();
+          
+          if (result.success) {
+            setModalConfig({ isOpen: true, title: "Berhasil", message: result.message, type: "alert" });
+            fetchSesi(); // Refresh data
+          } else {
+            setModalConfig({ isOpen: true, title: "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
+          }
+        } catch (error) {
+          setModalConfig({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem saat generate token.", type: "alert", confirmTheme: "red" });
+        } finally {
+          setIsGenerating(false);
+        }
       }
-    } catch (error) {
-      alert("Terjadi kesalahan sistem saat generate token.");
-    } finally {
-      setIsGenerating(false);
-    }
+    });
   };
 
   return (
@@ -185,6 +200,20 @@ export default function PenanggungJawabDashboard() {
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={modalConfig.isOpen}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        showCancel={modalConfig.type === "confirm"}
+        confirmText={modalConfig.type === "confirm" ? "Ya, Generate" : "Oke"}
+        confirmTheme={modalConfig.confirmTheme || "blue"}
+        onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
+        onConfirm={() => {
+          if (modalConfig.onConfirm) modalConfig.onConfirm();
+          setModalConfig({ ...modalConfig, isOpen: false });
+        }}
+      />
     </div>
   );
 }
