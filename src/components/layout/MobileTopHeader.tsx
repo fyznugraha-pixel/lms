@@ -9,7 +9,7 @@ export default function MobileTopHeader({ langCookie }: { langCookie: string }) 
         <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-8 w-auto object-contain" />
         <span className="font-bold text-gray-900 text-lg">TactLink</span>
       </div>
-      <LanguageToggle currentLang={langCookie} />
+      <LanguageToggle currentLang={langCookie} compact={true} />
     </div>
   );
 }
