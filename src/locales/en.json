@@ -54,7 +54,9 @@
     "clarifyPlaceholder": "Example: I already turned off my laptop at 17:00...",
     "btnCancel": "Cancel",
     "btnSubmit": "Submit Request",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "attendanceBtn": "Refresh Attendance Data",
+    "warning": "Warning"
   },
   "work": {
     "title": "My Work",

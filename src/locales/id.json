@@ -54,7 +54,9 @@
     "clarifyPlaceholder": "Misal: Saya terlanjur mematikan laptop jam 17:00...",
     "btnCancel": "Batal",
     "btnSubmit": "Kirim Pengajuan",
-    "submitting": "Mengirim..."
+    "submitting": "Mengirim...",
+    "attendanceBtn": "Perbarui Data Kehadiran",
+    "warning": "Peringatan"
   },
   "work": {
     "title": "Pekerjaan Saya",
