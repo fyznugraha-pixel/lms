@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/auth";
 import DashboardPasswordButton from "@/components/DashboardPasswordButton";
 import LanguageToggle from "@/components/LanguageToggle";
+import SidebarLink from "@/components/SidebarLink";
 import { getDictionary } from "@/lib/dictionaries";
 
 export default async function AbsenKantorLayout({ children }: { children: ReactNode }) {
@@ -38,40 +39,44 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
         </div>
         <nav className="flex-1 p-4 space-y-2 overflow-auto">
           {/* Menu Karyawan */}
-          <Link href="/absen-kantor" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
+          <SidebarLink href="/absen-kantor" exact={true}>
             {dict.sidebar.dashboard}
-          </Link>
-          <Link href="/absen-kantor/izin" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
+          </SidebarLink>
+          <SidebarLink href="/absen-kantor/izin">
             {dict.sidebar.leaveRequest}
-          </Link>
-          <Link href="/absen-kantor/rekap" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
+          </SidebarLink>
+          <SidebarLink href="/absen-kantor/rekap">
             {dict.sidebar.myAttendance}
-          </Link>
-          <Link href="/absen-kantor/pekerjaan" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
+          </SidebarLink>
+          <SidebarLink href="/absen-kantor/pekerjaan">
             {dict.sidebar.workLog}
-          </Link>
-          <Link href="/absen-kantor/profil" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
+          </SidebarLink>
+          <SidebarLink href="/absen-kantor/profil">
             {dict.sidebar.profile}
-          </Link>
+          </SidebarLink>
           
           {/* Menu Penanggung Jawab Absen */}
           {(payload.role === 'PENANGGUNG_JAWAB_ABSEN' || payload.role === 'SUPER_ADMIN') && (
-            <Link href="/absen-kantor/penanggung-jawab" className="block px-4 py-2.5 bg-blue-50 text-blue-700 font-medium rounded-lg mt-2">
-              {dict.sidebar.generateSession}
-            </Link>
+            <div className="pt-2">
+              <SidebarLink href="/absen-kantor/penanggung-jawab">
+                {dict.sidebar.generateSession}
+              </SidebarLink>
+            </div>
           )}
 
           {/* Menu Admin Kantor */}
           {(payload.role === 'ADMIN_KANTOR' || payload.role === 'PENANGGUNG_JAWAB_ABSEN' || payload.role === 'SUPER_ADMIN') && (
-            <Link href="/admin-kantor/persetujuan" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg mt-2">
-              {dict.sidebar.approval}
-            </Link>
+            <div className="pt-2">
+              <SidebarLink href="/admin-kantor/persetujuan">
+                {dict.sidebar.approval}
+              </SidebarLink>
+            </div>
           )}
 
           {(payload.role === 'ADMIN_KANTOR' || payload.role === 'SUPER_ADMIN') && (
-            <Link href="/admin-kantor/karyawan" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
+            <SidebarLink href="/admin-kantor/karyawan">
               {dict.sidebar.manageEmployees}
-            </Link>
+            </SidebarLink>
           )}
         </nav>
         <div className="p-4 border-t border-gray-200">
