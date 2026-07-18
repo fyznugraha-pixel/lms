@@ -108,7 +108,6 @@ export default function DosenLayout({
             {children}
           </div>
         </div>
-        </div>
       </main>
 
       <ChangePasswordModal 
