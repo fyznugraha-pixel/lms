@@ -1,0 +1,40 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard Absensi",
+    "leaveRequest": "Pengajuan Izin/Sakit",
+    "myAttendance": "Rekap Kehadiran Saya",
+    "workLog": "Work Log & To-Do",
+    "profile": "Profil & Perangkat",
+    "generateSession": "Generate Sesi Absen",
+    "approval": "Persetujuan Pengajuan",
+    "manageEmployees": "Kelola Karyawan",
+    "logout": "Keluar",
+    "changePassword": "Ubah Password"
+  },
+  "dashboard": {
+    "welcome": "Selamat datang kembali",
+    "roleEmployee": "Karyawan",
+    "roleAdmin": "Admin Kantor",
+    "roleSuper": "Super Admin",
+    "roleDosen": "Dosen",
+    "roleMhs": "Mahasiswa",
+    "presenceInfo": "Anda belum melakukan absensi hari ini.",
+    "presencePresent": "Anda sudah hadir hari ini.",
+    "timeIn": "Jam Masuk Anda:",
+    "timeOut": "Jam Pulang Anda:",
+    "btnCheckIn": "Absen Masuk",
+    "btnCheckOut": "Absen Pulang",
+    "sessionNotOpened": "Sesi Belum Dibuka",
+    "sessionInNotOpened": "Sesi Masuk Belum Dibuka",
+    "sessionOutNotOpened": "Sesi Pulang Belum Dibuka",
+    "placeholderCode": "Masukkan 6 Digit Kode Sesi",
+    "notCheckedIn": "Anda Belum Absen Masuk",
+    "success": "Berhasil",
+    "failed": "Gagal",
+    "codeRequired": "Kode absen wajib diisi!",
+    "btnProcessing": "Memproses...",
+    "btnSick": "Saya Sakit / Izin",
+    "btnForgot": "Lupa Absen / Klarifikasi",
+    "btnSubmitProof": "Kirim Bukti Lembur"
+  }
+}

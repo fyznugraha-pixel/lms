@@ -1,0 +1,40 @@
+{
+  "sidebar": {
+    "dashboard": "Attendance Dashboard",
+    "leaveRequest": "Leave / Sick Request",
+    "myAttendance": "My Attendance Recap",
+    "workLog": "Work Log & To-Do",
+    "profile": "Profile & Devices",
+    "generateSession": "Generate Session",
+    "approval": "Request Approval",
+    "manageEmployees": "Manage Employees",
+    "logout": "Sign Out",
+    "changePassword": "Change Password"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "roleEmployee": "Employee",
+    "roleAdmin": "Office Admin",
+    "roleSuper": "Super Admin",
+    "roleDosen": "Lecturer",
+    "roleMhs": "Student",
+    "presenceInfo": "You haven't checked in today.",
+    "presencePresent": "You are present today.",
+    "timeIn": "Check In Time:",
+    "timeOut": "Check Out Time:",
+    "btnCheckIn": "Check In",
+    "btnCheckOut": "Check Out",
+    "sessionNotOpened": "Session Closed",
+    "sessionInNotOpened": "Check In Session Closed",
+    "sessionOutNotOpened": "Check Out Session Closed",
+    "placeholderCode": "Enter 6 Digit Session Code",
+    "notCheckedIn": "You haven't checked in",
+    "success": "Success",
+    "failed": "Failed",
+    "codeRequired": "Session code is required!",
+    "btnProcessing": "Processing...",
+    "btnSick": "I'm Sick / Request Leave",
+    "btnForgot": "Forgot to Check Out / Clarification",
+    "btnSubmitProof": "Submit Overtime Proof"
+  }
+}

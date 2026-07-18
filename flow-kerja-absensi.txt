@@ -1,0 +1,51 @@
+PENGUMUMAN ALUR ABSENSI & FITUR WFH TACTLINK 🚀
+
+Halo semuanya! Mulai hari ini, kita menggunakan sistem absensi terintegrasi TactLink yang dirancang khusus agar praktis untuk remote work/WFH. Semua proses absensi dan pelaporan kerja harian kini ada di satu portal.
+
+Berikut adalah panduan lengkap alur kerja & fitur-fiturnya:
+
+========================================
+👤 ROLE 1: ADMIN KANTOR (HR/GA/SPV)
+========================================
+A. Alur Utama (Absensi)
+1. Login ke portal menggunakan kredensial Admin.
+2. Masuk ke menu "Sesi Absensi" di sidebar sebelah kiri.
+3. Klik tombol "Buka Sesi Absensi" saat jam masuk dan jam pulang.
+4. Sistem akan otomatis memunculkan "Kode Absen (OTP)" 6 Karakter (contoh: E8A1F3).
+5. Klik "Copy Kode" lalu kirim ke Grup WhatsApp Karyawan. Contoh: "Silakan absen masuk menggunakan kode: E8A1F3".
+
+B. Fitur-Fitur Admin Lainnya:
+- Manajemen Karyawan: Admin bisa melihat daftar karyawan, menonaktifkan akun, atau me-reset password karyawan yang lupa.
+- Pantauan Work Log & To-Do List: Admin dapat mengecek laporan pekerjaan harian karyawan beserta To-Do list apa saja yang sedang mereka kerjakan hari ini secara transparan.
+- Persetujuan Izin & Sakit: Pengajuan izin/sakit atau lupa absen dari karyawan akan masuk ke menu ini untuk disetujui (Approve) atau ditolak (Reject).
+- Rekap & Export CSV: Pada akhir bulan, Admin bisa mendownload laporan absensi seluruh karyawan dalam format Excel/CSV untuk keperluan Payroll.
+- Dashboard Real-Time: Memantau status kehadiran harian seluruh tim (Hadir, Telat, Alpha, Izin/Sakit) secara langsung.
+
+
+========================================
+🧑‍💻 ROLE 2: KARYAWAN / INTERN
+========================================
+A. Alur Utama (Absensi)
+1. Buka link web absensi TactLink.
+2. Login menggunakan Email dan Password default (Format: namadepan@tactlink.com / namadepan123).
+3. Di Dasbor, tunggu instruksi dari Admin di Grup WA ini.
+4. Jika Admin sudah membagikan kode, ketik/paste kode tersebut ke kolom "Masukkan 6 Digit Kode Sesi".
+5. Klik tombol "Absen Masuk" saat mulai kerja, dan "Absen Pulang" saat selesai.
+6. Jam kehadiran akan langsung tercatat secara real-time.
+
+B. Fitur Produktivitas Karyawan (WAJIB DIISI):
+- To-Do List Harian: Sebelum mulai kerja, catat target pekerjaan (To-Do) apa saja yang akan kalian selesaikan hari ini. Kalian bisa mencentang tugas yang sudah selesai.
+- Work Log (Laporan Kerja): Di akhir hari atau saat Absen Pulang, kalian wajib mengisi form Work Log berisi ringkasan hasil pekerjaan (Apa saja yang sudah diselesaikan, adakah kendala, link dokumen, dll) sebagai bukti kinerja WFH.
+
+C. Fitur-Fitur Karyawan Lainnya:
+- Riwayat Absen: Kalian bisa melihat histori kehadiran kalian sendiri (Kapan absen masuk/pulang, dan durasi kerja).
+- Pengajuan "Saya Sakit / Izin": Jika berhalangan hadir, klik tombol ini di Dasbor, tulis alasannya, lalu tunggu persetujuan dari Admin.
+- Klarifikasi Absen: Jika lupa absen pulang padahal sudah bekerja, klik "Lupa Absen / Klarifikasi", masukkan alasannya, lalu minta persetujuan Admin agar durasi kerjanya tetap dihitung.
+- Profil & Ganti Password: Di menu pojok kanan atas, klik "Profil". Di sana kalian wajib mengubah password default kalian dengan password pribadi yang aman.
+
+⚠️ CATATAN PENTING:
+- Tombol absen tidak akan bisa diklik jika kodenya kosong atau salah.
+- Jangan sampai telat absen, karena Admin akan menutup sesi absen (kodenya hangus) jika sudah lewat batas waktu.
+- Pembayaran/Perhitungan kinerja akan disinkronkan dengan isian Work Log kalian setiap harinya.
+
+Semangat kerjanya tim! Kalau ada kendala login atau pertanyaan fitur, langsung tag/mention tim Admin di grup ini. 💪

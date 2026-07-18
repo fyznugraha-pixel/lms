@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Key } from "lucide-react";
 import ChangePasswordModal from "./ChangePasswordModal";
 
-export default function DashboardPasswordButton() {
+export default function DashboardPasswordButton({ label = "Ubah Password" }: { label?: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -15,7 +15,7 @@ export default function DashboardPasswordButton() {
         className="w-full text-left px-4 py-2 flex items-center gap-3 text-gray-700 font-medium hover:bg-gray-50 rounded-lg transition-colors mb-1"
       >
         <Key size={18} className="text-gray-500" />
-        <span>Ubah Password</span>
+        <span>{label}</span>
       </button>
 
       <ChangePasswordModal 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useDictionary } from "@/hooks/useDictionary";
 
 type AbsensiHariIni = {
   waktuAbsenMasuk: string | null;
@@ -22,6 +23,7 @@ type HistoriAbsen = {
 };
 
 export default function KaryawanDashboard() {
+  const dict = useDictionary();
   const [data, setData] = useState<{
     absensiHariIni: AbsensiHariIni;
     bisaAbsenMasuk: boolean;
@@ -149,7 +151,7 @@ export default function KaryawanDashboard() {
       {/* Header & Clock */}
       <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard Absensi</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{dict.sidebar.dashboard}</h1>
           <p className="text-gray-500 mt-1">
             {new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(currentTime)}
           </p>
@@ -177,15 +179,15 @@ export default function KaryawanDashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Absen Masuk</h3>
+                  <h3 className="text-xl font-bold text-gray-900">{dict.dashboard.btnCheckIn}</h3>
                 </div>
                 {data?.absensiHariIni?.waktuAbsenMasuk && (
-                  <span className="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Selesai</span>
+                  <span className="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">{dict.dashboard.success}</span>
                 )}
               </div>
               
               <div className="mb-6">
-                <p className="text-sm text-gray-500 font-medium">Jam Masuk Anda:</p>
+                <p className="text-sm text-gray-500 font-medium">{dict.dashboard.timeIn}</p>
                 <p className={`text-3xl font-black ${data?.absensiHariIni?.waktuAbsenMasuk ? 'text-green-700' : 'text-gray-900'}`}>
                   {formatJam(data?.absensiHariIni?.waktuAbsenMasuk || null)}
                 </p>
@@ -195,7 +197,7 @@ export default function KaryawanDashboard() {
                 <div className="space-y-3">
                   <input
                     type="text"
-                    placeholder="Masukkan 6 Digit Kode Sesi"
+                    placeholder={dict.dashboard.placeholderCode}
                     value={kodeMasuk}
                     onChange={(e) => setKodeMasuk(e.target.value.toUpperCase())}
                     maxLength={6}
@@ -211,7 +213,7 @@ export default function KaryawanDashboard() {
                         : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
                     }`}
                   >
-                    {isActionLoading ? "Memproses..." : data?.bisaAbsenMasuk ? "Absen Masuk" : "Sesi Belum Dibuka"}
+                    {isActionLoading ? dict.dashboard.btnProcessing : data?.bisaAbsenMasuk ? dict.dashboard.btnCheckIn : dict.dashboard.sessionNotOpened}
                   </button>
                 </div>
               )}
@@ -226,15 +228,15 @@ export default function KaryawanDashboard() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900">Absen Pulang</h3>
+                  <h3 className="text-xl font-bold text-gray-900">{dict.dashboard.btnCheckOut}</h3>
                 </div>
                 {data?.absensiHariIni?.waktuAbsenPulang && (
-                  <span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Selesai</span>
+                  <span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">{dict.dashboard.success}</span>
                 )}
               </div>
               
               <div className="mb-6">
-                <p className="text-sm text-gray-500 font-medium">Jam Pulang Anda:</p>
+                <p className="text-sm text-gray-500 font-medium">{dict.dashboard.timeOut}</p>
                 <p className={`text-3xl font-black ${data?.absensiHariIni?.waktuAbsenPulang ? 'text-indigo-700' : 'text-gray-900'}`}>
                   {formatJam(data?.absensiHariIni?.waktuAbsenPulang || null)}
                 </p>
@@ -244,7 +246,7 @@ export default function KaryawanDashboard() {
                 <div className="space-y-3">
                   <input
                     type="text"
-                    placeholder="Masukkan 6 Digit Kode Sesi"
+                    placeholder={dict.dashboard.placeholderCode}
                     value={kodePulang}
                     onChange={(e) => setKodePulang(e.target.value.toUpperCase())}
                     maxLength={6}
@@ -260,11 +262,11 @@ export default function KaryawanDashboard() {
                         : "bg-orange-500 hover:bg-orange-600 hover:shadow-lg"
                     }`}
                   >
-                    {isActionLoading ? "Memproses..." : !data?.absensiHariIni?.waktuAbsenMasuk
-                      ? "Anda Belum Absen Masuk"
+                    {isActionLoading ? dict.dashboard.btnProcessing : !data?.absensiHariIni?.waktuAbsenMasuk
+                      ? dict.dashboard.notCheckedIn
                       : data?.bisaAbsenPulang 
-                        ? "Absen Pulang" 
-                        : "Sesi Belum Dibuka"}
+                        ? dict.dashboard.btnCheckOut 
+                        : dict.dashboard.sessionNotOpened}
                   </button>
                 </div>
               )}

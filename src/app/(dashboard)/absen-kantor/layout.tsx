@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/auth";
 import DashboardPasswordButton from "@/components/DashboardPasswordButton";
+import LanguageToggle from "@/components/LanguageToggle";
+import { getDictionary } from "@/lib/dictionaries";
 
 export default async function AbsenKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -17,6 +19,9 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
   if (!payload || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
     redirect("/login");
   }
+
+  const langCookie = cookieStore.get("lang")?.value || "en";
+  const dict = getDictionary(langCookie);
 
   return (
     <div className="h-screen bg-gray-50 flex flex-col md:flex-row overflow-hidden">
@@ -34,47 +39,49 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
         <nav className="flex-1 p-4 space-y-2 overflow-auto">
           {/* Menu Karyawan */}
           <Link href="/absen-kantor" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
-            Dashboard Absensi
+            {dict.sidebar.dashboard}
           </Link>
           <Link href="/absen-kantor/izin" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
-            Pengajuan Izin/Sakit
+            {dict.sidebar.leaveRequest}
           </Link>
           <Link href="/absen-kantor/rekap" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
-            Rekap Kehadiran Saya
+            {dict.sidebar.myAttendance}
           </Link>
           <Link href="/absen-kantor/pekerjaan" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
-            Work Log & To-Do
+            {dict.sidebar.workLog}
           </Link>
           <Link href="/absen-kantor/profil" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
-            Profil & Perangkat
+            {dict.sidebar.profile}
           </Link>
           
           {/* Menu Penanggung Jawab Absen */}
           {(payload.role === 'PENANGGUNG_JAWAB_ABSEN' || payload.role === 'SUPER_ADMIN') && (
             <Link href="/absen-kantor/penanggung-jawab" className="block px-4 py-2.5 bg-blue-50 text-blue-700 font-medium rounded-lg mt-2">
-              Generate Sesi Absen
+              {dict.sidebar.generateSession}
             </Link>
           )}
 
           {/* Menu Admin Kantor */}
           {(payload.role === 'ADMIN_KANTOR' || payload.role === 'PENANGGUNG_JAWAB_ABSEN' || payload.role === 'SUPER_ADMIN') && (
             <Link href="/admin-kantor/persetujuan" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg mt-2">
-              Persetujuan Pengajuan
+              {dict.sidebar.approval}
             </Link>
           )}
 
           {(payload.role === 'ADMIN_KANTOR' || payload.role === 'SUPER_ADMIN') && (
             <Link href="/admin-kantor/karyawan" className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg">
-              Kelola Karyawan
+              {dict.sidebar.manageEmployees}
             </Link>
           )}
         </nav>
         <div className="p-4 border-t border-gray-200">
-          <DashboardPasswordButton />
+          <LanguageToggle currentLang={langCookie} />
+          <DashboardPasswordButton label={dict.sidebar.changePassword} />
           <form action="/api/auth/logout" method="POST">
             <button type="submit" className="w-full text-left px-4 py-2 text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center gap-3">
-              Keluar
+              {dict.sidebar.logout}
             </button>
+
           </form>
         </div>
       </aside>

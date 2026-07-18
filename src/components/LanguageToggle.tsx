@@ -1,0 +1,34 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { setLanguage } from "@/app/actions/language";
+import { Globe } from "lucide-react";
+
+interface LanguageToggleProps {
+  currentLang: string;
+}
+
+export default function LanguageToggle({ currentLang }: LanguageToggleProps) {
+  const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
+
+  const toggleLang = async () => {
+    setIsPending(true);
+    const newLang = currentLang === "en" ? "id" : "en";
+    await setLanguage(newLang);
+    router.refresh(); // Refresh so server components re-render with new cookie
+    setIsPending(false);
+  };
+
+  return (
+    <button
+      onClick={toggleLang}
+      disabled={isPending}
+      className="w-full text-left px-4 py-2.5 text-gray-700 font-medium hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-3 mb-2"
+    >
+      <Globe size={18} className="text-gray-500" />
+      <span>{currentLang === "en" ? "Indonesian (ID)" : "English (EN)"}</span>
+    </button>
+  );
+}
