@@ -203,8 +203,8 @@ export default function PekerjaanPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
         
         {/* TO-DO LIST MODULE */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[600px]">
-          <div className="p-6 border-b border-gray-100 bg-gray-50/50">
+        <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden flex flex-col h-[600px] -mx-4 md:mx-0">
+          <div className="p-5 md:p-6 border-b border-gray-100 bg-gray-50/50">
             <h2 className="text-lg font-bold text-gray-900">{dict.work.todoTab}</h2>
             <p className="text-sm text-gray-500 mt-1">{dict.dashboard.todoDesc}</p>
           </div>
@@ -286,7 +286,7 @@ export default function PekerjaanPage() {
         </div>
 
         {/* DAILY WORK LOG MODULE */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[600px]">
+        <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden flex flex-col h-[600px] -mx-4 md:mx-0">
           <div className="p-6 border-b border-gray-100 bg-blue-50/50">
             <div className="flex justify-between items-center">
               <div>

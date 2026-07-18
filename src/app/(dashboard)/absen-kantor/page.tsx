@@ -150,7 +150,7 @@ export default function KaryawanDashboard() {
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header & Clock */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-5 md:p-6 md:rounded-2xl shadow-sm border-y md:border border-gray-100 -mx-4 md:mx-0">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{dict.sidebar.dashboard}</h1>
           <p className="text-gray-500 mt-1 capitalize">
@@ -172,7 +172,7 @@ export default function KaryawanDashboard() {
           {/* Action Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Kartu Absen Masuk */}
-            <div className={`rounded-2xl p-6 shadow-sm border ${data?.absensiHariIni?.waktuAbsenMasuk ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100'} transition-all`}>
+            <div className={`md:rounded-2xl p-5 md:p-6 shadow-sm border-y md:border -mx-4 md:mx-0 ${data?.absensiHariIni?.waktuAbsenMasuk ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100'} transition-all`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className={`p-3 rounded-full ${data?.absensiHariIni?.waktuAbsenMasuk ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'}`}>
@@ -221,7 +221,7 @@ export default function KaryawanDashboard() {
             </div>
 
             {/* Kartu Absen Pulang */}
-            <div className={`rounded-2xl p-6 shadow-sm border ${data?.absensiHariIni?.waktuAbsenPulang ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-gray-100'} transition-all`}>
+            <div className={`md:rounded-2xl p-5 md:p-6 shadow-sm border-y md:border -mx-4 md:mx-0 ${data?.absensiHariIni?.waktuAbsenPulang ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-gray-100'} transition-all`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className={`p-3 rounded-full ${data?.absensiHariIni?.waktuAbsenPulang ? 'bg-indigo-100 text-indigo-600' : 'bg-orange-100 text-orange-600'}`}>

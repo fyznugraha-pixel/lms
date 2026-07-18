@@ -86,8 +86,8 @@ export default function ProfilPage() {
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+      <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden -mx-4 md:mx-0">
+        <div className="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <div>
             <h2 className="text-lg font-bold text-gray-900">{dict.sidebar.profile}</h2>
             <p className="text-sm text-gray-500 mt-1">{dict.profile.secTitle}</p>
