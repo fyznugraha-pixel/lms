@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useDictionary } from "@/hooks/useDictionary";
 
 export default function ProfilPage() {
+  const dict = useDictionary();
   const [sessions, setSessions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -66,8 +68,8 @@ export default function ProfilPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Profil & Keamanan</h1>
-        <p className="text-gray-500 mt-1">Kelola akun dan sesi login perangkat Anda.</p>
+        <h1 className="text-3xl font-bold text-gray-900">{dict.profile.title}</h1>
+        <p className="text-gray-500 mt-1">{dict.profile.subtitle}</p>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

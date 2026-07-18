@@ -49,3 +49,20 @@ C. Fitur-Fitur Karyawan Lainnya:
 - Pembayaran/Perhitungan kinerja akan disinkronkan dengan isian Work Log kalian setiap harinya.
 
 Semangat kerjanya tim! Kalau ada kendala login atau pertanyaan fitur, langsung tag/mention tim Admin (Willy, Alfred, Danny) di grup ini. 💪
+
+========================================
+💡 CARA INSTALL APLIKASI (PWA)
+========================================
+Biar nggak ribet ketik link terus tiap mau absen, kalian bisa jadikan web ini sebagai Aplikasi di layar HP (Home Screen):
+
+📱 Untuk Pengguna Android (Google Chrome):
+1. Buka link web absensi TactLink di Google Chrome.
+2. Tunggu beberapa detik, nanti akan muncul popup "Add to Home Screen" atau "Install TactLink" di bagian bawah layar. Klik tombol tersebut.
+3. ATAU: Klik ikon titik tiga (⋮) di pojok kanan atas Chrome, lalu pilih "Install app" atau "Tambahkan ke Layar Utama".
+4. Selesai! Aplikasi TactLink akan muncul di daftar aplikasi HP kalian.
+
+🍎 Untuk Pengguna iPhone/iOS (Safari):
+1. Buka link web absensi TactLink di Safari.
+2. Ketuk ikon "Share" (kotak dengan panah ke atas) di bagian bawah layar.
+3. Gulir ke bawah dan pilih "Add to Home Screen" (Tambahkan ke Layar Utama).
+4. Selesai! Aplikasi siap dipakai langsung dari Home Screen.

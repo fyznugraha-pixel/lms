@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useDictionary } from "@/hooks/useDictionary";
 
 export default function KaryawanIzinPage() {
+  const dict = useDictionary();
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -73,29 +75,29 @@ export default function KaryawanIzinPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Pengajuan Izin & Sakit</h1>
-        <p className="text-gray-500 mt-1">Ajukan ketidakhadiran kerja Anda dan pantau status persetujuannya.</p>
+        <h1 className="text-3xl font-bold text-gray-900">{dict.leave.title}</h1>
+        <p className="text-gray-500 mt-1">{dict.leave.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Form Pengajuan */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-6 border-b pb-4">Buat Pengajuan Baru</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-6 border-b pb-4">{dict.leave.formTitle}</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Jenis Pengajuan</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.leave.type}</label>
                 <select 
                   value={jenis} 
                   onChange={(e) => setJenis(e.target.value as "IZIN" | "SAKIT")}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 >
-                  <option value="IZIN">Izin</option>
-                  <option value="SAKIT">Sakit</option>
+                  <option value="IZIN">{dict.leave.typeLeave}</option>
+                  <option value="SAKIT">{dict.leave.typeSick}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Mulai</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.leave.startDate}</label>
                 <input 
                   type="date" 
                   required
@@ -105,7 +107,7 @@ export default function KaryawanIzinPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Selesai</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.leave.endDate}</label>
                 <input 
                   type="date" 
                   required
@@ -115,23 +117,23 @@ export default function KaryawanIzinPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Alasan Detail</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.leave.reason}</label>
                 <textarea 
                   required
                   rows={4}
                   value={alasan}
                   onChange={(e) => setAlasan(e.target.value)}
-                  placeholder="Deskripsikan alasan Anda..."
+                  placeholder={dict.leave.reasonPlaceholder}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tautan Bukti (Opsional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">URL / Link</label>
                 <input 
                   type="url"
                   value={lampiranUrl}
                   onChange={(e) => setLampiranUrl(e.target.value)}
-                  placeholder="URL Google Drive / Bukti Foto"
+                  placeholder="URL Google Drive"
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
@@ -140,7 +142,7 @@ export default function KaryawanIzinPage() {
                 disabled={isSubmitting}
                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-50"
               >
-                {isSubmitting ? "Mengirim..." : "Kirim Pengajuan"}
+                {isSubmitting ? dict.dashboard.submitting : dict.leave.btnNewReq}
               </button>
             </form>
           </div>
@@ -150,22 +152,22 @@ export default function KaryawanIzinPage() {
         <div className="lg:col-span-2">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900">Riwayat Pengajuan Saya</h2>
+              <h2 className="text-lg font-bold text-gray-900">{dict.leave.reqHistory}</h2>
             </div>
             
             {isLoading ? (
-              <div className="p-12 text-center text-gray-500">Memuat riwayat pengajuan...</div>
+              <div className="p-12 text-center text-gray-500">{dict.dashboard.loading}</div>
             ) : pengajuanList.length === 0 ? (
-              <div className="p-12 text-center text-gray-500">Anda belum pernah membuat pengajuan apa pun.</div>
+              <div className="p-12 text-center text-gray-500">{dict.leave.noReq}</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
-                      <th className="px-6 py-4 font-semibold">Jenis</th>
-                      <th className="px-6 py-4 font-semibold">Tanggal (Mulai - Selesai)</th>
-                      <th className="px-6 py-4 font-semibold">Alasan</th>
-                      <th className="px-6 py-4 font-semibold">Status</th>
+                      <th className="px-6 py-4 font-semibold">{dict.leave.type}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.leave.startDate} - {dict.leave.endDate}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.leave.reason}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colStatus}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -202,7 +204,8 @@ export default function KaryawanIzinPage() {
                               p.status === 'DITOLAK' ? 'bg-red-100 text-red-700' :
                               'bg-yellow-100 text-yellow-700'
                             }`}>
-                              {p.status}
+                              {p.status === 'DISETUJUI' ? dict.leave.statusApproved : 
+                               p.status === 'DITOLAK' ? dict.leave.statusRejected : dict.leave.statusPending}
                             </span>
                             {p.catatanApproval && (
                               <p className="text-xs text-gray-500 truncate max-w-[150px]" title={p.catatanApproval}>

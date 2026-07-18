@@ -1,9 +1,9 @@
-const CACHE_NAME = 'absensi-qr-cache-v1';
+const CACHE_NAME = 'tactlink-pwa-cache-v1';
 
-// Daftar asset yang ingin di-cache (opsional, karena Next.js menangani asset statisnya sendiri, 
-// kita cache halaman home offline fallback jika perlu, tapi untuk sekarang kita biarkan minimal)
+// Daftar asset yang ingin di-cache (opsional)
 const urlsToCache = [
-  '/'
+  '/',
+  '/logo/LOGO TACTLINK.png'
 ];
 
 self.addEventListener('install', (event) => {

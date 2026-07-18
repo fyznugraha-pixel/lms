@@ -13,9 +13,8 @@ const fontOutfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "AbsensiQR - Geofencing Attendance",
-  description: "Sistem Absensi Mahasiswa Berbasis QR Code dan Lokasi",
-  manifest: "/manifest.json",
+  title: "TactLink",
+  description: "Aplikasi Absensi & Manajemen Internal TactLink",
 };
 
 export const viewport: Viewport = {

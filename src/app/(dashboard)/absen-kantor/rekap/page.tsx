@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useDictionary } from "@/hooks/useDictionary";
 
 export default function KaryawanRekapPage() {
+  const dict = useDictionary();
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -42,8 +44,8 @@ export default function KaryawanRekapPage() {
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Rekapitulasi Kehadiran</h1>
-          <p className="text-gray-500 mt-1">Laporan bulanan absensi pribadi Anda.</p>
+          <h1 className="text-3xl font-bold text-gray-900">{dict.recap.title}</h1>
+          <p className="text-gray-500 mt-1">{dict.recap.subtitle}</p>
         </div>
         <div className="flex gap-3 bg-white p-2 rounded-xl shadow-sm border border-gray-100">
           <select 
@@ -73,19 +75,19 @@ export default function KaryawanRekapPage() {
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Hadir</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalPresent}</span>
               <span className="text-3xl font-black text-green-600">{data.ringkasan.hadir + data.ringkasan.terlambat}</span>
             </div>
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Sakit</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Sakit / Sick</span>
               <span className="text-3xl font-black text-red-500">{data.ringkasan.sakit}</span>
             </div>
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Izin</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Izin / Leave</span>
               <span className="text-3xl font-black text-blue-500">{data.ringkasan.izin}</span>
             </div>
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Alpha</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalAlpha}</span>
               <span className="text-3xl font-black text-gray-900">{data.ringkasan.alpha}</span>
             </div>
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
@@ -93,8 +95,8 @@ export default function KaryawanRekapPage() {
               <span className="text-3xl font-black text-orange-500">{data.ringkasan.incomplete}</span>
             </div>
             <div className="bg-blue-600 p-4 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center text-white">
-              <span className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1">Total Jam</span>
-              <span className="text-3xl font-black">{Math.floor(data.ringkasan.totalDurasiMenit / 60)}<span className="text-lg">j</span></span>
+              <span className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1">Total (h/j)</span>
+              <span className="text-3xl font-black">{Math.floor(data.ringkasan.totalDurasiMenit / 60)}<span className="text-lg">h</span></span>
             </div>
           </div>
 

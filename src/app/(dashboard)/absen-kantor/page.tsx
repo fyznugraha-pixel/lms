@@ -160,12 +160,12 @@ export default function KaryawanDashboard() {
           <div className="text-4xl font-black text-blue-600 tracking-tight">
             {new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(currentTime)}
           </div>
-          <p className="text-sm text-gray-400 font-medium uppercase tracking-widest mt-1">Waktu Server (Lokal)</p>
+          <p className="text-sm text-gray-400 font-medium uppercase tracking-widest mt-1">{dict.dashboard.serverTime}</p>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center p-12 text-gray-500">Memuat data dashboard...</div>
+        <div className="text-center p-12 text-gray-500">{dict.dashboard.loading}</div>
       ) : (
         <>
           {/* Action Cards */}
@@ -281,8 +281,8 @@ export default function KaryawanDashboard() {
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-700 transition-colors">To-Do List Anda</h3>
-                  <p className="text-sm text-gray-500">Kelola dan selesaikan tugas-tugas prioritas Anda hari ini.</p>
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-700 transition-colors">{dict.dashboard.todoTitle}</h3>
+                  <p className="text-sm text-gray-500">{dict.dashboard.todoDesc}</p>
                 </div>
               </div>
             </Link>
@@ -293,8 +293,8 @@ export default function KaryawanDashboard() {
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">Work Log Harian</h3>
-                  <p className="text-sm text-gray-500">Catat jurnal progres kerja dan lihat update dari rekan tim.</p>
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">{dict.dashboard.workLogTitle}</h3>
+                  <p className="text-sm text-gray-500">{dict.dashboard.workLogDesc}</p>
                 </div>
               </div>
             </Link>
@@ -303,19 +303,19 @@ export default function KaryawanDashboard() {
           {/* Histori Absen */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="text-lg font-bold text-gray-900">Riwayat 7 Hari Terakhir</h2>
+              <h2 className="text-lg font-bold text-gray-900">{dict.dashboard.historyTitle}</h2>
             </div>
             {data?.histori && data.histori.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
-                      <th className="px-6 py-4 font-semibold">Tanggal</th>
-                      <th className="px-6 py-4 font-semibold">Masuk</th>
-                      <th className="px-6 py-4 font-semibold">Pulang</th>
-                      <th className="px-6 py-4 font-semibold">Durasi</th>
-                      <th className="px-6 py-4 font-semibold">Status</th>
-                      <th className="px-6 py-4 font-semibold text-right">Aksi</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colDate}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colIn}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colOut}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colDuration}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colStatus}</th>
+                      <th className="px-6 py-4 font-semibold text-right">{dict.dashboard.colAction}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -361,7 +361,7 @@ export default function KaryawanDashboard() {
                               }}
                               className="text-xs text-blue-600 hover:text-blue-800 font-bold underline"
                             >
-                              Klarifikasi
+                                {dict.dashboard.clarify}
                             </button>
                           )}
                         </td>
@@ -372,7 +372,7 @@ export default function KaryawanDashboard() {
               </div>
             ) : (
               <div className="p-12 text-center text-gray-500">
-                Belum ada riwayat absensi.
+                {dict.dashboard.noHistory}
               </div>
             )}
           </div>
@@ -384,24 +384,24 @@ export default function KaryawanDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm overflow-y-auto">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md my-8 relative">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-900">Klarifikasi Absen Incomplete</h2>
+              <h2 className="text-xl font-bold text-gray-900">{dict.dashboard.clarifyTitle}</h2>
               <button onClick={() => setIsKlarifikasiModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                 &times;
               </button>
             </div>
             <form onSubmit={handleKlarifikasi} className="p-6 space-y-4">
               <p className="text-sm text-gray-600">
-                Silakan tuliskan alasan kenapa Anda lupa atau tidak bisa melakukan Absen Pulang pada tanggal <strong>{formatTanggal(klarifikasiDate)}</strong>. Admin akan meninjau alasan Anda dan menyesuaikan jam pulang Anda.
+                {dict.dashboard.clarifyDesc} <strong>{formatTanggal(klarifikasiDate)}</strong>.
               </p>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Alasan Klarifikasi</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.dashboard.clarifyReason}</label>
                 <textarea 
                   required
                   rows={4}
                   value={klarifikasiAlasan}
                   onChange={(e) => setKlarifikasiAlasan(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Misal: Saya terlanjur mematikan laptop jam 17:00..."
+                  placeholder={dict.dashboard.clarifyPlaceholder}
                 />
               </div>
               <div className="pt-4 flex justify-end gap-3">
@@ -410,14 +410,14 @@ export default function KaryawanDashboard() {
                   onClick={() => setIsKlarifikasiModalOpen(false)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  Batal
+                  {dict.dashboard.btnCancel}
                 </button>
                 <button 
                   type="submit" 
                   disabled={isActionLoading}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm disabled:opacity-50"
                 >
-                  {isActionLoading ? "Mengirim..." : "Kirim Pengajuan"}
+                  {isActionLoading ? dict.dashboard.submitting : dict.dashboard.btnSubmit}
                 </button>
               </div>
             </form>
