@@ -75,8 +75,8 @@ export default function ProfilPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Perangkat Terhubung (Sesi Login)</h2>
-            <p className="text-sm text-gray-500 mt-1">Daftar perangkat yang mengingat login Anda selama 30 hari.</p>
+            <h2 className="text-lg font-bold text-gray-900">{dict.sidebar.profile}</h2>
+            <p className="text-sm text-gray-500 mt-1">{dict.profile.secTitle}</p>
           </div>
           <button 
             onClick={confirmLogoutAll}
@@ -85,15 +85,15 @@ export default function ProfilPage() {
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            Keluar Semua Perangkat
+            {dict.sidebar.logout}
           </button>
         </div>
         
         <div className="p-0">
           {isLoading ? (
-            <div className="p-6 text-center text-gray-500">Memuat data sesi...</div>
+            <div className="p-6 text-center text-gray-500">{dict.dashboard.loading}</div>
           ) : sessions.length === 0 ? (
-            <div className="p-6 text-center text-gray-500">Belum ada riwayat sesi.</div>
+            <div className="p-6 text-center text-gray-500">{dict.dashboard.noHistory}</div>
           ) : (
             <ul className="divide-y divide-gray-100">
               {sessions.map((s) => {

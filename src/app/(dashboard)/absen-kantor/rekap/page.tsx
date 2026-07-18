@@ -102,10 +102,10 @@ export default function KaryawanRekapPage() {
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900">Rincian Hari per Hari</h2>
+              <h2 className="text-lg font-bold text-gray-900">{dict.dashboard.historyTitle}</h2>
             </div>
             {data.detail.length === 0 ? (
-              <div className="p-12 text-center text-gray-500">Tidak ada data kehadiran di bulan ini.</div>
+              <div className="p-12 text-center text-gray-500">{dict.dashboard.noHistory}</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
