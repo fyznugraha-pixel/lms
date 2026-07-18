@@ -28,7 +28,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
   const dict = getDictionary(langCookie);
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col md:flex-row overflow-hidden pb-16 md:pb-0">
+    <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0">
       <MobileTopHeader langCookie={langCookie} />
       
       {/* Sidebar Khusus Kantor (Hidden on Mobile) */}
@@ -97,7 +97,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 overflow-auto flex flex-col">
+      <main className="flex-1 p-4 md:p-8 md:overflow-auto flex flex-col">
         <AdminMobileMenu role={payload.role as string} dict={dict} />
         {children}
       </main>

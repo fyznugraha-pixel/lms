@@ -23,7 +23,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
   const langCookie = cookieStore.get("lang")?.value || "en";
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col md:flex-row overflow-hidden pb-16 md:pb-0">
+    <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0">
       <MobileTopHeader langCookie={langCookie} />
       
       {/* Sidebar Khusus Kantor */}
@@ -49,7 +49,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 md:p-10 overflow-auto">
+      <main className="flex-1 p-6 md:p-10 md:overflow-auto flex flex-col">
         {children}
       </main>
 
