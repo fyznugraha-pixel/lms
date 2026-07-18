@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   const protocol = request.headers.get('x-forwarded-proto') || 'http';
   const redirectUrl = `${protocol}://${host}/login`;
   
-  const response = NextResponse.redirect(redirectUrl);
+  const response = NextResponse.redirect(redirectUrl, { status: 303 });
   response.cookies.delete('session_token');
   response.cookies.delete('refresh_token');
   return response;
