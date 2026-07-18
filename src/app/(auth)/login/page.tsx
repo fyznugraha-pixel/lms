@@ -37,7 +37,7 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setError(data.error?.message || "Gagal login. Email atau password salah.");
+        setError(data.error?.message || "Login failed. Incorrect email or password.");
         return;
       }
 
@@ -55,7 +55,7 @@ export default function LoginPage() {
         router.push("/absen");
       }
     } catch (err) {
-      setError("Terjadi kesalahan jaringan");
+      setError("A network error occurred.");
     } finally {
       setIsLoading(false);
     }
@@ -88,9 +88,9 @@ export default function LoginPage() {
       <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12 z-10 hidden md:block">
         <div className="bg-white/10 p-6 rounded-3xl backdrop-blur-md border border-white/20 shadow-2xl max-w-sm">
           <h2 className="text-2xl font-bold mb-2 text-[#EFC94B]">Welcome Back!</h2>
-          <p className="text-blue-50 text-base mb-1">Masuk ke Akun Anda</p>
+          <p className="text-blue-50 text-base mb-1">Sign in to your account</p>
           <p className="text-blue-100/80 text-sm">
-            Akses portal absensi dan manajemen internal TactLink dengan aman.
+            Access the TactLink internal management and attendance portal securely.
           </p>
         </div>
       </div>
@@ -107,7 +107,7 @@ export default function LoginPage() {
 
         <div className="text-center mb-8 hidden md:block">
           <h3 className="text-2xl font-bold text-gray-900">Sign In</h3>
-          <p className="text-sm text-gray-500 mt-1">Masukkan email dan password Anda</p>
+          <p className="text-sm text-gray-500 mt-1">Enter your email and password</p>
         </div>
 
           {error && (
@@ -132,7 +132,7 @@ export default function LoginPage() {
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white outline-none transition-all text-gray-900"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Masukkan email"
+                placeholder="Enter your email"
               />
             </div>
             
@@ -140,7 +140,7 @@ export default function LoginPage() {
               <div className="flex justify-between items-center mb-1">
                 <label className="block text-sm font-medium text-gray-700">Password</label>
                 <Link href="/lupa-password" className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors">
-                  Lupa Password?
+                  Forgot Password?
                 </Link>
               </div>
               <div className="relative">
@@ -150,7 +150,7 @@ export default function LoginPage() {
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white outline-none transition-all text-gray-900 pr-12"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Masukkan password"
+                  placeholder="Enter your password"
                 />
                 <button
                   type="button"
@@ -170,8 +170,8 @@ export default function LoginPage() {
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                Ingat saya di device ini
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 cursor-pointer">
+                Remember Me
               </label>
             </div>
 
@@ -186,10 +186,10 @@ export default function LoginPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Memproses...
+                  Signing in...
                 </>
               ) : (
-                "Masuk"
+                "Sign In"
               )}
             </button>
           </form>
