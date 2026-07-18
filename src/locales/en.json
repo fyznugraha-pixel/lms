@@ -11,6 +11,13 @@
     "logout": "Sign Out",
     "changePassword": "Change Password"
   },
+  "bottomNav": {
+    "home": "Home",
+    "workLog": "Work",
+    "recap": "Recap",
+    "leave": "Leave",
+    "profile": "Profile"
+  },
   "dashboard": {
     "welcome": "Welcome back",
     "roleEmployee": "Employee",

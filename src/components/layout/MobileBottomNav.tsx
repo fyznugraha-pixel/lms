@@ -8,11 +8,11 @@ export default function MobileBottomNav({ dict, role }: { dict: any; role: strin
   const pathname = usePathname();
 
   const navItems = [
-    { name: dict.sidebar.dashboard || "Home", href: "/absen-kantor", icon: Home },
-    { name: dict.sidebar.workLog || "Pekerjaan", href: "/absen-kantor/pekerjaan", icon: Briefcase },
-    { name: dict.sidebar.myAttendance || "Rekap", href: "/absen-kantor/rekap", icon: FileText },
-    { name: dict.sidebar.leaveRequest || "Izin", href: "/absen-kantor/izin", icon: CalendarClock },
-    { name: dict.sidebar.profile || "Profil", href: "/absen-kantor/profil", icon: User },
+    { name: dict.bottomNav?.home || "Home", href: "/absen-kantor", icon: Home },
+    { name: dict.bottomNav?.workLog || "Kerja", href: "/absen-kantor/pekerjaan", icon: Briefcase },
+    { name: dict.bottomNav?.recap || "Rekap", href: "/absen-kantor/rekap", icon: FileText },
+    { name: dict.bottomNav?.leave || "Izin", href: "/absen-kantor/izin", icon: CalendarClock },
+    { name: dict.bottomNav?.profile || "Profil", href: "/absen-kantor/profil", icon: User },
   ];
 
   return (

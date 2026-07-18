@@ -11,6 +11,13 @@
     "logout": "Keluar",
     "changePassword": "Ubah Password"
   },
+  "bottomNav": {
+    "home": "Home",
+    "workLog": "Kerja",
+    "recap": "Rekap",
+    "leave": "Izin",
+    "profile": "Profil"
+  },
   "dashboard": {
     "welcome": "Selamat datang kembali",
     "roleEmployee": "Karyawan",

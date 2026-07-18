@@ -10,9 +10,9 @@ export default function AdminMobileBottomNav() {
   const navItems = [
     { name: "Persetujuan", href: "/admin-kantor/persetujuan", icon: FileCheck },
     { name: "Karyawan", href: "/admin-kantor/karyawan", icon: Users },
-    { name: "Sesi Absensi", href: "/admin-kantor/absensi", icon: CheckSquare },
+    { name: "Sesi", href: "/admin-kantor/absensi", icon: CheckSquare },
     { name: "Rekap", href: "/admin-kantor/rekap", icon: BarChart },
-    { name: "Dashboard", href: "/absen-kantor", icon: Home },
+    { name: "Home", href: "/absen-kantor", icon: Home },
   ];
 
   return (
