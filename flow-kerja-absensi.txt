@@ -48,4 +48,4 @@ C. Fitur-Fitur Karyawan Lainnya:
 - Jangan sampai telat absen, karena Admin akan menutup sesi absen (kodenya hangus) jika sudah lewat batas waktu.
 - Pembayaran/Perhitungan kinerja akan disinkronkan dengan isian Work Log kalian setiap harinya.
 
-Semangat kerjanya tim! Kalau ada kendala login atau pertanyaan fitur, langsung tag/mention tim Admin di grup ini. 💪
+Semangat kerjanya tim! Kalau ada kendala login atau pertanyaan fitur, langsung tag/mention tim Admin (Willy, Alfred, Danny) di grup ini. 💪

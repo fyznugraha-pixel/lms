@@ -5,7 +5,8 @@ const prisma = new PrismaClient();
 
 const admins = [
   { name: "Willy", email: "willy@tactlink.com", role: "ADMIN_KANTOR" },
-  { name: "Supriatna", email: "supriatna@tactlink.com", role: "ADMIN_KANTOR" }
+  { name: "Alfred", email: "alfred@tactlink.com", role: "ADMIN_KANTOR" },
+  { name: "Danny", email: "danny@tactlink.com", role: "ADMIN_KANTOR" }
 ];
 
 async function main() {

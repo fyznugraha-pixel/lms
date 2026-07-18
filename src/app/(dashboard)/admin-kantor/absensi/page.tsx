@@ -96,13 +96,14 @@ export default function AbsensiAdminPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
         {isLoading ? (
           <div className="p-8 text-center text-gray-500">Memuat sesi...</div>
         ) : sessions.length === 0 ? (
           <div className="p-8 text-center text-gray-500">Belum ada sesi absensi.</div>
         ) : (
-          <table className="w-full text-left border-collapse">
+          <div className="min-w-[800px]">
+            <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
                 <th className="p-4 font-semibold text-gray-600">Tanggal</th>
@@ -165,6 +166,7 @@ export default function AbsensiAdminPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 

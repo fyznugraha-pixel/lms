@@ -28,7 +28,8 @@ const internNames = [
   "Yosefa Citra Kartika",
   "Tria Damayanti",
   "Muhammad Ilham Nur Razak",
-  "Faiz Risang Alfatah"
+  "Faiz Risang Alfatah",
+  "Supriatna"
 ];
 
 async function main() {
