@@ -108,7 +108,8 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
         <div className="p-4 border-b border-gray-200 bg-gray-50">
           <h3 className="font-semibold text-gray-700">{dict.adminKantor?.absensi?.employeeListTitle || "Daftar Kehadiran Karyawan"}</h3>
         </div>
-        <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[500px]">
           <thead>
             <tr className="border-b border-gray-200 text-sm">
               <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colEmployeeName || "Nama Karyawan"}</th>
@@ -136,6 +137,7 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       <ConfirmModal
