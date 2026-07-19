@@ -163,7 +163,10 @@ export default function KaryawanIzinPage() {
             </div>
             
             {isLoading ? (
-              <div className="p-12 text-center text-gray-500">{dict.dashboard.loading}</div>
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                <p className="text-gray-500 font-medium animate-pulse">{dict.dashboard.loading}</p>
+              </div>
             ) : pengajuanList.length === 0 ? (
               <div className="p-12 text-center text-gray-500">{dict.leave.noReq}</div>
             ) : (
