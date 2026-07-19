@@ -44,7 +44,11 @@ export default async function AdminKantorDashboard() {
 
   const formatJam = (date: Date | null) => {
     if (!date) return "--:--";
-    return new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(date);
+    return new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'id-ID', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      timeZone: 'Asia/Jakarta'
+    }).format(date);
   };
 
   return (

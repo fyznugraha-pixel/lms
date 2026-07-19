@@ -5,10 +5,11 @@ import Link from "next/link";
 import useSWR from "swr";
 import { PlusCircle, LogOut, CheckCircle2, Copy, RefreshCw } from "lucide-react";
 import ConfirmModal from "@/components/ConfirmModal";
-import { useDictionary } from "@/hooks/useDictionary";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 export default function AbsensiAdminPage() {
   const dict = useDictionary();
+  const locale = useLocale();
   const fetcher = (url: string) => fetch(url).then(res => res.json()).then(res => res.data);
   const { data: sessions, error, isLoading: isSwrLoading, mutate } = useSWR(`/api/admin-kantor/absensi/sesi`, fetcher, { revalidateOnFocus: true });
   
@@ -112,19 +113,19 @@ export default function AbsensiAdminPage() {
             <tbody>
               {sessions.map((sesi: any) => (
                 <tr key={sesi.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="p-4">{new Date(sesi.tanggal).toLocaleDateString("id-ID")}</td>
+                  <td className="p-4">{new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(new Date(sesi.tanggal))}</td>
                   <td className="p-4">
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                       sesi.jenisAbsen === 'MASUK' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
                     }`}>
-                      {sesi.jenisAbsen}
+                      {sesi.jenisAbsen === 'MASUK' ? (dict.adminKantor?.absensi?.typeIn || "MASUK") : (dict.adminKantor?.absensi?.typeOut || "PULANG")}
                     </span>
                   </td>
                   <td className="p-4">
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                       sesi.status === 'AKTIF' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
                     }`}>
-                      {sesi.status}
+                      {sesi.status === 'AKTIF' ? (dict.adminKantor?.absensi?.statusActive || "AKTIF") : (dict.adminKantor?.absensi?.statusClosed || "DITUTUP")}
                     </span>
                   </td>
                   <td className="p-4">
@@ -145,7 +146,7 @@ export default function AbsensiAdminPage() {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-gray-400 font-medium">- Ditutup -</span>
+                      <span className="text-gray-400 font-medium">- {dict.adminKantor?.absensi?.statusClosed || "CLOSED"} -</span>
                     )}
                   </td>
                   <td className="p-4">{sesi.jenisAbsen === 'MASUK' ? sesi._count.absensiMasuk : sesi._count.absensiPulang} orang</td>
