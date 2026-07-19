@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, Eye, EyeOff } from "lucide-react";
+import { useDictionary } from "@/hooks/useDictionary";
 
 interface ChangePasswordModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface ChangePasswordModalProps {
 }
 
 export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordModalProps) {
+  const dict = useDictionary();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,12 +31,12 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
     setSuccess("");
 
     if (newPassword !== confirmPassword) {
-      setError("Password baru dan konfirmasi tidak cocok.");
+      setError(dict.profile?.passMismatch || "Password baru dan konfirmasi tidak cocok.");
       return;
     }
 
     if (newPassword.length < 6) {
-      setError("Password baru minimal 6 karakter.");
+      setError(dict.profile?.passMinLength || "Password baru minimal 6 karakter.");
       return;
     }
 
@@ -50,11 +52,11 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setError(data.error?.message || "Gagal mengubah password.");
+        setError(data.error?.message || dict.profile?.passFailed || "Gagal mengubah password.");
         return;
       }
 
-      setSuccess("Password berhasil diubah!");
+      setSuccess(dict.profile?.passSuccess || "Password berhasil diubah!");
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -65,7 +67,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
       }, 2000);
       
     } catch (err) {
-      setError("Terjadi kesalahan sistem.");
+      setError(dict.notifications?.errorSystem || "Terjadi kesalahan sistem.");
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +77,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden relative">
         <div className="flex justify-between items-center p-6 border-b border-gray-100">
-          <h3 className="text-xl font-bold text-gray-900">Ubah Password</h3>
+          <h3 className="text-xl font-bold text-gray-900">{dict.profile?.changePass || "Ubah Password"}</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X size={24} />
           </button>
@@ -95,7 +97,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password Lama</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{dict.profile?.oldPass || "Password Lama"}</label>
               <div className="relative">
                 <input
                   type={showOld ? "text" : "password"}
@@ -115,7 +117,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password Baru</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{dict.profile?.newPass || "Password Baru"}</label>
               <div className="relative">
                 <input
                   type={showNew ? "text" : "password"}
@@ -135,7 +137,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password Baru</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{dict.profile?.confirmPass || "Konfirmasi Password Baru"}</label>
               <div className="relative">
                 <input
                   type={showConfirm ? "text" : "password"}
@@ -160,7 +162,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
                 disabled={isLoading}
                 className="w-full py-2.5 bg-[#394887] hover:bg-[#2D3A6E] text-white rounded-lg font-medium transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Menyimpan..." : "Simpan Password"}
+                {isLoading ? dict.work?.logSavingBtn || "Menyimpan..." : dict.profile?.btnSave || "Simpan Password"}
               </button>
             </div>
           </form>
