@@ -20,7 +20,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
   }
 
   const payload = await verifyToken(token);
-  if (!payload || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
+  if (!payload || !['KARYAWAN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
     redirect("/login");
   }
 
@@ -61,7 +61,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
           </SidebarLink>
           
           {/* Menu Penanggung Jawab Absen */}
-          {(payload.role === 'PENANGGUNG_JAWAB_ABSEN' || payload.role === 'SUPER_ADMIN') && (
+          {(payload.payload.role === 'SUPER_ADMIN') && (
             <div className="pt-2">
               <SidebarLink href="/absen-kantor/penanggung-jawab">
                 {dict.sidebar.generateSession}
@@ -70,7 +70,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
           )}
 
           {/* Menu Admin Kantor */}
-          {(payload.role === 'ADMIN_KANTOR' || payload.role === 'PENANGGUNG_JAWAB_ABSEN' || payload.role === 'SUPER_ADMIN') && (
+          {(payload.role === 'ADMIN_KANTOR' || payload.payload.role === 'SUPER_ADMIN') && (
             <div className="pt-2">
               <SidebarLink href="/admin-kantor/persetujuan">
                 {dict.sidebar.approval}

@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     // 1. Cari karyawan yang tidak absen masuk sama sekali kemarin (ALPHA)
     const activeKaryawanList = await prisma.user.findMany({
       where: {
-        role: { in: ['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR'] },
+        role: { in: ['KARYAWAN', 'ADMIN_KANTOR'] },
         isActive: true,
       },
       select: { id: true },

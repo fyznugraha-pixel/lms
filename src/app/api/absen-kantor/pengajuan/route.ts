@@ -17,7 +17,7 @@ async function checkAuth() {
   const token = cookieStore.get('session_token')?.value;
   if (!token) return null;
   const payload = await verifyToken(token);
-  if (!payload || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
+  if (!payload || !['KARYAWAN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
     return null;
   }
   return payload;
@@ -115,7 +115,7 @@ export async function GET(request: Request) {
 
     let pengajuanList = [];
 
-    if (mode === 'admin' && ['ADMIN_KANTOR', 'PENANGGUNG_JAWAB_ABSEN', 'SUPER_ADMIN'].includes(user.role as string)) {
+    if (mode === 'admin' && ['ADMIN_KANTOR', 'SUPER_ADMIN'].includes(user.role as string)) {
       pengajuanList = await prisma.pengajuanIzin.findMany({
         include: { karyawan: { select: { namaLengkap: true, email: true } } },
         orderBy: { createdAt: 'desc' }

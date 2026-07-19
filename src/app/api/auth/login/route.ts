@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     }
 
     // Tenant check
-    const isTactLinkRole = ['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR'].includes(user.role);
+    const isTactLinkRole = ['KARYAWAN', 'ADMIN_KANTOR'].includes(user.role);
     
     if (user.role !== 'SUPER_ADMIN') {
       if (isTactLinkRole) {

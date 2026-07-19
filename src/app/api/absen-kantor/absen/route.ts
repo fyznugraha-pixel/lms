@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const token = cookieStore.get('session_token')?.value;
     if (!token) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     const user = await verifyToken(token);
-    if (!user || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(user.role as string)) {
+    if (!user || !['KARYAWAN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(user.role as string)) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
     const userId = user.userId as string;
@@ -125,7 +125,7 @@ export async function GET(request: Request) {
     const token = cookieStore.get('session_token')?.value;
     if (!token) return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     const user = await verifyToken(token);
-    if (!user || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(user.role as string)) {
+    if (!user || !['KARYAWAN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(user.role as string)) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
     const userId = user.userId as string;

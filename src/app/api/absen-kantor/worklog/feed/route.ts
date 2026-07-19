@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     const role = user.role as string;
     const userId = user.userId as string;
 
-    const isAdminOrPJ = role === 'ADMIN_KANTOR' || role === 'PENANGGUNG_JAWAB_ABSEN' || role === 'SUPER_ADMIN';
+    const isAdminOrPJ = role === 'ADMIN_KANTOR' || role === 'SUPER_ADMIN';
 
     // Fetch all worklogs, ordering by newest first
     const logs = await prisma.workLog.findMany({

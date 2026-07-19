@@ -304,7 +304,6 @@ export default function KaryawanPage() {
                   onChange={(val) => setFormData({...formData, role: val as string})}
                   options={[
                     { value: "KARYAWAN", label: dict.dashboard?.roleEmployee || "Karyawan (Hanya Absen)" },
-                    { value: "PENANGGUNG_JAWAB_ABSEN", label: "Penanggung Jawab Absen" },
                     { value: "ADMIN_KANTOR", label: dict.dashboard?.roleAdmin || "Admin Kantor (HR)" }
                   ]}
                   className="w-full"

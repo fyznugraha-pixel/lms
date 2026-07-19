@@ -9,7 +9,7 @@ import { useDictionary } from "@/hooks/useDictionary";
 export default function MobileTopHeader({ langCookie, role }: { langCookie: string; role?: string }) {
   const pathname = usePathname();
   const dict = useDictionary();
-  const isAdmin = role === 'ADMIN_KANTOR' || role === 'SUPER_ADMIN' || role === 'PENANGGUNG_JAWAB_ABSEN';
+  const isAdmin = role === 'ADMIN_KANTOR' || role === 'SUPER_ADMIN' ;
   
   // If we are currently in admin-kantor, the switch button should go to absen-kantor (employee mode)
   const isCurrentlyAdmin = pathname?.startsWith('/admin-kantor');
@@ -19,7 +19,7 @@ export default function MobileTopHeader({ langCookie, role }: { langCookie: stri
   
   const inAdminMode = isCurrentlyAdmin || isCurrentlyPJ;
   
-  const switchTarget = inAdminMode ? '/absen-kantor' : (role === 'PENANGGUNG_JAWAB_ABSEN' ? '/absen-kantor/penanggung-jawab' : '/admin-kantor');
+  const switchTarget = inAdminMode ? '/absen-kantor' : '/admin-kantor';
 
   return (
     <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200 sticky top-0 z-40">

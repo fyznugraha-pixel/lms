@@ -9,7 +9,7 @@ const createKaryawanSchema = z.object({
   email: z.string().email('Format email tidak valid'),
   namaLengkap: z.string().min(1, 'Nama lengkap harus diisi'),
   password: z.string().min(6, 'Password minimal 6 karakter'),
-  role: z.enum(['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR']),
+  role: z.enum(['KARYAWAN', 'ADMIN_KANTOR']),
 });
 
 async function checkAdminAuth() {
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     const status = searchParams.get('status'); // 'active', 'inactive', or empty for all
 
     const whereClause: any = {
-      role: { in: ['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR'] },
+      role: { in: ['KARYAWAN', 'ADMIN_KANTOR'] },
     };
 
     if (search) {

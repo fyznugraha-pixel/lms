@@ -15,7 +15,7 @@ async function checkAdminAuth() {
   const token = cookieStore.get('session_token')?.value;
   if (!token) return null;
   const payload = await verifyToken(token);
-  if (!payload || !['ADMIN_KANTOR', 'PENANGGUNG_JAWAB_ABSEN', 'SUPER_ADMIN'].includes(payload.role as string)) {
+  if (!payload || !['ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
     return null;
   }
   return payload;

@@ -8,7 +8,7 @@ async function checkAuth() {
   const token = cookieStore.get('session_token')?.value;
   if (!token) return null;
   const payload = await verifyToken(token);
-  if (!payload || !['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
+  if (!payload || !['KARYAWAN', 'ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
     return null;
   }
   return payload;
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     const endDate = new Date(tahun, bulan, 0, 23, 59, 59, 999); // Hari terakhir bulan ini
 
     if (mode === 'admin') {
-      if (!['ADMIN_KANTOR', 'PENANGGUNG_JAWAB_ABSEN', 'SUPER_ADMIN'].includes(user.role as string)) {
+      if (!['ADMIN_KANTOR', 'SUPER_ADMIN'].includes(user.role as string)) {
         return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
       }
 

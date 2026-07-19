@@ -16,7 +16,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
         redirect("/admin-kantor");
       } else if (role === "DOSEN") {
         redirect("/dosen");
-      } else if (role === "KARYAWAN" || role === "PENANGGUNG_JAWAB_ABSEN") {
+      } else if (role === "KARYAWAN") {
         redirect("/absen-kantor");
       } else {
         redirect("/absen");

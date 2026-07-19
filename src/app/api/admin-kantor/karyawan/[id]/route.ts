@@ -9,7 +9,7 @@ const updateKaryawanSchema = z.object({
   email: z.string().email('Format email tidak valid').optional(),
   namaLengkap: z.string().min(1, 'Nama lengkap harus diisi').optional(),
   password: z.string().min(6, 'Password minimal 6 karakter').optional(),
-  role: z.enum(['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR']).optional(),
+  role: z.enum(['KARYAWAN', 'ADMIN_KANTOR']).optional(),
   isActive: z.boolean().optional(),
 });
 

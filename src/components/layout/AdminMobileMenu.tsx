@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ShieldAlert, LayoutDashboard } from "lucide-react";
 
 export default function AdminMobileMenu({ role, dict }: { role: string; dict: any }) {
-  if (role !== 'ADMIN_KANTOR' && role !== 'SUPER_ADMIN' && role !== 'PENANGGUNG_JAWAB_ABSEN') {
+  if (role !== 'ADMIN_KANTOR' && role !== 'SUPER_ADMIN') {
     return null;
   }
 
@@ -21,7 +21,7 @@ export default function AdminMobileMenu({ role, dict }: { role: string; dict: an
           </div>
         </div>
         <Link 
-          href={role === 'PENANGGUNG_JAWAB_ABSEN' ? '/absen-kantor/penanggung-jawab' : '/admin-kantor'} 
+          href={'/admin-kantor'} 
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center gap-2"
         >
           Masuk

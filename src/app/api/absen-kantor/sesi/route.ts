@@ -14,7 +14,7 @@ async function checkPenanggungJawabAuth() {
   const token = cookieStore.get('session_token')?.value;
   if (!token) return null;
   const payload = await verifyToken(token);
-  if (!payload || (payload.role !== 'PENANGGUNG_JAWAB_ABSEN' && payload.role !== 'SUPER_ADMIN')) {
+  if (!payload || (payload.role !== 'SUPER_ADMIN')) {
     return null;
   }
   return payload;
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     // Ambil semua karyawan aktif
     const activeKaryawanList = await prisma.user.findMany({
       where: {
-        role: { in: ['KARYAWAN', 'PENANGGUNG_JAWAB_ABSEN', 'ADMIN_KANTOR'] },
+        role: { in: ['KARYAWAN', 'ADMIN_KANTOR'] },
         isActive: true,
       },
       select: { id: true, namaLengkap: true, email: true },

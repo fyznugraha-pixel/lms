@@ -49,7 +49,7 @@ export default function LoginPage() {
         router.push("/admin-kantor");
       } else if (role === "DOSEN") {
         router.push("/dosen");
-      } else if (role === "KARYAWAN" || role === "PENANGGUNG_JAWAB_ABSEN") {
+      } else if (role === "KARYAWAN") {
         router.push("/absen-kantor");
       } else {
         router.push("/absen");
