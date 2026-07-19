@@ -256,6 +256,7 @@
       "employeeListTitle": "Employee Attendance List",
       "colEmployeeName": "Employee Name",
       "colEmail": "Email",
+      "colTime": "Check-in Time",
       "colStatusAbsen": "Attendance Status",
       "statusNotYet": "Not Yet",
       "closeWarningMsg": "Employees will no longer be able to check in to this session.",

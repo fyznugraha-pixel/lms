@@ -123,14 +123,27 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
             <tr className="border-b border-gray-200 text-sm">
               <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colEmployeeName || "Nama Karyawan"}</th>
               <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colEmail || "Email"}</th>
+              <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colTime || "Waktu Absen"}</th>
               <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colStatusAbsen || "Status Absen"}</th>
             </tr>
           </thead>
           <tbody>
-            {sesi.tokens.map((tokenObj: any) => (
+            {sesi.tokens.map((tokenObj: any) => {
+              const absensiRecord = sesi.jenisAbsen === 'MASUK'
+                ? sesi.absensiMasuk.find((a: any) => a.karyawan?.id === tokenObj.karyawan.id)
+                : sesi.absensiPulang.find((a: any) => a.karyawan?.id === tokenObj.karyawan.id);
+              
+              const waktuAbsen = sesi.jenisAbsen === 'MASUK'
+                ? absensiRecord?.waktuAbsenMasuk
+                : absensiRecord?.waktuAbsenPulang;
+
+              return (
               <tr key={tokenObj.id} className="border-b border-gray-100 hover:bg-gray-50">
                 <td className="p-4 font-medium text-gray-900">{tokenObj.karyawan.namaLengkap}</td>
                 <td className="p-4 text-gray-500">{tokenObj.karyawan.email}</td>
+                <td className="p-4 font-medium text-gray-700">
+                  {waktuAbsen ? new Date(waktuAbsen).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : '-'}
+                </td>
                 <td className="p-4">
                   {tokenObj.isUsed ? (
                     <span className="flex items-center gap-1.5 text-green-600 font-medium text-sm">
@@ -143,7 +156,8 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
                   )}
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
         </div>

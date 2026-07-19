@@ -255,6 +255,7 @@
       "employeeListTitle": "Daftar Kehadiran Karyawan",
       "colEmployeeName": "Nama Karyawan",
       "colEmail": "Email",
+      "colTime": "Waktu Absen",
       "colStatusAbsen": "Status Absen",
       "statusNotYet": "Belum",
       "closeWarningMsg": "Karyawan tidak akan bisa absen lagi ke sesi ini.",
