@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ExcelJS from "exceljs";
-import { saveAs } from "file-saver";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
@@ -38,114 +36,8 @@ export default function AdminRekapPage() {
   const handleExportXLSX = async () => {
     if (!data || !data.ringkasan) return;
     
-    // Inisialisasi Workbook
-    const workbook = new ExcelJS.Workbook();
-    workbook.creator = "Sistem Absensi";
-    workbook.created = new Date();
-    
-    // Buat Worksheet
-    const worksheet = workbook.addWorksheet(`Rekap ${bulan}-${tahun}`, {
-      views: [{ state: 'frozen', ySplit: 5 }]
-    });
-
-    // --- TEMPLATE STYLING ---
-
-    // Judul Laporan
-    worksheet.mergeCells('A1:J1');
-    worksheet.getCell('A1').value = "REKAPITULASI KEHADIRAN KARYAWAN";
-    worksheet.getCell('A1').font = { name: 'Arial', family: 4, size: 16, bold: true };
-    worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
-
-    // Info Periode
-    worksheet.mergeCells('A2:J2');
-    worksheet.getCell('A2').value = `Periode: Bulan ${bulan} Tahun ${tahun}`;
-    worksheet.getCell('A2').font = { name: 'Arial', family: 4, size: 12, italic: true };
-    worksheet.getCell('A2').alignment = { vertical: 'middle', horizontal: 'center' };
-
-    // Jarak
-    worksheet.mergeCells('A3:J3');
-
-    // Kolom Header
-    const columns = [
-      { header: 'No', key: 'no', width: 5 },
-      { header: 'ID Karyawan', key: 'id', width: 25 },
-      { header: 'Nama Lengkap', key: 'nama', width: 30 },
-      { header: 'Email', key: 'email', width: 30 },
-      { header: 'Hadir', key: 'hadir', width: 10 },
-      { header: 'Terlambat', key: 'terlambat', width: 12 },
-      { header: 'Sakit', key: 'sakit', width: 10 },
-      { header: 'Izin', key: 'izin', width: 10 },
-      { header: 'Alpha / Incomplete', key: 'alpha_incomplete', width: 20 },
-      { header: 'Total Jam Kerja', key: 'jam_kerja', width: 18 }
-    ];
-    worksheet.columns = columns;
-
-    // Tambah Header ke baris ke-4 dan styling
-    const headerRow = worksheet.getRow(4);
-    headerRow.values = columns.map(c => c.header);
-    headerRow.height = 25;
-    
-    headerRow.eachCell((cell, colNumber) => {
-      cell.font = { name: 'Arial', bold: true, color: { argb: 'FFFFFFFF' } };
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'FF1F4E78' } // Biru gelap
-      };
-      cell.alignment = { vertical: 'middle', horizontal: 'center' };
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' }
-      };
-    });
-
-    // Isi Data
-    data.ringkasan.forEach((k: any, index: number) => {
-      const jam = Math.floor(k.totalDurasiMenit / 60);
-      const menit = k.totalDurasiMenit % 60;
-      const row = worksheet.addRow({
-        no: index + 1,
-        id: k.id,
-        nama: k.namaLengkap || "-",
-        email: k.email,
-        hadir: k.hadir,
-        terlambat: k.terlambat,
-        sakit: k.sakit,
-        izin: k.izin,
-        alpha_incomplete: `A: ${k.alpha} | I: ${k.incomplete}`,
-        jam_kerja: `${jam}j ${menit}m`
-      });
-
-      // Styling Data Row
-      row.eachCell((cell, colNumber) => {
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' }
-        };
-        cell.alignment = { vertical: 'middle' };
-        
-        // Tengah-tengah untuk kolom angka
-        if ([1, 5, 6, 7, 8, 9, 10].includes(colNumber)) {
-          cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        }
-      });
-
-      // Warna zebra untuk baris ganjil/genap (mulai dari baris 5)
-      if (row.number % 2 !== 0) {
-        row.eachCell((cell) => {
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
-        });
-      }
-    });
-
-    // Tulis ke buffer dan download
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-    saveAs(blob, `Rekap_Absensi_${bulan}_${tahun}.xlsx`);
+    // Direct link to the backend endpoint which handles the Export Excel and ExportLog
+    window.open(`/api/admin-kantor/export?bulan=${bulan}&tahun=${tahun}`, "_blank");
   };
 
   return (

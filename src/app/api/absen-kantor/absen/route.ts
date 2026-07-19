@@ -6,7 +6,6 @@ import { cookies } from 'next/headers';
 
 const absenSchema = z.object({
   jenisAbsen: z.enum(['MASUK', 'PULANG']),
-  kode: z.string().min(1, 'Kode absen wajib diisi'),
 });
 
 export async function POST(request: Request) {
@@ -48,11 +47,6 @@ export async function POST(request: Request) {
         success: false, 
         error: `Sesi absen ${data.jenisAbsen} belum dibuka atau sudah kedaluwarsa.` 
       }, { status: 400 });
-    }
-
-    const validCode = tokenRecord.sesiAbsenKantor.id.substring(0, 6).toUpperCase();
-    if (data.kode.toUpperCase() !== validCode) {
-      return NextResponse.json({ success: false, error: 'Kode absen tidak valid atau salah.' }, { status: 400 });
     }
 
     const now = new Date();

@@ -51,30 +51,26 @@ export default function KaryawanDashboard() {
   const [klarifikasiDate, setKlarifikasiDate] = useState("");
   const [klarifikasiAlasan, setKlarifikasiAlasan] = useState("");
   
-  // OTP Input
-  const [kodeMasuk, setKodeMasuk] = useState("");
-  const [kodePulang, setKodePulang] = useState("");
+  // Removed OTP Input
 
   const handleAbsen = async (jenisAbsen: "MASUK" | "PULANG") => {
-    const kode = jenisAbsen === "MASUK" ? kodeMasuk : kodePulang;
-    
-    if (!kode.trim()) {
-      setAlertModal({ isOpen: true, title: dict.notifications?.warningTitle || "Peringatan", message: dict.dashboard?.codeRequired || "Kode absen wajib diisi!", theme: "amber" });
-      return;
-    }
-
     setIsActionLoading(true);
     try {
       const res = await fetch("/api/absen-kantor/absen", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jenisAbsen, kode })
+        body: JSON.stringify({ jenisAbsen })
       });
       const result = await res.json();
       if (result.success) {
-        setAlertModal({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: result.message, theme: "blue" });
-        if (jenisAbsen === "MASUK") setKodeMasuk("");
-        if (jenisAbsen === "PULANG") setKodePulang("");
+        setAlertModal({ 
+          isOpen: true, 
+          title: dict.notifications?.successTitle || "Berhasil", 
+          message: jenisAbsen === "MASUK" 
+            ? (locale === "id-ID" ? "Berhasil absen MASUK!" : "Successfully checked in!") 
+            : (locale === "id-ID" ? "Berhasil absen PULANG!" : "Successfully checked out!"), 
+          theme: "blue" 
+        });
         mutate();
       } else {
         setAlertModal({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, theme: "red" });
@@ -179,20 +175,11 @@ export default function KaryawanDashboard() {
 
               {!data?.absensiHariIni?.waktuAbsenMasuk && (
                 <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder={dict.dashboard.placeholderCode}
-                    value={kodeMasuk}
-                    onChange={(e) => setKodeMasuk(e.target.value.toUpperCase())}
-                    maxLength={6}
-                    disabled={!data?.bisaAbsenMasuk || isActionLoading}
-                    className="w-full text-center tracking-widest uppercase font-mono text-lg font-bold px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100"
-                  />
-                  <button
+                  <button 
                     onClick={() => handleAbsen("MASUK")}
-                    disabled={!data?.bisaAbsenMasuk || isActionLoading || kodeMasuk.length < 6}
+                    disabled={!data?.bisaAbsenMasuk || isActionLoading}
                     className={`w-full py-3 rounded-xl font-bold text-white transition-all shadow-md ${
-                      !data?.bisaAbsenMasuk || kodeMasuk.length < 6
+                      !data?.bisaAbsenMasuk
                         ? "bg-gray-300 cursor-not-allowed shadow-none"
                         : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
                     }`}
@@ -228,20 +215,11 @@ export default function KaryawanDashboard() {
 
               {!data?.absensiHariIni?.waktuAbsenPulang && (
                 <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder={dict.dashboard.placeholderCode}
-                    value={kodePulang}
-                    onChange={(e) => setKodePulang(e.target.value.toUpperCase())}
-                    maxLength={6}
-                    disabled={!data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk || isActionLoading}
-                    className="w-full text-center tracking-widest uppercase font-mono text-lg font-bold px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100"
-                  />
-                  <button
+                  <button 
                     onClick={() => handleAbsen("PULANG")}
-                    disabled={!data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk || isActionLoading || kodePulang.length < 6}
+                    disabled={!data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk || isActionLoading}
                     className={`w-full py-3 rounded-xl font-bold text-white transition-all shadow-md ${
-                      !data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk || kodePulang.length < 6
+                      !data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk
                         ? "bg-gray-300 cursor-not-allowed shadow-none"
                         : "bg-orange-500 hover:bg-orange-600 hover:shadow-lg"
                     }`}
