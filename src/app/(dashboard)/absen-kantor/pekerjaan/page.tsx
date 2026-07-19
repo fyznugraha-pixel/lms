@@ -173,7 +173,7 @@ export default function PekerjaanPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="w-full max-w-6xl mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">{dict.work.title}</h1>
         <p className="text-gray-500 mt-1">{dict.work.subtitle}</p>
@@ -366,7 +366,7 @@ export default function PekerjaanPage() {
       )}
 
       {activeTab === 'FEED' && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300 w-full">
           {feedLogs.length === 0 ? (
             <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center">
               <Inbox className="w-12 h-12 text-gray-300 mx-auto mb-3" />
