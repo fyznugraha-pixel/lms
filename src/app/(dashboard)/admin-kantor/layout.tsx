@@ -4,9 +4,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/auth";
 import DashboardPasswordButton from "@/components/DashboardPasswordButton";
+import LanguageToggle from "@/components/LanguageToggle";
 import AdminKantorSidebarNav from "./AdminKantorSidebarNav";
 import AdminMobileBottomNav from "@/components/layout/AdminMobileBottomNav";
 import MobileTopHeader from "@/components/layout/MobileTopHeader";
+import { getDictionary } from "@/lib/dictionaries";
 
 export default async function AdminKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -21,6 +23,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
     redirect("/login");
   }
   const langCookie = cookieStore.get("lang")?.value || "en";
+  const dict = getDictionary(langCookie);
 
   return (
     <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0">
@@ -39,10 +42,11 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
         </div>
         <AdminKantorSidebarNav />
         <div className="p-4 border-t border-gray-200">
-          <DashboardPasswordButton />
+          <LanguageToggle currentLang={langCookie} />
+          <DashboardPasswordButton label={dict.sidebar?.changePassword} />
           <form action="/api/auth/logout" method="POST">
             <button type="submit" className="w-full text-left px-4 py-2 text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center gap-3">
-              Keluar
+              {dict.sidebar?.logout || "Keluar"}
             </button>
           </form>
         </div>

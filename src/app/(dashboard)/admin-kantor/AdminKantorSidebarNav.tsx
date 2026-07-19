@@ -39,14 +39,6 @@ export default function AdminKantorSidebarNav() {
         );
       })}
       
-      <div className="pt-2">
-        <Link
-          href="/absen-kantor"
-          className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg"
-        >
-          {dict.adminKantor?.sidebar?.enterEmployeePortal || "Masuk Portal Karyawan"}
-        </Link>
-      </div>
     </nav>
   );
 }

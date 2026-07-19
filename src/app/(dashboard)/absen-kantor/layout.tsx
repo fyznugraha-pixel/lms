@@ -61,7 +61,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
           </SidebarLink>
           
           {/* Menu Penanggung Jawab Absen */}
-          {(payload.payload.role === 'SUPER_ADMIN') && (
+          {(payload.role === 'SUPER_ADMIN') && (
             <div className="pt-2">
               <SidebarLink href="/absen-kantor/penanggung-jawab">
                 {dict.sidebar.generateSession}
@@ -70,7 +70,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
           )}
 
           {/* Menu Admin Kantor */}
-          {(payload.role === 'ADMIN_KANTOR' || payload.payload.role === 'SUPER_ADMIN') && (
+          {(payload.role === 'ADMIN_KANTOR' || payload.role === 'SUPER_ADMIN') && (
             <div className="pt-2">
               <SidebarLink href="/admin-kantor/persetujuan">
                 {dict.sidebar.approval}
