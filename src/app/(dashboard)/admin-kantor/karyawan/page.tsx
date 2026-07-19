@@ -222,13 +222,13 @@ export default function KaryawanPage() {
                     <td className="px-6 py-4 text-right">
                       <button 
                         onClick={() => openModal(k)}
-                        className="text-blue-600 hover:text-blue-800 font-medium text-sm mr-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="text-blue-600 hover:text-blue-800 font-medium text-sm mr-4 transition-opacity"
                       >
                         {dict.adminKantor?.karyawan?.btnEdit || "Edit"}
                       </button>
                       <button 
                         onClick={() => toggleStatus(k.id, k.isActive)}
-                        className={`${k.isActive ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'} font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity`}
+                        className={`${k.isActive ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'} font-medium text-sm transition-opacity`}
                       >
                         {k.isActive ? (dict.adminKantor?.karyawan?.btnDeactivate || "Nonaktifkan") : (dict.adminKantor?.karyawan?.btnActivate || "Aktifkan")}
                       </button>
