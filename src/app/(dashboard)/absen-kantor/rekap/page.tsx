@@ -98,14 +98,14 @@ export default function KaryawanRekapPage() {
               <div className="p-12 text-center text-gray-500">{dict.dashboard.noHistory}</div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[600px] whitespace-nowrap">
                   <thead>
                     <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
-                      <th className="px-6 py-4 font-semibold">Tanggal</th>
-                      <th className="px-6 py-4 font-semibold">Masuk</th>
-                      <th className="px-6 py-4 font-semibold">Pulang</th>
-                      <th className="px-6 py-4 font-semibold">Durasi</th>
-                      <th className="px-6 py-4 font-semibold">Status</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colDate}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colIn}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colOut}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colDuration}</th>
+                      <th className="px-6 py-4 font-semibold">{dict.dashboard.colStatus}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -125,7 +125,7 @@ export default function KaryawanRekapPage() {
                         </td>
                         <td className="px-6 py-4">
                           {h.isIncomplete ? (
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-orange-50 text-orange-700">INCOMPLETE</span>
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-orange-50 text-orange-700">{dict.dashboard.statusIncomplete || "INCOMPLETE"}</span>
                           ) : (
                             <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${
                               h.status === 'HADIR' ? 'bg-green-50 text-green-700' :
@@ -134,7 +134,10 @@ export default function KaryawanRekapPage() {
                               h.status === 'SAKIT' ? 'bg-red-50 text-red-700' :
                               'bg-gray-100 text-gray-600'
                             }`}>
-                              {h.status}
+                              {h.status === 'HADIR' ? (dict.dashboard.statusHadir || h.status) : 
+                               h.status === 'TERLAMBAT' ? (dict.dashboard.statusTerlambat || h.status) :
+                               h.status === 'IZIN' ? (dict.dashboard.statusIzin || h.status) :
+                               h.status === 'SAKIT' ? (dict.dashboard.statusSakit || h.status) : h.status}
                             </span>
                           )}
                         </td>

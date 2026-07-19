@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import CustomDropdown from "@/components/CustomDropdown";
-import { useDictionary } from "@/hooks/useDictionary";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 export default function AdminRekapPage() {
   const dict = useDictionary();
+  const locale = useLocale();
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -161,7 +162,7 @@ export default function AdminRekapPage() {
             onChange={(val) => setBulan(Number(val))}
             options={Array.from({length: 12}, (_, i) => i + 1).map(m => ({
               value: m,
-              label: new Intl.DateTimeFormat('id-ID', { month: 'long' }).format(new Date(2000, m - 1, 1))
+              label: new Intl.DateTimeFormat(locale, { month: 'long' }).format(new Date(2000, m - 1, 1))
             }))}
             className="w-40 shadow-sm"
           />
@@ -199,7 +200,7 @@ export default function AdminRekapPage() {
           <div className="p-12 text-center text-gray-500">{dict.adminKantor?.rekap?.noData || "Belum ada data kehadiran untuk bulan ini."}</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[800px] whitespace-nowrap">
               <thead>
                 <tr className="bg-white text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
                   <th className="px-6 py-4 font-semibold">{dict.adminKantor?.rekap?.colEmployee || "Karyawan"}</th>
