@@ -247,7 +247,18 @@
       "createSuccess": "Sesi absensi berhasil dibuat.",
       "createFailed": "Gagal membuat sesi absensi.",
       "loading": "Memuat sesi...",
-      "loadingDetail": "Memuat detail sesi..."
+      "loadingDetail": "Memuat detail sesi...",
+      "detailTitle": "Detail Sesi Absensi",
+      "statusSession": "Status Sesi",
+      "totalEmployee": "Total Karyawan",
+      "alreadyCheckedIn": "Sudah Absen",
+      "employeeListTitle": "Daftar Kehadiran Karyawan",
+      "colEmployeeName": "Nama Karyawan",
+      "colEmail": "Email",
+      "colStatusAbsen": "Status Absen",
+      "statusNotYet": "Belum",
+      "closeWarningMsg": "Karyawan tidak akan bisa absen lagi ke sesi ini.",
+      "closeConfirm": "Ya, Tutup"
     },
     "persetujuan": {
       "title": "Persetujuan Karyawan",

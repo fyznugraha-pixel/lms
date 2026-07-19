@@ -248,7 +248,18 @@
       "createSuccess": "Attendance session created successfully.",
       "createFailed": "Failed to create attendance session.",
       "loading": "Loading sessions...",
-      "loadingDetail": "Loading session details..."
+      "loadingDetail": "Loading session details...",
+      "detailTitle": "Attendance Session Detail",
+      "statusSession": "Session Status",
+      "totalEmployee": "Total Employees",
+      "alreadyCheckedIn": "Checked In",
+      "employeeListTitle": "Employee Attendance List",
+      "colEmployeeName": "Employee Name",
+      "colEmail": "Email",
+      "colStatusAbsen": "Attendance Status",
+      "statusNotYet": "Not Yet",
+      "closeWarningMsg": "Employees will no longer be able to check in to this session.",
+      "closeConfirm": "Yes, Close"
     },
     "persetujuan": {
       "title": "Employee Approvals",
