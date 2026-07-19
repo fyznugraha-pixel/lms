@@ -26,7 +26,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
   const dict = getDictionary(langCookie);
 
   return (
-    <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0">
+    <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0 overflow-x-hidden w-full max-w-[100vw]">
       <MobileTopHeader langCookie={langCookie} />
       
       {/* Sidebar Khusus Kantor */}

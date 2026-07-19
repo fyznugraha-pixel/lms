@@ -127,7 +127,7 @@ export default function KaryawanDashboard() {
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto w-full min-w-0">
       {/* Header & Clock */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 md:p-6 md:rounded-2xl shadow-sm border-y md:border border-gray-100 -mx-4 md:mx-0">
         <div>

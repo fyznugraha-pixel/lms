@@ -27,7 +27,7 @@ export default function KaryawanRekapPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="max-w-5xl mx-auto space-y-8 w-full min-w-0">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{dict.recap.title}</h1>
@@ -63,29 +63,29 @@ export default function KaryawanRekapPage() {
         <div className="p-12 text-center text-gray-500">{dict.bottomNav?.recapLoading || "Memuat laporan..."}</div>
       ) : data ? (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalPresent}</span>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalPresent}</span>
               <span className="text-3xl font-black text-green-600">{data.ringkasan.hadir + data.ringkasan.terlambat}</span>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalSick}</span>
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalSick}</span>
               <span className="text-3xl font-black text-red-500">{data.ringkasan.sakit}</span>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalLeave}</span>
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalLeave}</span>
               <span className="text-3xl font-black text-blue-500">{data.ringkasan.izin}</span>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalAlpha}</span>
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalAlpha}</span>
               <span className="text-3xl font-black text-gray-900">{data.ringkasan.alpha}</span>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalIncomplete}</span>
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalIncomplete}</span>
               <span className="text-3xl font-black text-orange-500">{data.ringkasan.incomplete}</span>
             </div>
-            <div className="bg-blue-600 p-4 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center text-white">
-              <span className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1">{dict.recap.totalHours}</span>
+            <div className="bg-blue-600 p-4 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center text-white min-w-0">
+              <span className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalHours}</span>
               <span className="text-3xl font-black">{Math.floor(data.ringkasan.totalDurasiMenit / 60)}<span className="text-lg">h</span></span>
             </div>
           </div>
