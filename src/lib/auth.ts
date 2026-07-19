@@ -11,11 +11,11 @@ export interface SessionPayload {
   [key: string]: any;
 }
 
-export async function signToken(payload: SessionPayload): Promise<string> {
+export async function signToken(payload: SessionPayload, expiresIn: string = "1d"): Promise<string> {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("1d") // 1 day
+    .setExpirationTime(expiresIn)
     .sign(encodedSecret);
 }
 

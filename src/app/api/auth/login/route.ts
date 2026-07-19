@@ -69,18 +69,18 @@ export async function POST(request: Request) {
       }
     }
 
+    // Default session is 1 day, or 30 days if they use rememberMe
+    const isUsingRememberMe = isTactLinkRole && rememberMe;
+    const maxAgeAccess = isUsingRememberMe ? 30 * 24 * 60 * 60 : 60 * 60 * 24;
+
     const token = await signToken({
       userId: user.id,
       role: user.role,
       kampusId: user.kampusId,
       nim: user.nim,
-    });
+    }, isUsingRememberMe ? "30d" : "1d");
 
     const response = NextResponse.json({ success: true, data: { role: user.role } });
-    
-    // Default session is 1 day, or 15 mins if they use rememberMe (so they use refresh token)
-    const isUsingRememberMe = isTactLinkRole && rememberMe;
-    const maxAgeAccess = isUsingRememberMe ? 15 * 60 : 60 * 60 * 24;
 
     response.cookies.set({
       name: 'session_token',
