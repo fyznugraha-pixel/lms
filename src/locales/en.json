@@ -219,7 +219,7 @@
       "title": "Manage Employees",
       "navLabel": "Employees",
       "subtitle": "Management of office employee data and access",
-      "btnAdd": "+ Add Employee",
+      "btnAdd": "Add Employee",
       "searchPlaceholder": "Search name or email...",
       "filterAll": "All Status",
       "filterActive": "Active",
