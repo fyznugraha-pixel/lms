@@ -174,7 +174,7 @@ export default function KaryawanPage() {
 
         {/* Data List */}
         {isLoading ? (
-          <div className="p-8 text-center text-gray-500">Memuat data...</div>
+          <div className="p-8 text-center text-gray-500">{dict.adminKantor?.karyawan?.loading || "Memuat data..."}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -216,7 +216,7 @@ export default function KaryawanPage() {
                           : "bg-red-50 text-red-700 border border-red-200"
                       }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${k.isActive ? 'bg-green-600' : 'bg-red-600'}`}></span>
-                        {k.isActive ? 'Aktif' : 'Nonaktif'}
+                        {k.isActive ? (dict.adminKantor?.karyawan?.statusActive || "Aktif") : (dict.adminKantor?.karyawan?.statusInactive || "Nonaktif")}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -224,13 +224,13 @@ export default function KaryawanPage() {
                         onClick={() => openModal(k)}
                         className="text-blue-600 hover:text-blue-800 font-medium text-sm mr-4 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        Edit
+                        {dict.adminKantor?.karyawan?.btnEdit || "Edit"}
                       </button>
                       <button 
                         onClick={() => toggleStatus(k.id, k.isActive)}
                         className={`${k.isActive ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'} font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity`}
                       >
-                        {k.isActive ? 'Nonaktifkan' : 'Aktifkan'}
+                        {k.isActive ? (dict.adminKantor?.karyawan?.btnDeactivate || "Nonaktifkan") : (dict.adminKantor?.karyawan?.btnActivate || "Aktifkan")}
                       </button>
                     </td>
                   </tr>

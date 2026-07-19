@@ -19,30 +19,28 @@ export default async function AdminKantorDashboard() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const totalKaryawan = await prisma.user.count({
-    where: { role: "KARYAWAN" }
-  });
-
-  const menungguPersetujuan = await prisma.pengajuanIzin.count({
-    where: { status: "PENDING" }
-  });
-
-  const kehadiranHariIni = await prisma.absensiKantor.count({
-    where: { tanggal: today, status: "HADIR" }
-  });
-
-  const absensiTerbaru = await prisma.absensiKantor.findMany({
-    where: { tanggal: today },
-    orderBy: { waktuAbsenMasuk: 'desc' },
-    take: 5,
-    include: { karyawan: { select: { namaLengkap: true, email: true } } }
-  });
-
-  const pengajuanTerbaru = await prisma.pengajuanIzin.findMany({
-    orderBy: { createdAt: 'desc' },
-    take: 4,
-    include: { karyawan: { select: { namaLengkap: true } } }
-  });
+  const [
+    totalKaryawan,
+    menungguPersetujuan,
+    kehadiranHariIni,
+    absensiTerbaru,
+    pengajuanTerbaru
+  ] = await Promise.all([
+    prisma.user.count({ where: { role: "KARYAWAN" } }),
+    prisma.pengajuanIzin.count({ where: { status: "PENDING" } }),
+    prisma.absensiKantor.count({ where: { tanggal: today, status: "HADIR" } }),
+    prisma.absensiKantor.findMany({
+      where: { tanggal: today },
+      orderBy: { waktuAbsenMasuk: 'desc' },
+      take: 5,
+      include: { karyawan: { select: { namaLengkap: true, email: true } } }
+    }),
+    prisma.pengajuanIzin.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 4,
+      include: { karyawan: { select: { namaLengkap: true } } }
+    })
+  ]);
 
   const formatJam = (date: Date | null) => {
     if (!date) return "--:--";
