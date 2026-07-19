@@ -70,7 +70,7 @@ export async function POST(request: Request) {
     }
 
     // Default session is 1 day, or 30 days if they use rememberMe
-    const isUsingRememberMe = isTactLinkRole && rememberMe;
+    const isUsingRememberMe = rememberMe;
     const maxAgeAccess = isUsingRememberMe ? 30 * 24 * 60 * 60 : 60 * 60 * 24;
 
     const token = await signToken({
@@ -89,6 +89,7 @@ export async function POST(request: Request) {
       path: '/',
       secure: process.env.NODE_ENV === 'production',
       maxAge: maxAgeAccess,
+      expires: new Date(Date.now() + maxAgeAccess * 1000),
     });
 
     // Generate refresh token jika remember me
