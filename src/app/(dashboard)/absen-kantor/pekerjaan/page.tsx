@@ -109,7 +109,6 @@ export default function PekerjaanPage() {
   const handleUpdateTodoStatus = async (id: string, currentStatus: string) => {
     const nextStatus = currentStatus === 'TODO' ? 'IN_PROGRESS' : currentStatus === 'IN_PROGRESS' ? 'DONE' : 'TODO';
     
-    // Optimistic update for instant UI response
     setTodos(prev => prev.map(t => t.id === id ? { ...t, status: nextStatus } : t));
     
     try {
@@ -118,11 +117,11 @@ export default function PekerjaanPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: nextStatus })
       });
-      // Silent refresh in background
+
       fetchTodos();
     } catch (e) {
       console.error("Failed to update status:", e);
-      // Revert if error
+
       fetchTodos();
     }
   };
