@@ -11,7 +11,7 @@ export default function MobileBottomNav({ dict, role }: { dict: any; role: strin
     { name: dict.bottomNav?.home || "Home", href: "/absen-kantor", icon: Home },
     { name: dict.bottomNav?.workLog || "Kerja", href: "/absen-kantor/pekerjaan", icon: Briefcase },
     { name: dict.bottomNav?.recap || "Rekap", href: "/absen-kantor/rekap", icon: FileText },
-    { name: dict.bottomNav?.leave || "Izin", href: "/absen-kantor/izin", icon: CalendarClock },
+    { name: dict.sidebar?.leaveRequest || dict.bottomNav?.leave || "Izin", href: "/absen-kantor/izin", icon: CalendarClock },
     { name: dict.bottomNav?.profile || "Profil", href: "/absen-kantor/profil", icon: User },
   ];
 

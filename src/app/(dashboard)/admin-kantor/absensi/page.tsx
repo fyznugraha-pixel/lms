@@ -75,12 +75,12 @@ export default function AbsensiAdminPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{dict.adminKantor?.absensi?.title || "Manajemen Absensi"}</h1>
-          <p className="text-gray-500">{dict.adminKantor?.absensi?.subtitle || "Kelola sesi absensi kantor & barcode karyawan"}</p>
+          <p className="text-gray-500 mt-1">{dict.adminKantor?.absensi?.subtitle || "Kelola sesi absensi kantor & barcode karyawan"}</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3 w-full md:w-auto">
           <button
             onClick={() => openCreateConfirm("MASUK")}
             disabled={isCreating}
@@ -102,7 +102,7 @@ export default function AbsensiAdminPage() {
         {isLoading ? (
           <div className="p-8 text-center text-gray-500">Memuat sesi...</div>
         ) : sessions.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">Belum ada sesi absensi.</div>
+          <div className="p-8 text-center text-gray-500">{dict.adminKantor?.absensi?.noData || "Belum ada sesi absensi."}</div>
         ) : (
           <div className="min-w-[800px]">
             <table className="w-full text-left border-collapse">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import useSWR from "swr";
 import ConfirmModal from "@/components/ConfirmModal";
 import DigitalClock from "@/components/DigitalClock";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
@@ -26,18 +27,19 @@ type HistoriAbsen = {
 export default function KaryawanDashboard() {
   const dict = useDictionary();
   const locale = useLocale();
-  const [data, setData] = useState<{
+
+  const fetcher = (url: string) => fetch(url).then(res => res.json()).then(res => res.data);
+  const { data, error, isLoading: isSwrLoading, mutate } = useSWR<{
     absensiHariIni: AbsensiHariIni;
     bisaAbsenMasuk: boolean;
     tokenMasukStr: string | null;
     bisaAbsenPulang: boolean;
     tokenPulangStr: string | null;
     histori: HistoriAbsen[];
-  } | null>(null);
+  }>("/api/absen-kantor/absen", fetcher, { revalidateOnFocus: true });
 
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = isSwrLoading && !data;
   const [isActionLoading, setIsActionLoading] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
   
   // Custom Alert Modal
   const [alertModal, setAlertModal] = useState<{ isOpen: boolean; title: string; message: string; theme: "blue"|"red"|"amber" }>({
@@ -52,25 +54,6 @@ export default function KaryawanDashboard() {
   // OTP Input
   const [kodeMasuk, setKodeMasuk] = useState("");
   const [kodePulang, setKodePulang] = useState("");
-
-  const fetchData = async () => {
-    if (!data) setIsLoading(true);
-    try {
-      const res = await fetch("/api/absen-kantor/absen");
-      const result = await res.json();
-      if (result.success) {
-        setData(result.data);
-      }
-    } catch (error) {
-      console.error("Gagal mengambil data", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const handleAbsen = async (jenisAbsen: "MASUK" | "PULANG") => {
     const kode = jenisAbsen === "MASUK" ? kodeMasuk : kodePulang;
@@ -92,7 +75,7 @@ export default function KaryawanDashboard() {
         setAlertModal({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: result.message, theme: "blue" });
         if (jenisAbsen === "MASUK") setKodeMasuk("");
         if (jenisAbsen === "PULANG") setKodePulang("");
-        fetchData();
+        mutate();
       } else {
         setAlertModal({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, theme: "red" });
       }
@@ -128,10 +111,11 @@ export default function KaryawanDashboard() {
       });
       const result = await res.json();
       if (result.success) {
-        setAlertModal({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: result.message, theme: "blue" });
+        setAlertModal({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: result.message || "Klarifikasi terkirim", theme: "blue" });
         setIsKlarifikasiModalOpen(false);
+        setKlarifikasiDate("");
         setKlarifikasiAlasan("");
-        fetchData();
+        mutate();
       } else {
         setAlertModal({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, theme: "red" });
       }
@@ -145,14 +129,20 @@ export default function KaryawanDashboard() {
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header & Clock */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-5 md:p-6 md:rounded-2xl shadow-sm border-y md:border border-gray-100 -mx-4 md:mx-0">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 md:p-6 md:rounded-2xl shadow-sm border-y md:border border-gray-100 -mx-4 md:mx-0">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{dict.sidebar.dashboard}</h1>
           <p className="text-gray-500 mt-1 capitalize">
             {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
           </p>
         </div>
-        <DigitalClock label={dict.dashboard.serverTime} />
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <button onClick={() => mutate()} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 hidden md:flex items-center gap-2 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Refresh Data
+          </button>
+          <DigitalClock label={dict.dashboard.serverTime} />
+        </div>
       </div>
 
       {isLoading ? (

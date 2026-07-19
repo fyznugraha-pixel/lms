@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import DashboardPasswordButton from "@/components/DashboardPasswordButton";
-import { LogOut } from "lucide-react";
+import { LogOut, RefreshCw } from "lucide-react";
+import useSWR from "swr";
 
 export default function ProfilPage() {
   const dict = useDictionary();
   const locale = useLocale();
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" }>({
     isOpen: false,
@@ -20,23 +19,10 @@ export default function ProfilPage() {
     type: "alert"
   });
 
-  const fetchSessions = async () => {
-    try {
-      const res = await fetch("/api/absen-kantor/profil/sessions");
-      const result = await res.json();
-      if (result.success) {
-        setSessions(result.data);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSessions();
-  }, []);
+  const fetcher = (url: string) => fetch(url).then(res => res.json()).then(res => res.data);
+  const { data: sessions, error, isLoading: isSwrLoading, mutate } = useSWR(`/api/absen-kantor/profil/sessions`, fetcher, { revalidateOnFocus: true });
+  
+  const isLoading = isSwrLoading && !sessions;
 
   const handleLogoutAll = async () => {
     try {
@@ -70,9 +56,17 @@ export default function ProfilPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">{dict.profile.title}</h1>
-        <p className="text-gray-500 mt-1">{dict.profile.subtitle}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">{dict.sidebar.profile}</h1>
+          <p className="text-gray-500 mt-1">{dict.profile.subtitle}</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <button onClick={() => mutate()} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 hidden md:flex items-center gap-2 transition-colors">
+            <RefreshCw size={16} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       <div className="md:hidden grid grid-cols-2 gap-4">
@@ -111,7 +105,7 @@ export default function ProfilPage() {
             <div className="p-6 text-center text-gray-500">{dict.dashboard.noHistory}</div>
           ) : (
             <ul className="divide-y divide-gray-100">
-              {sessions.map((s) => {
+              {sessions.map((s: any) => {
                 const isRevoked = !!s.revokedAt;
                 const isExpired = new Date(s.expiresAt) < new Date();
                 const isActive = !isRevoked && !isExpired;

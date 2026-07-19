@@ -142,7 +142,7 @@ export default function PenanggungJawabDashboard() {
         {isLoading ? (
           <div className="p-8 text-center text-gray-500">Memuat data histori sesi...</div>
         ) : sesiList.length === 0 ? (
-          <div className="p-12 text-center text-gray-500">Belum ada sesi absen yang dibuat.</div>
+          <div className="p-12 text-center text-gray-500">{dict.adminKantor?.absensi?.noData || "Belum ada sesi absensi."}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm whitespace-nowrap">

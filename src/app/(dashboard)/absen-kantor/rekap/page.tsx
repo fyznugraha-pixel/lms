@@ -3,35 +3,19 @@
 import { useState, useEffect } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import CustomDropdown from "@/components/CustomDropdown";
+import useSWR from "swr";
 
 export default function KaryawanRekapPage() {
   const dict = useDictionary();
   const locale = useLocale();
-  const [data, setData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  
   const currentDate = new Date();
   const [bulan, setBulan] = useState(currentDate.getMonth() + 1);
   const [tahun, setTahun] = useState(currentDate.getFullYear());
 
-  const fetchRekap = async () => {
-    if (!data) setIsLoading(true);
-    try {
-      const res = await fetch(`/api/absen-kantor/rekap?mode=user&bulan=${bulan}&tahun=${tahun}`);
-      const result = await res.json();
-      if (result.success) {
-        setData(result.data);
-      }
-    } catch (error) {
-      console.error("Gagal mengambil data", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRekap();
-  }, [bulan, tahun]);
+  const fetcher = (url: string) => fetch(url).then(res => res.json()).then(res => res.data);
+  const { data, error, isLoading: isSwrLoading, mutate } = useSWR(`/api/absen-kantor/rekap?mode=user&bulan=${bulan}&tahun=${tahun}`, fetcher, { revalidateOnFocus: true });
+  
+  const isLoading = isSwrLoading && !data;
 
   const formatTanggal = (isoString: string) => {
     return new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(isoString));
@@ -49,7 +33,11 @@ export default function KaryawanRekapPage() {
           <h1 className="text-3xl font-bold text-gray-900">{dict.recap.title}</h1>
           <p className="text-gray-500 mt-1">{dict.recap.subtitle}</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
+          <button onClick={() => mutate()} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 hidden md:flex items-center gap-2 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Refresh
+          </button>
           <CustomDropdown
             value={bulan}
             onChange={(val) => setBulan(Number(val))}

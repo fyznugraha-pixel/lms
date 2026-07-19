@@ -3,16 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Users, FileCheck, CheckSquare, BarChart, Home } from "lucide-react";
+import { useDictionary } from "@/hooks/useDictionary";
 
 export default function AdminMobileBottomNav() {
   const pathname = usePathname();
+  const dict = useDictionary();
 
   const navItems = [
-    { name: "Persetujuan", href: "/admin-kantor/persetujuan", icon: FileCheck },
-    { name: "Karyawan", href: "/admin-kantor/karyawan", icon: Users },
-    { name: "Sesi", href: "/admin-kantor/absensi", icon: CheckSquare },
-    { name: "Rekap", href: "/admin-kantor/rekap", icon: BarChart },
-    { name: "Home", href: "/absen-kantor", icon: Home },
+    { name: dict.adminKantor?.persetujuan?.title || "Persetujuan", href: "/admin-kantor/persetujuan", icon: FileCheck },
+    { name: dict.adminKantor?.karyawan?.title || "Karyawan", href: "/admin-kantor/karyawan", icon: Users },
+    { name: dict.adminKantor?.absensi?.title || "Sesi", href: "/admin-kantor/absensi", icon: CheckSquare },
+    { name: dict.bottomNav?.recap || "Rekap", href: "/admin-kantor/rekap", icon: BarChart },
+    { name: dict.bottomNav?.home || "Home", href: "/absen-kantor", icon: Home },
   ];
 
   return (

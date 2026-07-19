@@ -213,7 +213,11 @@ export default function KaryawanPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
-                          {k.role.replace(/_/g, ' ')}
+                          {k.role === 'ADMIN_KANTOR' 
+                            ? (dict.dashboard?.roleAdmin || "Admin Kantor")
+                            : k.role === 'KARYAWAN'
+                            ? (dict.dashboard?.roleEmployee || "Karyawan")
+                            : k.role.replace(/_/g, ' ')}
                         </span>
                       </td>
                     <td className="px-6 py-4">
