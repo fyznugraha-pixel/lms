@@ -203,7 +203,7 @@ export default function PekerjaanPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
         
         {/* TO-DO LIST MODULE */}
-        <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden flex flex-col h-[600px] -mx-4 md:mx-0">
+        <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden flex flex-col h-auto lg:h-[600px] -mx-4 md:mx-0">
           <div className="p-5 md:p-6 border-b border-gray-100 bg-gray-50/50">
             <h2 className="text-lg font-bold text-gray-900">{dict.work.todoTab}</h2>
             <p className="text-sm text-gray-500 mt-1">{dict.dashboard.todoDesc}</p>
@@ -288,7 +288,7 @@ export default function PekerjaanPage() {
         </div>
 
         {/* DAILY WORK LOG MODULE */}
-        <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden flex flex-col h-[600px] -mx-4 md:mx-0">
+        <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden flex flex-col h-auto lg:h-[600px] -mx-4 md:mx-0">
           <div className="p-6 border-b border-gray-100 bg-blue-50/50">
             <div className="flex justify-between items-center">
               <div>
@@ -342,7 +342,7 @@ export default function PekerjaanPage() {
                 onChange={(e) => setIsPrivat(e.target.checked)}
                 className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
-              <span className="text-sm font-medium text-gray-700">Jadikan Privat <span className="font-normal text-gray-500">(Hanya terlihat oleh Anda dan Atasan)</span></span>
+              <span className="text-sm font-medium text-gray-700">{dict.work.logPrivateToggle || "Jadikan Privat"} <span className="font-normal text-gray-500">{dict.work.logPrivateDesc || "(Hanya terlihat oleh Anda dan Atasan)"}</span></span>
             </label>
             
             <div className="mt-auto pt-4">
@@ -352,11 +352,11 @@ export default function PekerjaanPage() {
                 className="w-full py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isSubmittingLog ? (
-                  "Menyimpan..."
+                  dict.work.logSavingBtn || "Menyimpan..."
                 ) : (
                   <>
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
-                    Simpan Jurnal Hari Ini
+                    {dict.work.logSaveBtn || "Simpan Jurnal Hari Ini"}
                   </>
                 )}
               </button>
