@@ -92,7 +92,7 @@ export default function KaryawanIzinPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Form Pengajuan */}
         <div className="lg:col-span-1">
-          <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 p-5 md:p-6 -mx-4 md:mx-0">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-6 border-b pb-4">{dict.leave.formTitle}</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
@@ -157,7 +157,7 @@ export default function KaryawanIzinPage() {
 
         {/* Daftar Riwayat */}
         <div className="lg:col-span-2">
-          <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 p-0 overflow-hidden -mx-4 md:mx-0">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-0 overflow-hidden">
             <div className="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
               <h2 className="text-lg font-bold text-gray-900">{dict.leave.reqHistory}</h2>
             </div>

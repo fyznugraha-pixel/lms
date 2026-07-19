@@ -134,7 +134,7 @@ export default function PenanggungJawabDashboard() {
       </div>
 
       {/* Riwayat Sesi */}
-      <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden -mx-4 md:mx-0 mt-8">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-8">
         <div className="p-5 md:p-6 border-b border-gray-100 bg-gray-50/50">
           <h2 className="text-lg font-bold text-gray-900">{dict.penanggungJawab?.historyTitle || "Riwayat Sesi Absen"}</h2>
         </div>
