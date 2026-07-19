@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyToken } from "@/lib/auth";
 
-export default async function Home() {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const token = cookieStore.get("session_token")?.value;
 
@@ -24,6 +24,5 @@ export default async function Home() {
     }
   }
 
-  // Jika tidak ada token atau token tidak valid, arahkan ke halaman login
-  redirect("/login");
+  return <>{children}</>;
 }
