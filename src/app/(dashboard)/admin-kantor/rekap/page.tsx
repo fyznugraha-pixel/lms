@@ -149,7 +149,7 @@ export default function AdminRekapPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8 w-full min-w-0">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{dict.adminKantor?.rekap?.title || "Rekapitulasi Karyawan"}</h1>

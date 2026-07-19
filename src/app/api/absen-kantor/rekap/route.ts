@@ -14,6 +14,23 @@ async function checkAuth() {
   return payload;
 }
 
+function applyRealtimeDuration(absensiList: any[]) {
+  const today = new Date();
+  for (const absen of absensiList) {
+    if (!absen.durasiKerja && absen.isIncomplete && absen.waktuAbsenMasuk) {
+      const absenDate = new Date(absen.tanggal);
+      if (
+        today.getFullYear() === absenDate.getFullYear() &&
+        today.getMonth() === absenDate.getMonth() &&
+        today.getDate() === absenDate.getDate()
+      ) {
+        const diffMs = today.getTime() - new Date(absen.waktuAbsenMasuk).getTime();
+        absen.durasiKerja = Math.max(0, Math.floor(diffMs / 60000));
+      }
+    }
+  }
+}
+
 export async function GET(request: Request) {
   try {
     const user = await checkAuth();
@@ -45,6 +62,8 @@ export async function GET(request: Request) {
         },
         orderBy: { tanggal: 'desc' }
       });
+
+      applyRealtimeDuration(absensiList);
 
       // Kelompokkan per karyawan untuk laporan rekap
       const rekapKaryawan: Record<string, any> = {};
@@ -95,6 +114,8 @@ export async function GET(request: Request) {
         },
         orderBy: { tanggal: 'desc' }
       });
+
+      applyRealtimeDuration(absensiList);
 
       const rekap = {
         hadir: 0,
