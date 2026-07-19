@@ -7,7 +7,7 @@ async function main() {
   console.log('Seeding data...')
   const passwordHash = await bcrypt.hash('password123', 10)
 
-  // 1. Create Super Admin (tanpa kampus)
+  // 1. Create Super Admin
   const superAdmin = await prisma.user.upsert({
     where: { email: 'superadmin@system.com' },
     update: {},
@@ -15,63 +15,36 @@ async function main() {
       email: 'superadmin@system.com',
       passwordHash,
       role: 'SUPER_ADMIN',
+      namaLengkap: 'Super Administrator',
     },
   })
   console.log(`Created super admin: ${superAdmin.email}`)
 
-  // 2. Create Kampus 'Telkom'
-  const kampusTelkom = await prisma.kampus.upsert({
-    where: { kodeKampus: 'TELKOM' },
+  // 2. Create Admin Kantor
+  const adminKantor = await prisma.user.upsert({
+    where: { email: 'admin@tactlink.com' },
     update: {},
     create: {
-      namaKampus: 'Telkom University',
-      kodeKampus: 'TELKOM',
-      subdomain: 'telkom',
-      latitude: -6.974001,
-      longitude: 107.630348,
-      radiusMeter: 200,
-    },
-  })
-  console.log(`Created kampus: ${kampusTelkom.namaKampus}`)
-
-  // 3. Create Admin untuk Telkom
-  const adminTelkom = await prisma.user.upsert({
-    where: { email: 'admin@telkom.com' },
-    update: {},
-    create: {
-      email: 'admin@telkom.com',
+      email: 'admin@tactlink.com',
       passwordHash,
-      role: 'ADMIN_KAMPUS',
-      kampusId: kampusTelkom.id,
+      role: 'ADMIN_KANTOR',
+      namaLengkap: 'Admin HRD',
     },
   })
-  console.log(`Created admin kampus: ${adminTelkom.email}`)
+  console.log(`Created admin kantor: ${adminKantor.email}`)
   
-  // 4. Create Dosen & Mahasiswa sample
-  const dosen = await prisma.user.upsert({
-    where: { email: 'dosen@telkom.com' },
+  // 3. Create Karyawan sample
+  const karyawan = await prisma.user.upsert({
+    where: { email: 'karyawan@tactlink.com' },
     update: {},
     create: {
-      email: 'dosen@telkom.com',
+      email: 'karyawan@tactlink.com',
       passwordHash,
-      role: 'DOSEN',
-      kampusId: kampusTelkom.id,
+      role: 'KARYAWAN',
+      namaLengkap: 'Karyawan Teladan',
     },
   })
-  console.log(`Created dosen: ${dosen.email}`)
-
-  const mahasiswa = await prisma.user.upsert({
-    where: { email: 'mhs@telkom.com' },
-    update: {},
-    create: {
-      email: 'mhs@telkom.com',
-      passwordHash,
-      role: 'MAHASISWA',
-      kampusId: kampusTelkom.id,
-      nim: '1301201234'
-    },
-  })
-  console.log(`Created mahasiswa: ${mahasiswa.email}`)
+  console.log(`Created karyawan: ${karyawan.email}`)
 
   console.log('Seeding finished.')
 }

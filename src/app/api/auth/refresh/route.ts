@@ -72,9 +72,7 @@ export async function POST(request: Request) {
     // Generate new JWT
     const newJwt = await signToken({
       userId: session.user.id,
-      role: session.user.role,
-      kampusId: session.user.kampusId,
-      nim: session.user.nim,
+      role: session.user.role
     });
 
     const response = NextResponse.json({ success: true });

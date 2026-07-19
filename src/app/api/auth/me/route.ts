@@ -6,7 +6,6 @@ export async function GET() {
   return NextResponse.json({
     isLoggedIn: !!session.userId,
     userId: session.userId,
-    userRole: session.userRole,
-    kampusId: session.kampusId
+    userRole: session.userRole
   });
 }
