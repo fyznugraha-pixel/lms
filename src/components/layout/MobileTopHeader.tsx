@@ -36,11 +36,13 @@ export default function MobileTopHeader({ langCookie, role }: { langCookie: stri
         )}
         <LanguageToggle currentLang={langCookie} compact={true} />
         {inAdminMode && (
-          <form action="/api/auth/logout" method="POST">
-            <button type="submit" className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center" title={dict.sidebar?.logout || "Keluar"}>
-              <LogOut size={20} />
-            </button>
-          </form>
+          <Link 
+            href={isCurrentlyAdmin ? "/admin-kantor/profil" : "/absen-kantor/profil"} 
+            className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center" 
+            title={dict.sidebar?.profile || "Profil"}
+          >
+            <User size={20} />
+          </Link>
         )}
       </div>
     </div>
