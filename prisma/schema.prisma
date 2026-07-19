@@ -1,6 +1,6 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -9,97 +9,20 @@ generator client {
 }
 
 enum Role {
-  MAHASISWA
-  DOSEN
-  ADMIN_KAMPUS
   SUPER_ADMIN
   KARYAWAN
   ADMIN_KANTOR
 }
 
-enum StatusKampus {
-  ACTIVE
-  SUSPENDED
-}
-
-enum StatusMahasiswa {
-  AKTIF
-  CUTI
-  LULUS
-  DO
-}
-
-enum Hari {
-  SENIN
-  SELASA
-  RABU
-  KAMIS
-  JUMAT
-  SABTU
-  MINGGU
-}
-
-enum StatusJadwalTemplate {
-  AKTIF
-  NONAKTIF
-}
-
-enum StatusJadwalSesi {
-  SCHEDULED
-  ONGOING
-  SELESAI
-  DIBATALKAN
-}
-
-enum StatusAbsensi {
-  HADIR
-  TERLAMBAT
-  ALPHA
-  IZIN
-  SAKIT
-}
-
-enum MetodeAbsensi {
-  QR
-  MANUAL_DOSEN
-  AUTO_SYSTEM
-}
-
-model Kampus {
-  id          String       @id @default(uuid())
-  namaKampus  String
-  kodeKampus  String       @unique
-  subdomain   String       @unique
-  latitude    Float
-  longitude   Float
-  radiusMeter Int          @default(100)
-  status      StatusKampus @default(ACTIVE)
-
-  users           User[]
-  masterMahasiswa MasterMahasiswa[]
-  jurusan         Jurusan[]
-  kelas           Kelas[]
-  mataKuliah      MataKuliah[]
-  hariLibur       HariLibur[]
-}
-
 model User {
   id           String  @id @default(uuid())
-  kampusId     String? // Nullable for SUPER_ADMIN
-  nim          String?
   email        String  @unique // Global unique
   passwordHash String
   role         Role
-  namaLengkap  String? // Ditambahkan untuk karyawan/admin (opsional karena mahasiswa mungkin pakai MasterMahasiswa)
+  namaLengkap  String? // Ditambahkan untuk karyawan/admin
   isActive     Boolean @default(true) // Untuk menonaktifkan akun (soft-delete karyawan)
 
-  kampus      Kampus?           @relation(fields: [kampusId], references: [id])
-  enrollments Enrollment[]
-  kelasAjar   KelasMataKuliah[]
-  absensi     Absensi[]
-  absensiLogs AbsensiLog[]
-
-  // --- Relasi Baru untuk Modul Kantor ---
+  // --- Relasi Modul Kantor ---
   sesiAbsenDibuat   SesiAbsenKantor[]    @relation("DibuatOlehSesi")
   tokenAbsenKantor  TokenAbsenKaryawan[] @relation("KaryawanToken")
   absensiKantor     AbsensiKantor[]      @relation("KaryawanAbsensi")
@@ -109,160 +32,10 @@ model User {
   sesiLogin         SesiLogin[]          @relation("UserSesiLogin")
   workLog           WorkLog[]            @relation("WorkLogKaryawan")
   todoItem          TodoItem[]           @relation("TodoKaryawan")
-
-  @@unique([kampusId, nim])
-}
-
-model MasterMahasiswa {
-  id          String          @id @default(uuid())
-  kampusId    String
-  nim         String
-  namaLengkap String
-  prodi       String
-  status      StatusMahasiswa @default(AKTIF)
-
-  kampus Kampus @relation(fields: [kampusId], references: [id])
-
-  @@unique([kampusId, nim])
-}
-
-model Jurusan {
-  id          String @id @default(uuid())
-  kampusId    String
-  namaJurusan String
-  kodeJurusan String
-
-  kampus Kampus  @relation(fields: [kampusId], references: [id])
-  kelas  Kelas[]
-}
-
-model Kelas {
-  id        String @id @default(uuid())
-  kampusId  String
-  jurusanId String
-  namaKelas String
-  angkatan  Int
-
-  kampus  Kampus  @relation(fields: [kampusId], references: [id])
-  jurusan Jurusan @relation(fields: [jurusanId], references: [id])
-
-  enrollments     Enrollment[]
-  kelasMataKuliah KelasMataKuliah[]
-}
-
-model Enrollment {
-  mahasiswaId String
-  kelasId     String
-
-  user  User  @relation(fields: [mahasiswaId], references: [id])
-  kelas Kelas @relation(fields: [kelasId], references: [id])
-
-  @@id([mahasiswaId, kelasId])
-}
-
-model MataKuliah {
-  id       String @id @default(uuid())
-  kampusId String
-  kodeMk   String
-  namaMk   String
-  sks      Int
-
-  kampus          Kampus            @relation(fields: [kampusId], references: [id])
-  kelasMataKuliah KelasMataKuliah[]
-}
-
-model KelasMataKuliah {
-  id           String @id @default(uuid())
-  mataKuliahId String
-  kelasId      String
-  dosenId      String
-
-  mataKuliah MataKuliah @relation(fields: [mataKuliahId], references: [id])
-  kelas      Kelas      @relation(fields: [kelasId], references: [id])
-  dosen      User       @relation(fields: [dosenId], references: [id])
-
-  jadwalTemplate JadwalTemplate[]
-}
-
-model JadwalTemplate {
-  id                String               @id @default(uuid())
-  kelasMataKuliahId String
-  hari              Hari
-  jamMulai          DateTime             @db.Time
-  jamSelesai        DateTime             @db.Time
-  ruangan           String
-  berlakuMulai      DateTime             @db.Date
-  berlakuSampai     DateTime             @db.Date
-  status            StatusJadwalTemplate @default(AKTIF)
-
-  kelasMataKuliah KelasMataKuliah @relation(fields: [kelasMataKuliahId], references: [id])
-  jadwalSesi      JadwalSesi[]
-}
-
-model JadwalSesi {
-  id               String           @id @default(uuid())
-  jadwalTemplateId String
-  pertemuanKe      Int
-  tanggal          DateTime         @db.Date
-  jamMulai         DateTime         @db.Time
-  jamSelesai       DateTime         @db.Time
-  status           StatusJadwalSesi @default(SCHEDULED)
-
-  jadwalTemplate JadwalTemplate @relation(fields: [jadwalTemplateId], references: [id])
-  qrTokens       QRToken[]
-  absensi        Absensi[]
-}
-
-model QRToken {
-  id           String   @id @default(uuid())
-  jadwalSesiId String
-  token        String   @unique
-  issuedAt     DateTime @default(now())
-  expiresAt    DateTime
-
-  jadwalSesi JadwalSesi @relation(fields: [jadwalSesiId], references: [id])
-}
-
-model Absensi {
-  id              String        @id @default(uuid())
-  mahasiswaId     String
-  jadwalSesiId    String
-  waktuAbsen      DateTime?
-  status          StatusAbsensi
-  metode          MetodeAbsensi
-  latitudeScan    Float?
-  longitudeScan   Float?
-  jarakMeter      Int?
-  isLocationValid Boolean?
-
-  user        User         @relation(fields: [mahasiswaId], references: [id])
-  jadwalSesi  JadwalSesi   @relation(fields: [jadwalSesiId], references: [id])
-  absensiLogs AbsensiLog[]
-}
-
-model AbsensiLog {
-  id         String        @id @default(uuid())
-  absensiId  String
-  statusLama StatusAbsensi
-  statusBaru StatusAbsensi
-  changedBy  String
-  createdAt  DateTime      @default(now())
-
-  absensi Absensi @relation(fields: [absensiId], references: [id])
-  user    User    @relation(fields: [changedBy], references: [id])
-}
-
-model HariLibur {
-  id         String   @id @default(uuid())
-  kampusId   String
-  tanggal    DateTime @db.Date
-  keterangan String
-
-  kampus Kampus @relation(fields: [kampusId], references: [id])
 }
 
 // ==========================================
-// TAMBAHAN ENUM & MODEL MODUL KANTOR TACTLINK
+// ENUM & MODEL MODUL KANTOR TACTLINK
 // ==========================================
 
 enum JenisAbsenKantor {
@@ -312,8 +85,6 @@ enum StatusTodo {
   IN_PROGRESS
   DONE
 }
-
-// TAMBAHAN MODEL BARU
 
 model SesiAbsenKantor {
   id           String           @id @default(uuid())
