@@ -23,10 +23,11 @@ export default function AbsensiAdminPage() {
   });
 
   const openCreateConfirm = (jenisAbsen: "MASUK" | "PULANG") => {
+    const translatedJenis = jenisAbsen === "MASUK" ? (dict.adminKantor?.absensi?.typeIn || "MASUK") : (dict.adminKantor?.absensi?.typeOut || "PULANG");
     setModalConfig({
       isOpen: true,
       title: dict.notifications?.warningTitle || "Buka Sesi Absensi",
-      message: dict.adminKantor?.absensi?.openConfirmMsg?.replace("{jenisAbsen}", jenisAbsen) || `Anda yakin ingin membuka sesi ${jenisAbsen} hari ini?`,
+      message: dict.adminKantor?.absensi?.openConfirmMsg?.replace("{jenisAbsen}", translatedJenis) || `Anda yakin ingin membuka sesi ${translatedJenis} hari ini?`,
       type: "confirm",
       confirmTheme: jenisAbsen === "MASUK" ? "blue" : "amber",
       onConfirm: () => createSession(jenisAbsen),

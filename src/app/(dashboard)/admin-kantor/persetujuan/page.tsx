@@ -76,7 +76,7 @@ export default function AdminPersetujuanPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl w-full mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">{dict.adminKantor?.persetujuan?.title || "Persetujuan Karyawan"}</h1>
         <p className="text-gray-500 mt-1">{dict.adminKantor?.persetujuan?.subtitle || "Tinjau dan proses pengajuan Izin, Sakit, dan Klarifikasi Absen Karyawan."}</p>
@@ -91,7 +91,7 @@ export default function AdminPersetujuanPage() {
         </div>
         
         {isLoading ? (
-          <div className="p-12 text-center text-gray-500">Memuat data pengajuan...</div>
+          <div className="p-12 text-center text-gray-500">{dict.adminKantor?.persetujuan?.loading || "Memuat data pengajuan..."}</div>
         ) : pengajuanList.length === 0 ? (
           <div className="p-12 text-center text-gray-500">{dict.adminKantor?.persetujuan?.noData || "Belum ada data pengajuan."}</div>
         ) : (
