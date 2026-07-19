@@ -6,8 +6,6 @@ const encodedSecret = new TextEncoder().encode(JWT_SECRET);
 export interface SessionPayload {
   userId: string;
   role: string;
-  kampusId: string | null;
-  nim: string | null;
   [key: string]: any;
 }
 

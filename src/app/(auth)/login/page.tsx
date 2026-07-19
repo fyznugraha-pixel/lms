@@ -43,16 +43,10 @@ export default function LoginPage() {
 
       // Redirect berdasarkan role
       const role = data.data.role;
-      if (role === "SUPER_ADMIN" || role === "ADMIN_KAMPUS") {
-        router.push("/admin");
-      } else if (role === "ADMIN_KANTOR") {
+      if (role === "SUPER_ADMIN" || role === "ADMIN_KANTOR") {
         router.push("/admin-kantor");
-      } else if (role === "DOSEN") {
-        router.push("/dosen");
       } else if (role === "KARYAWAN") {
         router.push("/absen-kantor");
-      } else {
-        router.push("/absen");
       }
     } catch (err) {
       setError("A network error occurred.");

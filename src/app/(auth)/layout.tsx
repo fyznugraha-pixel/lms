@@ -10,16 +10,10 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
     const payload = await verifyToken(token);
     if (payload) {
       const role = payload.role as string;
-      if (role === "SUPER_ADMIN" || role === "ADMIN_KAMPUS") {
-        redirect("/admin");
-      } else if (role === "ADMIN_KANTOR") {
+      if (role === "SUPER_ADMIN" || role === "ADMIN_KANTOR") {
         redirect("/admin-kantor");
-      } else if (role === "DOSEN") {
-        redirect("/dosen");
       } else if (role === "KARYAWAN") {
         redirect("/absen-kantor");
-      } else {
-        redirect("/absen");
       }
     }
   }

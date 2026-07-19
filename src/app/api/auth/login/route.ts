@@ -19,8 +19,7 @@ export async function POST(request: Request) {
     const subdomain = request.headers.get('x-subdomain');
 
     const user = await prisma.user.findUnique({
-      where: { email },
-      include: { kampus: true }
+      where: { email }
     });
 
     if (!user) {
@@ -51,21 +50,10 @@ export async function POST(request: Request) {
           );
         }
       } else {
-        // Mahasiswa/Dosen/Admin Kampus HANYA boleh login dari subdomain kampusnya
-        if (!subdomain || subdomain === 'absensi') {
-          return NextResponse.json(
-            { success: false, error: { message: 'Harus diakses melalui subdomain kampus Anda', code: 'NO_SUBDOMAIN' } },
-            { status: 400 }
-          );
-        }
-        
-        // Pastikan kampus ada dan subdomain cocok
-        if (!user.kampus || user.kampus.subdomain !== subdomain) {
-           return NextResponse.json(
-            { success: false, error: { message: 'Akun tidak terdaftar di kampus ini', code: 'WRONG_TENANT' } },
-            { status: 403 }
-          );
-        }
+        return NextResponse.json(
+          { success: false, error: { message: 'Role tidak didukung di portal ini', code: 'UNAUTHORIZED' } },
+          { status: 403 }
+        );
       }
     }
 
@@ -75,9 +63,7 @@ export async function POST(request: Request) {
 
     const token = await signToken({
       userId: user.id,
-      role: user.role,
-      kampusId: user.kampusId,
-      nim: user.nim,
+      role: user.role
     }, isUsingRememberMe ? "30d" : "1d");
 
     const response = NextResponse.json({ success: true, data: { role: user.role } });
