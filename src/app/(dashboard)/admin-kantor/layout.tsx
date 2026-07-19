@@ -53,7 +53,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 md:p-10 md:overflow-auto flex flex-col">
+      <main className="flex-1 p-6 md:p-10 md:overflow-auto flex flex-col min-w-0 w-full">
         {children}
       </main>
 

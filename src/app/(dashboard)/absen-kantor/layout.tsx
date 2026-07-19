@@ -97,7 +97,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 md:overflow-auto flex flex-col">
+      <main className="flex-1 p-4 md:p-8 md:overflow-auto flex flex-col min-w-0 w-full">
         {children}
       </main>
 
