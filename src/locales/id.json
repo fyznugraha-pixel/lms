@@ -164,9 +164,10 @@
     "reqSuccess": "Pengajuan berhasil dikirim.",
     "tokenSuccess": "Sesi absensi baru berhasil dibuat.",
     "logSuccess": "Work Log berhasil disimpan!",
-    "approveConfirm": "Setujui pengajuan ini?",
-    "rejectConfirm": "Tolak pengajuan ini?",
-    "logoutAllConfirm": "Anda akan keluar dari semua perangkat yang terhubung (termasuk perangkat ini). Lanjutkan?"
+    "approveConfirm": "Apakah Anda yakin ingin menyetujui request ini?",
+    "rejectConfirm": "Apakah Anda yakin ingin menolak request ini?",
+    "logoutAllConfirm": "Apakah Anda yakin ingin keluar dari semua perangkat? Ini akan mengakhiri semua sesi aktif Anda.",
+    "btnYesContinue": "Ya, Lanjutkan"
   },
   "adminKantor": {
     "dashboard": {

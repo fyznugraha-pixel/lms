@@ -28,14 +28,10 @@ export default function MobileTopHeader({ langCookie, role }: { langCookie: stri
         <span className="font-bold text-gray-900 text-lg">TactLink</span>
       </div>
       <div className="flex items-center gap-3">
-        {isAdmin && (
-          <Link href={switchTarget} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors ${
-            inAdminMode 
-              ? "bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100" 
-              : "bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-100"
-          }`}>
-            {inAdminMode ? <User size={16} /> : <ShieldAlert size={16} />}
-            <span className="text-xs font-bold">{inAdminMode ? (dict.dashboard?.roleEmployee || "Karyawan") : "Admin"}</span>
+        {isAdmin && !inAdminMode && (
+          <Link href={switchTarget} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-100">
+            <ShieldAlert size={16} />
+            <span className="text-xs font-bold">Admin</span>
           </Link>
         )}
         <LanguageToggle currentLang={langCookie} compact={true} />

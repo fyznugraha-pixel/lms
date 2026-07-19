@@ -2,39 +2,25 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PlusCircle, LogOut, CheckCircle2, Copy } from "lucide-react";
+import useSWR from "swr";
+import { PlusCircle, LogOut, CheckCircle2, Copy, RefreshCw } from "lucide-react";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useDictionary } from "@/hooks/useDictionary";
 
 export default function AbsensiAdminPage() {
   const dict = useDictionary();
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const fetcher = (url: string) => fetch(url).then(res => res.json()).then(res => res.data);
+  const { data: sessions, error, isLoading: isSwrLoading, mutate } = useSWR(`/api/admin-kantor/absensi/sesi`, fetcher, { revalidateOnFocus: true });
+  
+  const isLoading = isSwrLoading && !sessions;
+
   const [isCreating, setIsCreating] = useState(false);
-  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "amber" }>({
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "amber"; confirmText?: string; cancelText?: string }>({
     isOpen: false,
     title: "",
     message: "",
     type: "alert"
   });
-
-  useEffect(() => {
-    fetchSessions();
-  }, []);
-
-  const fetchSessions = async () => {
-    try {
-      const res = await fetch("/api/admin-kantor/absensi/sesi");
-      const data = await res.json();
-      if (data.success) {
-        setSessions(data.data);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const openCreateConfirm = (jenisAbsen: "MASUK" | "PULANG") => {
     setModalConfig({
@@ -43,7 +29,9 @@ export default function AbsensiAdminPage() {
       message: dict.adminKantor?.absensi?.openConfirmMsg?.replace("{jenisAbsen}", jenisAbsen) || `Anda yakin ingin membuka sesi ${jenisAbsen} hari ini?`,
       type: "confirm",
       confirmTheme: jenisAbsen === "MASUK" ? "blue" : "amber",
-      onConfirm: () => createSession(jenisAbsen)
+      onConfirm: () => createSession(jenisAbsen),
+      confirmText: dict.notifications?.btnYesContinue || "Ya, Lanjutkan",
+      cancelText: dict.dashboard?.btnCancel || "Batal"
     });
   };
 
@@ -61,7 +49,7 @@ export default function AbsensiAdminPage() {
       });
       const data = await res.json();
       if (data.success) {
-        fetchSessions();
+        mutate();
         showAlert(dict.notifications?.successTitle || "Berhasil", data.message || dict.adminKantor?.absensi?.createSuccess || "Sesi absensi berhasil dibuat.");
       } else {
         showAlert(dict.notifications?.errorTitle || "Gagal", data.error || dict.adminKantor?.absensi?.createFailed || "Gagal membuat sesi absensi.");
@@ -81,6 +69,10 @@ export default function AbsensiAdminPage() {
           <p className="text-gray-500 mt-1">{dict.adminKantor?.absensi?.subtitle || "Kelola sesi absensi kantor & barcode karyawan"}</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          <button onClick={() => mutate()} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 hidden md:flex items-center gap-2 transition-colors">
+            <RefreshCw size={16} />
+            Refresh
+          </button>
           <button
             onClick={() => openCreateConfirm("MASUK")}
             disabled={isCreating}
@@ -101,7 +93,7 @@ export default function AbsensiAdminPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
         {isLoading ? (
           <div className="p-8 text-center text-gray-500">Memuat sesi...</div>
-        ) : sessions.length === 0 ? (
+        ) : !sessions || sessions.length === 0 ? (
           <div className="p-8 text-center text-gray-500">{dict.adminKantor?.absensi?.noData || "Belum ada sesi absensi."}</div>
         ) : (
           <div className="min-w-[800px]">
@@ -117,7 +109,7 @@ export default function AbsensiAdminPage() {
               </tr>
             </thead>
             <tbody>
-              {sessions.map((sesi) => (
+              {sessions.map((sesi: any) => (
                 <tr key={sesi.id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="p-4">{new Date(sesi.tanggal).toLocaleDateString("id-ID")}</td>
                   <td className="p-4">
@@ -177,7 +169,8 @@ export default function AbsensiAdminPage() {
         title={modalConfig.title}
         message={modalConfig.message}
         showCancel={modalConfig.type === "confirm"}
-        confirmText={modalConfig.type === "confirm" ? "Ya, Lanjutkan" : "Oke"}
+        confirmText={modalConfig.confirmText || (modalConfig.type === "confirm" ? (dict.notifications?.btnYesContinue || "Ya, Lanjutkan") : (dict.dashboard?.success || "Oke"))}
+        cancelText={modalConfig.cancelText || (dict.dashboard?.btnCancel || "Batal")}
         confirmTheme={modalConfig.confirmTheme || "blue"}
         onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
         onConfirm={() => {

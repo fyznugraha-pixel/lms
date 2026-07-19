@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useDictionary } from "@/hooks/useDictionary";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, RefreshCw } from "lucide-react";
+import useSWR from "swr";
 
 type Karyawan = {
   id: string;
@@ -17,23 +18,19 @@ type Karyawan = {
 
 export default function KaryawanPage() {
   const dict = useDictionary();
-  const [karyawanList, setKaryawanList] = useState<Karyawan[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Modal Confirm & Alert
-  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" | "amber" }>({
+  const [modalConfig, setModalConfig] = useState<{ isOpen: boolean; title: string; message: string; type: "confirm" | "alert"; onConfirm?: () => void; confirmTheme?: "blue" | "red" | "amber"; confirmText?: string; cancelText?: string }>({
     isOpen: false,
     title: "",
     message: "",
     type: "alert"
   });
   
-  // Form State
   const [formData, setFormData] = useState({
     namaLengkap: "",
     email: "",
@@ -44,24 +41,10 @@ export default function KaryawanPage() {
 
   const router = useRouter();
 
-  const fetchKaryawan = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(`/api/admin-kantor/karyawan?search=${search}&status=${statusFilter === 'all' ? '' : statusFilter}`);
-      const result = await res.json();
-      if (result.success) {
-        setKaryawanList(result.data);
-      }
-    } catch (error) {
-      console.error("Gagal mengambil data karyawan");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchKaryawan();
-  }, [search, statusFilter]);
+  const fetcher = (url: string) => fetch(url).then(res => res.json()).then(res => res.data);
+  const { data: karyawanList, error, isLoading: isSwrLoading, mutate } = useSWR(`/api/admin-kantor/karyawan?search=${search}&status=${statusFilter === 'all' ? '' : statusFilter}`, fetcher, { revalidateOnFocus: true });
+  
+  const isLoading = isSwrLoading && !karyawanList;
 
   const openModal = (karyawan?: Karyawan) => {
     if (karyawan) {
@@ -103,7 +86,7 @@ export default function KaryawanPage() {
       const result = await res.json();
       if (result.success) {
         setIsModalOpen(false);
-        fetchKaryawan();
+        mutate();
         setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: dict.notifications?.saveSuccess || "Data karyawan berhasil disimpan.", type: "alert" });
       } else {
         setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error || "Gagal menyimpan data", type: "alert", confirmTheme: "red" });
@@ -122,7 +105,7 @@ export default function KaryawanPage() {
       });
       const result = await res.json();
       if (result.success) {
-        fetchKaryawan();
+        mutate();
       }
     } catch (error) {
       setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan sistem", type: "alert", confirmTheme: "red" });
@@ -148,13 +131,19 @@ export default function KaryawanPage() {
           <h1 className="text-3xl font-bold font-heading text-slate-900">{dict.adminKantor?.karyawan?.title || "Kelola Karyawan"}</h1>
           <p className="mt-2 text-slate-600">{dict.adminKantor?.karyawan?.subtitle || "Manajemen data dan akses karyawan kantor"}</p>
         </div>
-        <button 
-          onClick={() => openModal()}
-          className="flex items-center gap-2 px-4 py-2 bg-[#394887] hover:bg-[#2D3A6E] text-white rounded-xl shadow-sm hover:shadow-md transition-all font-medium"
-        >
-          <Plus size={20} />
-          <span className="hidden sm:inline">{dict.adminKantor?.karyawan?.btnAdd || "Tambah Karyawan"}</span>
-        </button>
+        <div className="flex gap-3 w-full sm:w-auto">
+          <button onClick={() => mutate()} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100 hidden md:flex items-center gap-2 transition-colors">
+            <RefreshCw size={16} />
+            Refresh
+          </button>
+          <button 
+            onClick={() => openModal()}
+            className="flex items-center justify-center gap-2 px-4 py-2 bg-[#394887] hover:bg-[#2D3A6E] text-white rounded-xl shadow-sm hover:shadow-md transition-all font-medium w-full sm:w-auto"
+          >
+            <Plus size={20} />
+            <span className="hidden sm:inline">{dict.adminKantor?.karyawan?.btnAdd || "Tambah Karyawan"}</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter & Search Card */}
@@ -205,7 +194,7 @@ export default function KaryawanPage() {
                     </td>
                   </tr>
                 ) : (
-                  karyawanList.map((k) => (
+                  karyawanList.map((k: Karyawan) => (
                     <tr key={k.id} className="hover:bg-gray-50 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="font-medium text-gray-900">{k.namaLengkap || "-"}</div>
@@ -314,9 +303,9 @@ export default function KaryawanPage() {
                   value={formData.role}
                   onChange={(val) => setFormData({...formData, role: val as string})}
                   options={[
-                    { value: "KARYAWAN", label: "Karyawan (Hanya Absen)" },
+                    { value: "KARYAWAN", label: dict.dashboard?.roleEmployee || "Karyawan (Hanya Absen)" },
                     { value: "PENANGGUNG_JAWAB_ABSEN", label: "Penanggung Jawab Absen" },
-                    { value: "ADMIN_KANTOR", label: "Admin Kantor (HR)" }
+                    { value: "ADMIN_KANTOR", label: dict.dashboard?.roleAdmin || "Admin Kantor (HR)" }
                   ]}
                   className="w-full"
                 />
@@ -347,7 +336,8 @@ export default function KaryawanPage() {
         title={modalConfig.title}
         message={modalConfig.message}
         showCancel={modalConfig.type === "confirm"}
-        confirmText={modalConfig.type === "confirm" ? "Ya, Lanjutkan" : "Oke"}
+        confirmText={modalConfig.type === "confirm" ? (dict.notifications?.btnYesContinue || "Ya, Lanjutkan") : (dict.dashboard?.success || "Oke")}
+        cancelText={dict.dashboard?.btnCancel || "Batal"}
         confirmTheme={modalConfig.confirmTheme || "blue"}
         onCancel={() => setModalConfig({ ...modalConfig, isOpen: false })}
         onConfirm={() => {

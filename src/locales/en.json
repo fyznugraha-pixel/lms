@@ -167,7 +167,8 @@
     "logSuccess": "Work Log saved successfully!",
     "approveConfirm": "Approve this request?",
     "rejectConfirm": "Reject this request?",
-    "logoutAllConfirm": "You will be logged out from all connected devices (including this one). Continue?"
+    "logoutAllConfirm": "You will be logged out from all connected devices (including this one). Continue?",
+    "btnYesContinue": "Yes, Continue"
   },
   "adminKantor": {
     "dashboard": {
