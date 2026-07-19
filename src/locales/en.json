@@ -191,6 +191,7 @@
     },
     "karyawan": {
       "title": "Manage Employees",
+      "navLabel": "Employees",
       "subtitle": "Management of office employee data and access",
       "btnAdd": "+ Add Employee",
       "searchPlaceholder": "Search name or email...",
@@ -209,6 +210,8 @@
       "formPassword": "Password (Optional on edit)",
       "formRole": "Role/Position",
       "formStatus": "Active Status",
+      "placeholderName": "Enter full name",
+      "placeholderPassword": "Minimum 6 characters",
       "btnCancel": "Cancel",
       "btnSave": "Save",
       "confirmStatusTitle": "Change Employee Status?",
@@ -217,6 +220,7 @@
     },
     "absensi": {
       "title": "Attendance Management",
+      "navLabel": "Sessions",
       "subtitle": "Manage office attendance sessions & employee barcodes",
       "btnOpenIn": "Open Check-In",
       "btnOpenOut": "Open Check-Out",
@@ -237,7 +241,9 @@
     },
     "persetujuan": {
       "title": "Employee Approvals",
-      "subtitle": "Review and process employee Leave, Sick, and Attendance Clarification requests.",
+      "navLabel": "Approvals",
+      "subtitle": "Manage manual work logs and attendance issues",
+      "tabWorklog": "Work Logs",
       "listTitle": "Incoming Request List",
       "btnRefresh": "Refresh Data",
       "colEmployee": "Employee",

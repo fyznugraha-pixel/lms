@@ -29,7 +29,7 @@ export default function MobileBottomNav({ dict, role }: { dict: any; role: strin
               }`}
             >
               <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-blue-100" : ""}`} />
-              <span className="text-[10px] font-bold">{item.name}</span>
+              <span className="text-[10px] font-bold whitespace-nowrap text-center">{item.name}</span>
             </Link>
           );
         })}

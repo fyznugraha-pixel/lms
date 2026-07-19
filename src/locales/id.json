@@ -190,8 +190,9 @@
     },
     "karyawan": {
       "title": "Kelola Karyawan",
+      "navLabel": "Karyawan",
       "subtitle": "Manajemen data dan akses karyawan kantor",
-      "btnAdd": "+ Tambah Karyawan",
+      "btnAdd": "Tambah Karyawan",
       "searchPlaceholder": "Cari nama atau email...",
       "filterAll": "Semua Status",
       "filterActive": "Aktif",
@@ -206,8 +207,10 @@
       "formName": "Nama Lengkap",
       "formEmail": "Email",
       "formPassword": "Password (Opsional saat edit)",
-      "formRole": "Role/Jabatan",
+      "formRole": "Role/Posisi",
       "formStatus": "Status Aktif",
+      "placeholderName": "Masukkan nama lengkap",
+      "placeholderPassword": "Minimal 6 karakter",
       "btnCancel": "Batal",
       "btnSave": "Simpan",
       "confirmStatusTitle": "Ubah Status Karyawan?",
@@ -215,7 +218,8 @@
       "btnDelete": "Hapus"
     },
     "absensi": {
-      "title": "Manajemen Absensi",
+      "title": "Kelola Sesi Absensi",
+      "navLabel": "Sesi",
       "subtitle": "Kelola sesi absensi kantor & barcode karyawan",
       "btnOpenIn": "Buka Sesi Masuk",
       "btnOpenOut": "Buka Sesi Pulang",
@@ -236,7 +240,8 @@
     },
     "persetujuan": {
       "title": "Persetujuan Karyawan",
-      "subtitle": "Tinjau dan proses pengajuan Izin, Sakit, dan Klarifikasi Absen Karyawan.",
+      "navLabel": "Persetujuan",
+      "subtitle": "Tinjau dan proses pengajuan Izin, Sakit, dan Klarifikasi Absen karyawan.",
       "listTitle": "Daftar Pengajuan Masuk",
       "btnRefresh": "Refresh Data",
       "colEmployee": "Karyawan",

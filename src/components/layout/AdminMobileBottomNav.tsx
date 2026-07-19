@@ -10,9 +10,9 @@ export default function AdminMobileBottomNav() {
   const dict = useDictionary();
 
   const navItems = [
-    { name: dict.adminKantor?.persetujuan?.title || "Persetujuan", href: "/admin-kantor/persetujuan", icon: FileCheck },
-    { name: dict.adminKantor?.karyawan?.title || "Karyawan", href: "/admin-kantor/karyawan", icon: Users },
-    { name: dict.adminKantor?.absensi?.title || "Sesi", href: "/admin-kantor/absensi", icon: CheckSquare },
+    { name: dict.adminKantor?.persetujuan?.navLabel || "Persetujuan", href: "/admin-kantor/persetujuan", icon: FileCheck },
+    { name: dict.adminKantor?.karyawan?.navLabel || "Karyawan", href: "/admin-kantor/karyawan", icon: Users },
+    { name: dict.adminKantor?.absensi?.navLabel || "Sesi", href: "/admin-kantor/absensi", icon: CheckSquare },
     { name: dict.bottomNav?.recap || "Rekap", href: "/admin-kantor/rekap", icon: BarChart }
   ];
 
@@ -30,7 +30,7 @@ export default function AdminMobileBottomNav() {
               }`}
             >
               <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-indigo-100" : ""}`} />
-              <span className="text-[10px] font-bold">{item.name}</span>
+              <span className="text-[10px] font-bold whitespace-nowrap text-center">{item.name}</span>
             </Link>
           );
         })}

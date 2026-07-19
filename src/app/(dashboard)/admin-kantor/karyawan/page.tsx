@@ -266,7 +266,7 @@ export default function KaryawanPage() {
                   value={formData.namaLengkap}
                   onChange={(e) => setFormData({...formData, namaLengkap: e.target.value})}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Masukkan nama lengkap"
+                  placeholder={dict.adminKantor?.karyawan?.placeholderName || "Masukkan nama lengkap"}
                 />
               </div>
               
@@ -292,7 +292,7 @@ export default function KaryawanPage() {
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Minimal 6 karakter"
+                  placeholder={dict.adminKantor?.karyawan?.placeholderPassword || "Minimal 6 karakter"}
                   minLength={6}
                 />
               </div>
