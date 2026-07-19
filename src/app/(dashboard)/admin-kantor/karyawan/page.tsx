@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useDictionary } from "@/hooks/useDictionary";
+import { Plus, Search } from "lucide-react";
 
 type Karyawan = {
   id: string;
@@ -144,80 +145,77 @@ export default function KaryawanPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Manajemen Karyawan</h1>
-          <p className="text-gray-500 mt-1">Kelola data karyawan internal TactLink (Remote/WFH)</p>
+          <h1 className="text-3xl font-bold font-heading text-slate-900">{dict.adminKantor?.karyawan?.title || "Kelola Karyawan"}</h1>
+          <p className="mt-2 text-slate-600">{dict.adminKantor?.karyawan?.subtitle || "Manajemen data dan akses karyawan kantor"}</p>
         </div>
         <button 
           onClick={() => openModal()}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2"
+          className="flex items-center gap-2 px-4 py-2 bg-[#394887] hover:bg-[#2D3A6E] text-white rounded-xl shadow-sm hover:shadow-md transition-all font-medium"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Tambah Karyawan
+          <Plus size={20} />
+          <span className="hidden sm:inline">{dict.adminKantor?.karyawan?.btnAdd || "Tambah Karyawan"}</span>
         </button>
       </div>
 
       {/* Filter & Search Card */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-4">
-        <div className="flex-1">
-          <input 
-            type="text" 
-            placeholder="Cari nama atau email..." 
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-          />
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between bg-gray-50/50">
+          <div className="relative max-w-md w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="text"
+              placeholder={dict.adminKantor?.karyawan?.searchPlaceholder || "Cari nama atau email..."}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+            />
+          </div>
+          <div className="flex gap-2">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-4 py-2 border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="all">{dict.adminKantor?.karyawan?.filterAll || "Semua Status"}</option>
+              <option value="active">{dict.adminKantor?.karyawan?.filterActive || "Aktif"}</option>
+              <option value="inactive">{dict.adminKantor?.karyawan?.filterInactive || "Nonaktif"}</option>
+            </select>
+          </div>
         </div>
-        <div className="w-full sm:w-48">
-          <CustomDropdown
-            value={statusFilter}
-            onChange={(val) => setStatusFilter(val as string)}
-            options={[
-              { value: "all", label: "Semua Status" },
-              { value: "active", label: "Aktif" },
-              { value: "inactive", label: "Nonaktif" }
-            ]}
-            className="w-full"
-          />
-        </div>
-      </div>
 
-      {/* Data List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        {/* Data List */}
         {isLoading ? (
           <div className="p-8 text-center text-gray-500">Memuat data...</div>
-        ) : karyawanList.length === 0 ? (
-          <div className="p-12 text-center text-gray-500">
-            <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            <p className="text-lg font-medium text-gray-900">Tidak ada data karyawan</p>
-            <p>Cobalah menyesuaikan pencarian atau tambah karyawan baru.</p>
-          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
-                  <th className="px-6 py-4 font-semibold">Nama Lengkap & Email</th>
-                  <th className="px-6 py-4 font-semibold">Role / Jabatan</th>
-                  <th className="px-6 py-4 font-semibold">Status</th>
-                  <th className="px-6 py-4 font-semibold text-right">Aksi</th>
+                <tr className="border-b border-gray-100 text-gray-600 text-sm">
+                  <th className="px-6 py-4 font-semibold">{dict.adminKantor?.karyawan?.colName || "Nama & Email"}</th>
+                  <th className="px-6 py-4 font-semibold">{dict.adminKantor?.karyawan?.colRole || "Role"}</th>
+                  <th className="px-6 py-4 font-semibold">{dict.adminKantor?.karyawan?.colStatus || "Status"}</th>
+                  <th className="px-6 py-4 font-semibold text-right">{dict.adminKantor?.karyawan?.colAction || "Aksi"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {karyawanList.map((k) => (
-                  <tr key={k.id} className="hover:bg-gray-50 transition-colors group">
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900">{k.namaLengkap || "-"}</div>
-                      <div className="text-sm text-gray-500">{k.email}</div>
+                {karyawanList.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="py-12 text-center text-gray-500">
+                      {dict.adminKantor?.karyawan?.noData || "Tidak ada data karyawan ditemukan."}
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
-                        {k.role.replace(/_/g, ' ')}
-                      </span>
-                    </td>
+                  </tr>
+                ) : (
+                  karyawanList.map((k) => (
+                    <tr key={k.id} className="hover:bg-gray-50 transition-colors group">
+                      <td className="px-6 py-4">
+                        <div className="font-medium text-gray-900">{k.namaLengkap || "-"}</div>
+                        <div className="text-sm text-gray-500">{k.email}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                          {k.role.replace(/_/g, ' ')}
+                        </span>
+                      </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
                         k.isActive 
@@ -243,7 +241,8 @@ export default function KaryawanPage() {
                       </button>
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -256,7 +255,7 @@ export default function KaryawanPage() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg my-8 relative">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-2xl z-10">
               <h2 className="text-xl font-bold text-gray-900">
-                {editingId ? "Edit Karyawan" : "Tambah Karyawan Baru"}
+                {editingId ? dict.adminKantor?.karyawan?.modalEditTitle || "Edit Karyawan" : dict.adminKantor?.karyawan?.modalAddTitle || "Tambah Karyawan Baru"}
               </h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -267,7 +266,7 @@ export default function KaryawanPage() {
             
             <form onSubmit={handleSave} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.adminKantor?.karyawan?.formName || "Nama Lengkap"}</label>
                 <input 
                   type="text" 
                   required
@@ -279,7 +278,7 @@ export default function KaryawanPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.adminKantor?.karyawan?.formEmail || "Email"}</label>
                 <input 
                   type="email" 
                   required
@@ -292,7 +291,7 @@ export default function KaryawanPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password {editingId && <span className="text-gray-400 font-normal">(Kosongkan jika tidak ingin mengubah)</span>}
+                  {dict.adminKantor?.karyawan?.formPassword?.split("(")[0] || "Password"} {editingId && <span className="text-gray-400 font-normal">({dict.adminKantor?.karyawan?.formPassword?.match(/\((.*)\)/)?.[1] || "Kosongkan jika tidak ingin mengubah"})</span>}
                 </label>
                 <input 
                   type="password" 
@@ -306,7 +305,7 @@ export default function KaryawanPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.adminKantor?.karyawan?.formRole || "Role"}</label>
                 <CustomDropdown
                   value={formData.role}
                   onChange={(val) => setFormData({...formData, role: val as string})}
@@ -325,13 +324,13 @@ export default function KaryawanPage() {
                   onClick={() => setIsModalOpen(false)}
                   className="px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  Batal
+                  {dict.adminKantor?.karyawan?.btnCancel || "Batal"}
                 </button>
                 <button 
                   type="submit" 
                   className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm transition-colors"
                 >
-                  Simpan Data
+                  {dict.adminKantor?.karyawan?.btnSave || "Simpan Data"}
                 </button>
               </div>
             </form>

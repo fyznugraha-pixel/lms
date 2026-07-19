@@ -40,7 +40,7 @@ export default function AbsensiAdminPage() {
     setModalConfig({
       isOpen: true,
       title: dict.notifications?.warningTitle || "Buka Sesi Absensi",
-      message: `Anda yakin ingin membuka sesi ${jenisAbsen} hari ini?`,
+      message: dict.adminKantor?.absensi?.openConfirmMsg?.replace("{jenisAbsen}", jenisAbsen) || `Anda yakin ingin membuka sesi ${jenisAbsen} hari ini?`,
       type: "confirm",
       confirmTheme: jenisAbsen === "MASUK" ? "blue" : "amber",
       onConfirm: () => createSession(jenisAbsen)
@@ -62,9 +62,9 @@ export default function AbsensiAdminPage() {
       const data = await res.json();
       if (data.success) {
         fetchSessions();
-        showAlert(dict.notifications?.successTitle || "Berhasil", data.message || "Sesi absensi berhasil dibuat.");
+        showAlert(dict.notifications?.successTitle || "Berhasil", data.message || dict.adminKantor?.absensi?.createSuccess || "Sesi absensi berhasil dibuat.");
       } else {
-        showAlert(dict.notifications?.errorTitle || "Gagal", data.error || "Gagal membuat sesi absensi.");
+        showAlert(dict.notifications?.errorTitle || "Gagal", data.error || dict.adminKantor?.absensi?.createFailed || "Gagal membuat sesi absensi.");
       }
     } catch (err) {
       showAlert(dict.notifications?.errorTitle || "Error", dict.notifications?.errorSystem || "Terjadi kesalahan sistem saat membuat sesi.");
@@ -77,8 +77,8 @@ export default function AbsensiAdminPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Manajemen Absensi</h1>
-          <p className="text-gray-500">Kelola sesi absensi kantor & barcode karyawan</p>
+          <h1 className="text-2xl font-bold text-gray-900">{dict.adminKantor?.absensi?.title || "Manajemen Absensi"}</h1>
+          <p className="text-gray-500">{dict.adminKantor?.absensi?.subtitle || "Kelola sesi absensi kantor & barcode karyawan"}</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -86,14 +86,14 @@ export default function AbsensiAdminPage() {
             disabled={isCreating}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
           >
-            <PlusCircle size={18} /> Buka Sesi Masuk
+            <PlusCircle size={18} /> {dict.adminKantor?.absensi?.btnOpenIn || "Buka Sesi Masuk"}
           </button>
           <button
             onClick={() => openCreateConfirm("PULANG")}
             disabled={isCreating}
             className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
           >
-            <LogOut size={18} /> Buka Sesi Pulang
+            <LogOut size={18} /> {dict.adminKantor?.absensi?.btnOpenOut || "Buka Sesi Pulang"}
           </button>
         </div>
       </div>
@@ -108,12 +108,12 @@ export default function AbsensiAdminPage() {
             <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="p-4 font-semibold text-gray-600">Tanggal</th>
-                <th className="p-4 font-semibold text-gray-600">Jenis Sesi</th>
-                <th className="p-4 font-semibold text-gray-600">Status</th>
-                <th className="p-4 font-semibold text-gray-600">Kode Absen (OTP)</th>
-                <th className="p-4 font-semibold text-gray-600">Absen Masuk</th>
-                <th className="p-4 font-semibold text-gray-600">Aksi</th>
+                <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colDate || "Tanggal"}</th>
+                <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colType || "Jenis Sesi"}</th>
+                <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colStatus || "Status"}</th>
+                <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colCode || "Kode Absen (OTP)"}</th>
+                <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colCount || "Absen Masuk"}</th>
+                <th className="p-4 font-semibold text-gray-600">{dict.adminKantor?.absensi?.colAction || "Aksi"}</th>
               </tr>
             </thead>
             <tbody>
@@ -143,10 +143,10 @@ export default function AbsensiAdminPage() {
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(sesi.id.substring(0, 6).toUpperCase());
-                            showAlert("Disalin!", "Kode berhasil disalin ke clipboard.");
+                            showAlert(dict.notifications?.successTitle || "Disalin!", "Kode berhasil disalin ke clipboard.");
                           }}
                           className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                          title="Copy Kode"
+                          title={dict.adminKantor?.absensi?.btnCopy || "Copy Kode"}
                         >
                           <Copy size={16} />
                         </button>
@@ -161,7 +161,7 @@ export default function AbsensiAdminPage() {
                       href={`/admin-kantor/absensi/${sesi.id}`}
                       className="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 text-sm font-medium"
                     >
-                      <CheckCircle2 size={16} /> Detail Sesi
+                      <CheckCircle2 size={16} /> Detail
                     </Link>
                   </td>
                 </tr>

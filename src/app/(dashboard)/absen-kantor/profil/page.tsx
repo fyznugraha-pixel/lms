@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
-import { useDictionary } from "@/hooks/useDictionary";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import DashboardPasswordButton from "@/components/DashboardPasswordButton";
 import { LogOut } from "lucide-react";
 
 export default function ProfilPage() {
   const dict = useDictionary();
+  const locale = useLocale();
   const [sessions, setSessions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -60,7 +61,7 @@ export default function ProfilPage() {
     setModalConfig({
       isOpen: true,
       title: dict.notifications?.warningTitle || "Peringatan",
-      message: "Anda akan keluar dari semua perangkat yang terhubung (termasuk perangkat ini). Lanjutkan?",
+      message: dict.notifications?.logoutAllConfirm || "Anda akan keluar dari semua perangkat yang terhubung (termasuk perangkat ini). Lanjutkan?",
       type: "confirm",
       confirmTheme: "red",
       onConfirm: handleLogoutAll
@@ -125,20 +126,20 @@ export default function ProfilPage() {
                       </div>
                       <div>
                         <p className={`font-bold ${isActive ? 'text-gray-900' : 'text-gray-500'}`}>
-                          {s.deviceInfo || "Perangkat Tidak Dikenal"}
+                          {s.deviceInfo || (dict.profile?.unknownDevice || "Perangkat Tidak Dikenal")}
                         </p>
                         <div className="text-sm text-gray-500 space-y-0.5 mt-1">
                           <p>IP Address: <span className="font-mono text-xs">{s.ipAddress || "Unknown"}</span></p>
-                          <p>Aktivitas Terakhir: {new Date(s.lastUsedAt).toLocaleString('id-ID')}</p>
-                          {isRevoked && <p className="text-red-500 font-medium">Sesi telah dicabut pada {new Date(s.revokedAt).toLocaleString('id-ID')}</p>}
-                          {isExpired && !isRevoked && <p className="text-orange-500 font-medium">Sesi telah kedaluwarsa</p>}
+                          <p>{dict.profile?.lastActivity || "Aktivitas Terakhir:"} {new Date(s.lastUsedAt).toLocaleString(locale)}</p>
+                          {isRevoked && <p className="text-red-500 font-medium">{dict.profile?.sessionRevoked || "Sesi telah dicabut pada"} {new Date(s.revokedAt).toLocaleString(locale)}</p>}
+                          {isExpired && !isRevoked && <p className="text-orange-500 font-medium">{dict.profile?.sessionExpired || "Sesi telah kedaluwarsa"}</p>}
                         </div>
                       </div>
                     </div>
                     <div>
                       {isActive && (
                         <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200">
-                          Sedang Aktif
+                          {dict.profile?.activeStatus || "Sedang Aktif"}
                         </span>
                       )}
                     </div>

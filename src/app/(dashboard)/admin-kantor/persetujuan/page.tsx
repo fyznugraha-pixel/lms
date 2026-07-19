@@ -37,10 +37,10 @@ export default function AdminPersetujuanPage() {
 
   const handleAction = async (id: string, status: "DISETUJUI" | "DITOLAK", jenis: string) => {
     let jamPulangKoreksi = undefined;
-    let catatanApproval = prompt(`Masukkan catatan (opsional) untuk tindakan ${status}:`) || "";
+    let catatanApproval = prompt(dict.adminKantor?.persetujuan?.promptReason?.replace("{status}", status) || `Masukkan catatan (opsional) untuk tindakan ${status}:`) || "";
 
     if (jenis === 'KLARIFIKASI_ABSEN' && status === 'DISETUJUI') {
-      const inputJam = prompt("Masukkan jam pulang koreksi (HH:mm). Kosongkan untuk set otomatis ke 17:00:", "17:00");
+      const inputJam = prompt(dict.adminKantor?.persetujuan?.promptTime || "Masukkan jam pulang koreksi (HH:mm). Kosongkan untuk set otomatis ke 17:00:", "17:00");
       if (inputJam !== null) {
         jamPulangKoreksi = inputJam;
       }
@@ -78,33 +78,33 @@ export default function AdminPersetujuanPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Persetujuan Karyawan</h1>
-        <p className="text-gray-500 mt-1">Tinjau dan proses pengajuan Izin, Sakit, dan Klarifikasi Absen Karyawan.</p>
+        <h1 className="text-3xl font-bold text-gray-900">{dict.adminKantor?.persetujuan?.title || "Persetujuan Karyawan"}</h1>
+        <p className="text-gray-500 mt-1">{dict.adminKantor?.persetujuan?.subtitle || "Tinjau dan proses pengajuan Izin, Sakit, dan Klarifikasi Absen Karyawan."}</p>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-          <h2 className="text-lg font-bold text-gray-900">Daftar Pengajuan Masuk</h2>
+          <h2 className="text-lg font-bold text-gray-900">{dict.adminKantor?.persetujuan?.listTitle || "Daftar Pengajuan Masuk"}</h2>
           <button onClick={fetchPengajuan} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg">
-            Refresh Data
+            {dict.adminKantor?.persetujuan?.btnRefresh || "Refresh Data"}
           </button>
         </div>
         
         {isLoading ? (
           <div className="p-12 text-center text-gray-500">Memuat data pengajuan...</div>
         ) : pengajuanList.length === 0 ? (
-          <div className="p-12 text-center text-gray-500">Belum ada data pengajuan.</div>
+          <div className="p-12 text-center text-gray-500">{dict.adminKantor?.persetujuan?.noData || "Belum ada data pengajuan."}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-white text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
-                  <th className="px-6 py-4 font-semibold">Karyawan</th>
-                  <th className="px-6 py-4 font-semibold">Pengajuan</th>
-                  <th className="px-6 py-4 font-semibold">Rentang / Tanggal</th>
-                  <th className="px-6 py-4 font-semibold">Alasan & Bukti</th>
-                  <th className="px-6 py-4 font-semibold">Status</th>
-                  <th className="px-6 py-4 font-semibold text-right">Aksi</th>
+                  <th className="px-6 py-4 font-semibold">{dict.adminKantor?.persetujuan?.colEmployee || "Karyawan"}</th>
+                  <th className="px-6 py-4 font-semibold">{dict.adminKantor?.persetujuan?.colRequest || "Pengajuan"}</th>
+                  <th className="px-6 py-4 font-semibold">{dict.adminKantor?.persetujuan?.colDate || "Rentang / Tanggal"}</th>
+                  <th className="px-6 py-4 font-semibold">{dict.adminKantor?.persetujuan?.colReason || "Alasan & Bukti"}</th>
+                  <th className="px-6 py-4 font-semibold">{dict.adminKantor?.persetujuan?.colStatus || "Status"}</th>
+                  <th className="px-6 py-4 font-semibold text-right">{dict.adminKantor?.persetujuan?.colAction || "Aksi"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -138,10 +138,8 @@ export default function AdminPersetujuanPage() {
                       <p className="text-sm text-gray-900 truncate" title={p.alasan}>{p.alasan}</p>
                       {p.lampiranUrl && (
                         <a href={p.lampiranUrl} target="_blank" rel="noreferrer" className="text-xs text-blue-600 font-medium hover:underline flex items-center gap-1 mt-1">
-                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                          </svg>
-                          Buka Bukti
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                          {dict.adminKantor?.persetujuan?.viewAttachment || "Lihat Bukti"}
                         </a>
                       )}
                     </td>
@@ -163,18 +161,18 @@ export default function AdminPersetujuanPage() {
                       {p.status === 'PENDING' ? (
                         <div className="flex justify-end gap-2">
                           <button
-                            onClick={() => handleAction(p.id, "DISETUJUI", p.jenis)}
                             disabled={actionLoadingId === p.id}
-                            className="bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                            onClick={() => handleAction(p.id, "DISETUJUI", p.jenis)}
+                            className="px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                           >
-                            Setujui
+                            {dict.adminKantor?.persetujuan?.btnApprove || "Setujui"}
                           </button>
                           <button
-                            onClick={() => handleAction(p.id, "DITOLAK", p.jenis)}
                             disabled={actionLoadingId === p.id}
-                            className="bg-white border border-gray-200 text-gray-700 hover:bg-red-50 hover:text-red-700 hover:border-red-200 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+                            onClick={() => handleAction(p.id, "DITOLAK", p.jenis)}
+                            className="px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                           >
-                            Tolak
+                            {dict.adminKantor?.persetujuan?.btnReject || "Tolak"}
                           </button>
                         </div>
                       ) : (

@@ -15,7 +15,7 @@ export default function KaryawanRekapPage() {
   const [tahun, setTahun] = useState(currentDate.getFullYear());
 
   const fetchRekap = async () => {
-    setIsLoading(true);
+    if (!data) setIsLoading(true);
     try {
       const res = await fetch(`/api/absen-kantor/rekap?mode=user&bulan=${bulan}&tahun=${tahun}`);
       const result = await res.json();
@@ -81,11 +81,11 @@ export default function KaryawanRekapPage() {
               <span className="text-3xl font-black text-green-600">{data.ringkasan.hadir + data.ringkasan.terlambat}</span>
             </div>
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Sakit / Sick</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalSick}</span>
               <span className="text-3xl font-black text-red-500">{data.ringkasan.sakit}</span>
             </div>
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Izin / Leave</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalLeave}</span>
               <span className="text-3xl font-black text-blue-500">{data.ringkasan.izin}</span>
             </div>
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
@@ -93,11 +93,11 @@ export default function KaryawanRekapPage() {
               <span className="text-3xl font-black text-gray-900">{data.ringkasan.alpha}</span>
             </div>
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Incomplete</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{dict.recap.totalIncomplete}</span>
               <span className="text-3xl font-black text-orange-500">{data.ringkasan.incomplete}</span>
             </div>
             <div className="bg-blue-600 p-4 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center text-white">
-              <span className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1">Total (h/j)</span>
+              <span className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1">{dict.recap.totalHours}</span>
               <span className="text-3xl font-black">{Math.floor(data.ringkasan.totalDurasiMenit / 60)}<span className="text-lg">h</span></span>
             </div>
           </div>

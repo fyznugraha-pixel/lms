@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import ConfirmModal from "@/components/ConfirmModal";
+import DigitalClock from "@/components/DigitalClock";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 type AbsensiHariIni = {
@@ -52,14 +53,8 @@ export default function KaryawanDashboard() {
   const [kodeMasuk, setKodeMasuk] = useState("");
   const [kodePulang, setKodePulang] = useState("");
 
-  // Clock
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   const fetchData = async () => {
-    setIsLoading(true);
+    if (!data) setIsLoading(true);
     try {
       const res = await fetch("/api/absen-kantor/absen");
       const result = await res.json();
@@ -81,7 +76,7 @@ export default function KaryawanDashboard() {
     const kode = jenisAbsen === "MASUK" ? kodeMasuk : kodePulang;
     
     if (!kode.trim()) {
-      setAlertModal({ isOpen: true, title: "Peringatan", message: "Kode absen wajib diisi!", theme: "amber" });
+      setAlertModal({ isOpen: true, title: dict.notifications?.warningTitle || "Peringatan", message: dict.dashboard?.codeRequired || "Kode absen wajib diisi!", theme: "amber" });
       return;
     }
 
@@ -94,15 +89,15 @@ export default function KaryawanDashboard() {
       });
       const result = await res.json();
       if (result.success) {
-        setAlertModal({ isOpen: true, title: "Berhasil", message: result.message, theme: "blue" });
+        setAlertModal({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: result.message, theme: "blue" });
         if (jenisAbsen === "MASUK") setKodeMasuk("");
         if (jenisAbsen === "PULANG") setKodePulang("");
         fetchData();
       } else {
-        setAlertModal({ isOpen: true, title: "Gagal", message: result.error, theme: "red" });
+        setAlertModal({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, theme: "red" });
       }
     } catch (error) {
-      setAlertModal({ isOpen: true, title: "Error", message: "Terjadi kesalahan sistem.", theme: "red" });
+      setAlertModal({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Terjadi kesalahan sistem.", theme: "red" });
     } finally {
       setIsActionLoading(false);
     }
@@ -133,15 +128,15 @@ export default function KaryawanDashboard() {
       });
       const result = await res.json();
       if (result.success) {
-        setAlertModal({ isOpen: true, title: "Berhasil", message: result.message, theme: "blue" });
+        setAlertModal({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: result.message, theme: "blue" });
         setIsKlarifikasiModalOpen(false);
         setKlarifikasiAlasan("");
         fetchData();
       } else {
-        setAlertModal({ isOpen: true, title: "Gagal", message: result.error, theme: "red" });
+        setAlertModal({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, theme: "red" });
       }
     } catch (error) {
-      setAlertModal({ isOpen: true, title: "Error", message: "Kesalahan sistem saat mengirim klarifikasi.", theme: "red" });
+      setAlertModal({ isOpen: true, title: dict.notifications?.errorTitle || "Error", message: dict.notifications?.errorSystem || "Kesalahan sistem saat mengirim klarifikasi.", theme: "red" });
     } finally {
       setIsActionLoading(false);
     }
@@ -154,15 +149,10 @@ export default function KaryawanDashboard() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{dict.sidebar.dashboard}</h1>
           <p className="text-gray-500 mt-1 capitalize">
-            {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(currentTime)}
+            {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
           </p>
         </div>
-        <div className="mt-4 md:mt-0 text-center md:text-right">
-          <div className="text-4xl font-black text-blue-600 tracking-tight">
-            {new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(currentTime)}
-          </div>
-          <p className="text-sm text-gray-400 font-medium uppercase tracking-widest mt-1">{dict.dashboard.serverTime}</p>
-        </div>
+        <DigitalClock label={dict.dashboard.serverTime} />
       </div>
 
       {isLoading ? (

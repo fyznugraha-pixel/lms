@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useDictionary } from "@/hooks/useDictionary";
 
 export default function AdminKantorSidebarNav() {
   const pathname = usePathname();
+  const dict = useDictionary();
 
   const navItems = [
-    { name: "Dashboard", href: "/admin-kantor" },
-    { name: "Manajemen Karyawan", href: "/admin-kantor/karyawan" },
-    { name: "Persetujuan Izin & Sakit", href: "/admin-kantor/persetujuan" },
-    { name: "Rekap & Export CSV", href: "/admin-kantor/rekap" },
-    { name: "Sesi Absensi", href: "/admin-kantor/absensi" },
+    { name: dict.adminKantor?.sidebar?.dashboard || "Dashboard", href: "/admin-kantor" },
+    { name: dict.adminKantor?.sidebar?.employeeManagement || "Manajemen Karyawan", href: "/admin-kantor/karyawan" },
+    { name: dict.adminKantor?.sidebar?.leaveApproval || "Persetujuan Izin & Sakit", href: "/admin-kantor/persetujuan" },
+    { name: dict.adminKantor?.sidebar?.recapExport || "Rekap & Export CSV", href: "/admin-kantor/rekap" },
+    { name: dict.adminKantor?.sidebar?.attendanceSession || "Sesi Absensi", href: "/admin-kantor/absensi" },
   ];
 
   return (
@@ -42,7 +44,7 @@ export default function AdminKantorSidebarNav() {
           href="/absen-kantor"
           className="block px-4 py-2.5 hover:bg-gray-50 text-gray-700 font-medium rounded-lg"
         >
-          Masuk Portal Karyawan
+          {dict.adminKantor?.sidebar?.enterEmployeePortal || "Masuk Portal Karyawan"}
         </Link>
       </div>
     </nav>

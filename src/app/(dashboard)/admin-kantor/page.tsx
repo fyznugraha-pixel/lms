@@ -3,9 +3,14 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Users, FileText, QrCode, Download, Clock, CheckCircle, XCircle } from "lucide-react";
+import { getDictionary } from "@/lib/dictionaries";
+import { cookies } from "next/headers";
 
 export default async function AdminKantorDashboard() {
   const session = await getSession();
+  const cookieStore = await cookies();
+  const lang = cookieStore.get("lang")?.value || "en";
+  const dict = await getDictionary(lang as "en" | "id");
 
   if (!session.userId) {
     redirect("/login");
@@ -47,9 +52,9 @@ export default async function AdminKantorDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold font-heading text-slate-900">Dashboard Admin Kantor</h1>
+        <h1 className="text-3xl font-bold font-heading text-slate-900">{dict.adminKantor?.dashboard?.title || "Dashboard Admin Kantor"}</h1>
         <p className="mt-2 text-slate-600">
-          Selamat datang di panel administrasi kantor (internal TactLink). 
+          {dict.adminKantor?.dashboard?.subtitle || "Selamat datang di panel administrasi kantor (internal TactLink)."} 
         </p>
       </div>
       
@@ -59,7 +64,7 @@ export default async function AdminKantorDashboard() {
             <Users size={28} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Total Karyawan</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{dict.adminKantor?.dashboard?.totalEmployees || "Total Karyawan"}</h3>
             <p className="text-3xl font-black text-gray-900 mt-1">{totalKaryawan}</p>
           </div>
         </div>
@@ -68,7 +73,7 @@ export default async function AdminKantorDashboard() {
             <FileText size={28} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Menunggu Izin</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{dict.adminKantor?.dashboard?.pendingLeave || "Menunggu Izin"}</h3>
             <p className="text-3xl font-black text-gray-900 mt-1">{menungguPersetujuan}</p>
           </div>
         </div>
@@ -77,7 +82,7 @@ export default async function AdminKantorDashboard() {
             <CheckCircle size={28} />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Hadir Hari Ini</h3>
+            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{dict.adminKantor?.dashboard?.presentToday || "Hadir Hari Ini"}</h3>
             <p className="text-3xl font-black text-gray-900 mt-1">{kehadiranHariIni}</p>
           </div>
         </div>
@@ -86,15 +91,15 @@ export default async function AdminKantorDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Links */}
         <div className="lg:col-span-1 space-y-4">
-          <h2 className="text-lg font-bold text-gray-900">Akses Cepat</h2>
+          <h2 className="text-lg font-bold text-gray-900">{dict.adminKantor?.dashboard?.quickLinks || "Akses Cepat"}</h2>
           <div className="grid grid-cols-1 gap-3">
             <Link href="/admin-kantor/absensi" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all flex items-center gap-4 group">
               <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                 <CheckCircle size={20} />
               </div>
               <div>
-                <p className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">Kelola Sesi Absensi</p>
-                <p className="text-xs text-gray-500">Buka atau tutup sesi absen</p>
+                <p className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{dict.adminKantor?.dashboard?.manageSession || "Kelola Sesi Absensi"}</p>
+                <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.manageSessionDesc || "Buka atau tutup sesi absen"}</p>
               </div>
             </Link>
             
@@ -103,8 +108,8 @@ export default async function AdminKantorDashboard() {
                 <Users size={20} />
               </div>
               <div>
-                <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Kelola Karyawan</p>
-                <p className="text-xs text-gray-500">Tambah atau nonaktifkan akun</p>
+                <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{dict.adminKantor?.dashboard?.manageEmployees || "Kelola Karyawan"}</p>
+                <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.manageEmployeesDesc || "Tambah atau nonaktifkan akun"}</p>
               </div>
             </Link>
 
@@ -113,8 +118,8 @@ export default async function AdminKantorDashboard() {
                 <Download size={20} />
               </div>
               <div>
-                <p className="font-bold text-gray-900 group-hover:text-green-600 transition-colors">Export Laporan</p>
-                <p className="text-xs text-gray-500">Unduh rekap bulanan CSV</p>
+                <p className="font-bold text-gray-900 group-hover:text-green-600 transition-colors">{dict.adminKantor?.dashboard?.exportReport || "Export Laporan"}</p>
+                <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.exportReportDesc || "Unduh rekap bulanan CSV"}</p>
               </div>
             </Link>
           </div>
@@ -122,7 +127,7 @@ export default async function AdminKantorDashboard() {
 
         {/* Recent Activities */}
         <div className="lg:col-span-2 space-y-4">
-          <h2 className="text-lg font-bold text-gray-900">Aktivitas Absensi Hari Ini</h2>
+          <h2 className="text-lg font-bold text-gray-900">{dict.adminKantor?.dashboard?.todayActivity || "Aktivitas Absensi Hari Ini"}</h2>
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             {absensiTerbaru.length > 0 ? (
               <div className="divide-y divide-gray-100">
@@ -140,12 +145,12 @@ export default async function AdminKantorDashboard() {
                     <div className="text-right">
                       <div className="flex items-center justify-end gap-2 text-sm font-medium">
                         <Clock size={14} className="text-green-500" />
-                        <span className="text-gray-900">In: {formatJam(absen.waktuAbsenMasuk)}</span>
+                        <span className="text-gray-900">{dict.adminKantor?.dashboard?.in || "In"}: {formatJam(absen.waktuAbsenMasuk)}</span>
                       </div>
                       {absen.waktuAbsenPulang && (
                         <div className="flex items-center justify-end gap-2 text-sm font-medium mt-1">
                           <Clock size={14} className="text-orange-500" />
-                          <span className="text-gray-500">Out: {formatJam(absen.waktuAbsenPulang)}</span>
+                          <span className="text-gray-500">{dict.adminKantor?.dashboard?.out || "Out"}: {formatJam(absen.waktuAbsenPulang)}</span>
                         </div>
                       )}
                     </div>
@@ -157,7 +162,7 @@ export default async function AdminKantorDashboard() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
                   <Clock className="w-8 h-8 text-gray-300" />
                 </div>
-                <p className="text-gray-500 font-medium">Belum ada karyawan yang absen hari ini.</p>
+                <p className="text-gray-500 font-medium">{dict.adminKantor?.dashboard?.noActivity || "Belum ada karyawan yang absen hari ini."}</p>
               </div>
             )}
           </div>

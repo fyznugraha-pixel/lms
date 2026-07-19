@@ -86,24 +86,24 @@ export default function PenanggungJawabDashboard() {
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Manajemen Sesi Absen</h1>
-        <p className="text-gray-500 mt-1">Generate personal token untuk absen masuk/pulang karyawan per hari.</p>
+        <h1 className="text-3xl font-bold text-gray-900">{dict.penanggungJawab?.title || "Manajemen Sesi Absen"}</h1>
+        <p className="text-gray-500 mt-1">{dict.penanggungJawab?.subtitle || "Generate personal token untuk absen masuk/pulang karyawan per hari."}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Card Generate Absen Masuk */}
         <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="relative z-10">
-            <h3 className="text-xl font-bold mb-2">Sesi Absen MASUK</h3>
+            <h3 className="text-xl font-bold mb-2">{dict.penanggungJawab?.inSession || "Sesi Absen MASUK"}</h3>
             <p className="text-blue-100 mb-6 max-w-sm">
-              Buat sesi absen masuk untuk hari ini. Sistem akan generate personal token unik ke semua karyawan aktif.
+              {dict.penanggungJawab?.inSessionDesc || "Buat sesi absen masuk untuk hari ini. Sistem akan generate personal token unik ke semua karyawan aktif."}
             </p>
             <button
               onClick={() => handleGenerate("MASUK")}
               disabled={isGenerating}
-              className="bg-white text-blue-700 hover:bg-blue-50 px-6 py-2.5 rounded-lg font-bold shadow-md transition-colors disabled:opacity-75"
+              className="bg-white text-blue-700 hover:bg-blue-50 font-bold px-6 py-3 rounded-xl transition-all shadow-sm w-full md:w-auto disabled:opacity-70"
             >
-              {isGenerating ? "Memproses..." : "1-Klik Generate (Masuk)"}
+              {isGenerating ? dict.dashboard.btnProcessing : (dict.penanggungJawab?.btnInSession || "Buat Sesi Masuk Sekarang")}
             </button>
           </div>
           {/* Decorative SVG */}
@@ -113,18 +113,18 @@ export default function PenanggungJawabDashboard() {
         </div>
 
         {/* Card Generate Absen Pulang */}
-        <div className="bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="relative z-10">
-            <h3 className="text-xl font-bold mb-2">Sesi Absen PULANG</h3>
-            <p className="text-indigo-100 mb-6 max-w-sm">
-              Buat sesi absen pulang untuk hari ini. Harus dilakukan pada sore/malam hari saat jam kerja usai.
+            <h3 className="text-xl font-bold mb-2">{dict.penanggungJawab?.outSession || "Sesi Absen PULANG"}</h3>
+            <p className="text-gray-300 mb-6 max-w-sm">
+              {dict.penanggungJawab?.outSessionDesc || "Buat sesi absen pulang untuk hari ini. Karyawan baru bisa absen pulang jika sesi ini aktif."}
             </p>
             <button
               onClick={() => handleGenerate("PULANG")}
               disabled={isGenerating}
-              className="bg-white text-indigo-700 hover:bg-indigo-50 px-6 py-2.5 rounded-lg font-bold shadow-md transition-colors disabled:opacity-75"
+              className="bg-white text-gray-900 hover:bg-gray-100 font-bold px-6 py-3 rounded-xl transition-all shadow-sm w-full md:w-auto disabled:opacity-70"
             >
-              {isGenerating ? "Memproses..." : "1-Klik Generate (Pulang)"}
+              {isGenerating ? dict.dashboard.btnProcessing : (dict.penanggungJawab?.btnOutSession || "Buat Sesi Pulang Sekarang")}
             </button>
           </div>
           <svg className="absolute right-0 bottom-0 opacity-10" width="150" height="150" viewBox="0 0 24 24" fill="currentColor">
@@ -134,9 +134,9 @@ export default function PenanggungJawabDashboard() {
       </div>
 
       {/* Riwayat Sesi */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mt-8">
-        <div className="p-6 border-b border-gray-100">
-          <h2 className="text-lg font-bold text-gray-900">Riwayat Sesi Absen Terakhir</h2>
+      <div className="bg-white md:rounded-2xl shadow-sm border-y md:border-x md:border-y border-gray-100 overflow-hidden -mx-4 md:mx-0 mt-8">
+        <div className="p-5 md:p-6 border-b border-gray-100 bg-gray-50/50">
+          <h2 className="text-lg font-bold text-gray-900">{dict.penanggungJawab?.historyTitle || "Riwayat Sesi Absen"}</h2>
         </div>
         
         {isLoading ? (
@@ -145,14 +145,14 @@ export default function PenanggungJawabDashboard() {
           <div className="p-12 text-center text-gray-500">Belum ada sesi absen yang dibuat.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
-                  <th className="px-6 py-4 font-semibold">Tanggal & Waktu</th>
-                  <th className="px-6 py-4 font-semibold">Jenis Absen</th>
-                  <th className="px-6 py-4 font-semibold">Dibuat Oleh</th>
-                  <th className="px-6 py-4 font-semibold text-center">Token Di-generate</th>
-                  <th className="px-6 py-4 font-semibold">Status</th>
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead className="bg-gray-50 text-gray-600 font-medium">
+                <tr>
+                  <th className="px-6 py-4">{dict.penanggungJawab?.colDate || "Tanggal & Waktu"}</th>
+                  <th className="px-6 py-4">{dict.penanggungJawab?.colType || "Jenis"}</th>
+                  <th className="px-6 py-4">{dict.penanggungJawab?.colCreator || "Dibuat Oleh"}</th>
+                  <th className="px-6 py-4 text-center">Total Token</th>
+                  <th className="px-6 py-4">{dict.penanggungJawab?.colStatus || "Status"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">

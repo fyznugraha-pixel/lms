@@ -210,31 +210,33 @@ export default function PekerjaanPage() {
           </div>
           
           <div className="p-4 border-b border-gray-100">
-            <form onSubmit={handleAddTodo} className="flex gap-2">
+            <form onSubmit={handleAddTodo} className="flex flex-col sm:flex-row gap-3">
               <input 
                 type="text" 
                 value={judulTodo}
                 onChange={(e) => setJudulTodo(e.target.value)}
                 placeholder={dict.work.addPlaceholder}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                className="w-full sm:flex-1 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"
               />
-              <CustomDropdown
-                value={prioritasTodo}
-                onChange={(val) => setPrioritasTodo(val as "RENDAH" | "SEDANG" | "TINGGI")}
-                options={[
-                  { value: 'RENDAH', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-green-500" />{dict.work.priorityLow}</div> },
-                  { value: 'SEDANG', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-yellow-500" />{dict.work.priorityMedium}</div> },
-                  { value: 'TINGGI', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-red-500" />{dict.work.priorityHigh}</div> }
-                ]}
-                className="w-40"
-              />
-              <button 
-                type="submit" 
-                disabled={isSubmittingTodo || !judulTodo.trim()}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
-              >
-                {dict.work.addBtn}
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <CustomDropdown
+                  value={prioritasTodo}
+                  onChange={(val) => setPrioritasTodo(val as "RENDAH" | "SEDANG" | "TINGGI")}
+                  options={[
+                    { value: 'RENDAH', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-green-500" />{dict.work.priorityLow}</div> },
+                    { value: 'SEDANG', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-yellow-500" />{dict.work.priorityMedium}</div> },
+                    { value: 'TINGGI', label: <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-red-500" />{dict.work.priorityHigh}</div> }
+                  ]}
+                  className="w-full sm:w-40"
+                />
+                <button 
+                  type="submit" 
+                  disabled={isSubmittingTodo || !judulTodo.trim()}
+                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-bold transition-colors disabled:opacity-50 shadow-sm"
+                >
+                  {dict.work.addBtn}
+                </button>
+              </div>
             </form>
           </div>
 

@@ -29,7 +29,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
 
   return (
     <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0">
-      <MobileTopHeader langCookie={langCookie} />
+      <MobileTopHeader langCookie={langCookie} role={payload.role as string} />
       
       {/* Sidebar Khusus Kantor (Hidden on Mobile) */}
       <aside className="hidden md:flex w-64 bg-white border-r border-gray-200 flex-shrink-0 flex-col">
@@ -98,7 +98,6 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
 
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-8 md:overflow-auto flex flex-col">
-        <AdminMobileMenu role={payload.role as string} dict={dict} />
         {children}
       </main>
 
