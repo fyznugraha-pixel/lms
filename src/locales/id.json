@@ -11,6 +11,16 @@
     "logout": "Keluar",
     "changePassword": "Ubah Password"
   },
+  "status": {
+    "pending": "PENDING",
+    "approved": "DISETUJUI",
+    "rejected": "DITOLAK"
+  },
+  "leaveType": {
+    "sick": "SAKIT",
+    "leave": "IZIN",
+    "clarification": "KLARIFIKASI ABSEN"
+  },
   "bottomNav": {
     "home": "Home",
     "workLog": "Kerja",
@@ -40,6 +50,8 @@
     "success": "Berhasil",
     "failed": "Gagal",
     "codeRequired": "Kode absen wajib diisi!",
+    "successCheckIn": "Berhasil absen masuk!",
+    "successCheckOut": "Berhasil absen pulang!",
     "btnProcessing": "Memproses...",
     "serverTime": "Waktu Server (Lokal)",
     "loading": "Memuat data dashboard...",
@@ -176,6 +188,7 @@
     "deleteSuccess": "Data berhasil dihapus.",
     "reqSuccess": "Pengajuan berhasil dikirim.",
     "tokenSuccess": "Sesi absensi baru berhasil dibuat.",
+    "processSuccess": "Pengajuan berhasil diproses.",
     "logSuccess": "Work Log berhasil disimpan!",
     "approveConfirm": "Apakah Anda yakin ingin menyetujui request ini?",
     "rejectConfirm": "Apakah Anda yakin ingin menolak request ini?",
@@ -251,6 +264,7 @@
       "colStatus": "Status",
       "colCode": "Kode Absen (OTP)",
       "colCount": "Absen Masuk",
+      "people": "orang",
       "colAction": "Aksi",
       "noData": "Belum ada sesi absensi.",
       "btnCopy": "Salin",
@@ -292,7 +306,12 @@
       "btnApprove": "Setujui",
       "btnReject": "Tolak",
       "promptReason": "Masukkan catatan (opsional) untuk tindakan {status}:",
-      "promptTime": "Masukkan jam pulang koreksi (HH:mm). Kosongkan untuk set otomatis ke 17:00:",
+      "promptTime": "Masukkan jam pulang koreksi (HH:mm). Kosongkan untuk otomatis ke 17:00:",
+      "to": "s.d",
+      "processed": "Telah Diproses",
+      "noteLabel": "Catatan",
+      "notePlaceholder": "Contoh: OK, cepat sembuh...",
+      "promptTimeHint": "Kosongkan/biarkan default jika ingin otomatis ke 17:00.",
       "viewAttachment": "Lihat Bukti"
     },
     "rekap": {

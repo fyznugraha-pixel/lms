@@ -22,10 +22,8 @@ export default function MobileTopHeader({ langCookie, role }: { langCookie: stri
   const switchTarget = inAdminMode ? '/absen-kantor' : '/admin-kantor';
 
   return (
-    <>
-      <div className="md:hidden h-[73px] w-full flex-shrink-0" />
-      <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center gap-2">
+    <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200 fixed top-0 left-0 w-full z-40">
+      <div className="flex items-center gap-2">
         <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-8 w-auto object-contain" />
         <span className="font-bold text-gray-900 text-lg">TactLink</span>
       </div>
@@ -47,7 +45,6 @@ export default function MobileTopHeader({ langCookie, role }: { langCookie: stri
           </Link>
         )}
       </div>
-      </div>
-    </>
+    </div>
   );
 }

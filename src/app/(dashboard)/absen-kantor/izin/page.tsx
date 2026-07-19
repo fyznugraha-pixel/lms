@@ -189,21 +189,23 @@ export default function KaryawanIzinPage() {
                             p.jenis === 'SAKIT' ? 'bg-red-50 text-red-700' :
                             'bg-purple-50 text-purple-700'
                           }`}>
-                            {p.jenis.replace('_', ' ')}
+                            {p.jenis === 'SAKIT' ? (dict.leaveType?.sick || "SAKIT") : 
+                             p.jenis === 'IZIN' ? (dict.leaveType?.leave || "IZIN") : 
+                             (dict.leaveType?.clarification || "KLARIFIKASI ABSEN")}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
                           {p.tanggalMulai === p.tanggalSelesai ? (
                             formatTanggal(p.tanggalMulai)
                           ) : (
-                            `${formatTanggal(p.tanggalMulai)} s.d ${formatTanggal(p.tanggalSelesai)}`
+                            `${formatTanggal(p.tanggalMulai)} ${dict.adminKantor?.persetujuan?.to || "s.d"} ${formatTanggal(p.tanggalSelesai)}`
                           )}
                         </td>
                         <td className="px-6 py-4">
                           <p className="text-sm text-gray-900 truncate max-w-[200px]">{p.alasan}</p>
                           {p.lampiranUrl && (
                             <a href={p.lampiranUrl} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline mt-1 block">
-                              Lihat Lampiran
+                              {dict.adminKantor?.persetujuan?.viewAttachment || "Lihat Lampiran"}
                             </a>
                           )}
                         </td>

@@ -51,26 +51,34 @@ export default function KaryawanDashboard() {
   const [klarifikasiDate, setKlarifikasiDate] = useState("");
   const [klarifikasiAlasan, setKlarifikasiAlasan] = useState("");
   
-  // Removed OTP Input
+  // OTP Input
+  const [kodeMasuk, setKodeMasuk] = useState("");
+  const [kodePulang, setKodePulang] = useState("");
 
   const handleAbsen = async (jenisAbsen: "MASUK" | "PULANG") => {
+    const kode = jenisAbsen === "MASUK" ? kodeMasuk : kodePulang;
+    
+    if (!kode.trim()) {
+      setAlertModal({ isOpen: true, title: dict.notifications?.warningTitle || "Peringatan", message: dict.dashboard?.codeRequired || "Kode absen wajib diisi!", theme: "amber" });
+      return;
+    }
+
     setIsActionLoading(true);
     try {
       const res = await fetch("/api/absen-kantor/absen", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jenisAbsen })
+        body: JSON.stringify({ jenisAbsen, kode })
       });
       const result = await res.json();
       if (result.success) {
-        setAlertModal({ 
-          isOpen: true, 
-          title: dict.notifications?.successTitle || "Berhasil", 
-          message: jenisAbsen === "MASUK" 
-            ? (locale === "id-ID" ? "Berhasil absen MASUK!" : "Successfully checked in!") 
-            : (locale === "id-ID" ? "Berhasil absen PULANG!" : "Successfully checked out!"), 
-          theme: "blue" 
-        });
+        const successMessage = jenisAbsen === "MASUK" 
+          ? (dict.dashboard?.successCheckIn || "Successfully checked in!") 
+          : (dict.dashboard?.successCheckOut || "Successfully checked out!");
+          
+        setAlertModal({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: successMessage, theme: "blue" });
+        if (jenisAbsen === "MASUK") setKodeMasuk("");
+        if (jenisAbsen === "PULANG") setKodePulang("");
         mutate();
       } else {
         setAlertModal({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, theme: "red" });
@@ -175,11 +183,20 @@ export default function KaryawanDashboard() {
 
               {!data?.absensiHariIni?.waktuAbsenMasuk && (
                 <div className="space-y-3">
-                  <button 
-                    onClick={() => handleAbsen("MASUK")}
+                  <input
+                    type="text"
+                    placeholder={dict.dashboard.placeholderCode}
+                    value={kodeMasuk}
+                    onChange={(e) => setKodeMasuk(e.target.value.toUpperCase())}
+                    maxLength={6}
                     disabled={!data?.bisaAbsenMasuk || isActionLoading}
+                    className="w-full text-center tracking-widest uppercase font-mono text-lg font-bold px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100"
+                  />
+                  <button
+                    onClick={() => handleAbsen("MASUK")}
+                    disabled={!data?.bisaAbsenMasuk || isActionLoading || kodeMasuk.length < 6}
                     className={`w-full py-3 rounded-xl font-bold text-white transition-all shadow-md ${
-                      !data?.bisaAbsenMasuk
+                      !data?.bisaAbsenMasuk || kodeMasuk.length < 6
                         ? "bg-gray-300 cursor-not-allowed shadow-none"
                         : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
                     }`}
@@ -215,11 +232,20 @@ export default function KaryawanDashboard() {
 
               {!data?.absensiHariIni?.waktuAbsenPulang && (
                 <div className="space-y-3">
-                  <button 
-                    onClick={() => handleAbsen("PULANG")}
+                  <input
+                    type="text"
+                    placeholder={dict.dashboard.placeholderCode}
+                    value={kodePulang}
+                    onChange={(e) => setKodePulang(e.target.value.toUpperCase())}
+                    maxLength={6}
                     disabled={!data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk || isActionLoading}
+                    className="w-full text-center tracking-widest uppercase font-mono text-lg font-bold px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100"
+                  />
+                  <button
+                    onClick={() => handleAbsen("PULANG")}
+                    disabled={!data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk || isActionLoading || kodePulang.length < 6}
                     className={`w-full py-3 rounded-xl font-bold text-white transition-all shadow-md ${
-                      !data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk
+                      !data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk || kodePulang.length < 6
                         ? "bg-gray-300 cursor-not-allowed shadow-none"
                         : "bg-orange-500 hover:bg-orange-600 hover:shadow-lg"
                     }`}

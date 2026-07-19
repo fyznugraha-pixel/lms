@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import ConfirmModal from "@/components/ConfirmModal";
-import { useDictionary } from "@/hooks/useDictionary";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 export default function AdminPersetujuanPage() {
   const dict = useDictionary();
+  const locale = useLocale();
   const [pengajuanList, setPengajuanList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
@@ -15,6 +16,23 @@ export default function AdminPersetujuanPage() {
     message: "",
     type: "alert"
   });
+
+  const [promptModalConfig, setPromptModalConfig] = useState<{
+    isOpen: boolean;
+    id: string;
+    status: "DISETUJUI" | "DITOLAK";
+    jenis: string;
+    showTimeInput: boolean;
+  }>({
+    isOpen: false,
+    id: "",
+    status: "DISETUJUI",
+    jenis: "",
+    showTimeInput: false
+  });
+
+  const [promptInput, setPromptInput] = useState("");
+  const [promptTime, setPromptTime] = useState("17:00");
 
   const fetchPengajuan = async () => {
     setIsLoading(true);
@@ -35,17 +53,29 @@ export default function AdminPersetujuanPage() {
     fetchPengajuan();
   }, []);
 
-  const handleAction = async (id: string, status: "DISETUJUI" | "DITOLAK", jenis: string) => {
-    let jamPulangKoreksi = undefined;
-    let catatanApproval = prompt(dict.adminKantor?.persetujuan?.promptReason?.replace("{status}", status) || `Masukkan catatan (opsional) untuk tindakan ${status}:`) || "";
+  const openPrompt = (id: string, status: "DISETUJUI" | "DITOLAK", jenis: string) => {
+    setPromptModalConfig({
+      isOpen: true,
+      id,
+      status,
+      jenis,
+      showTimeInput: jenis === 'KLARIFIKASI_ABSEN' && status === 'DISETUJUI'
+    });
+    setPromptInput("");
+    setPromptTime("17:00");
+  };
 
-    if (jenis === 'KLARIFIKASI_ABSEN' && status === 'DISETUJUI') {
-      const inputJam = prompt(dict.adminKantor?.persetujuan?.promptTime || "Masukkan jam pulang koreksi (HH:mm). Kosongkan untuk set otomatis ke 17:00:", "17:00");
-      if (inputJam !== null) {
-        jamPulangKoreksi = inputJam;
-      }
+  const submitAction = async () => {
+    const { id, status, showTimeInput } = promptModalConfig;
+    
+    let jamPulangKoreksi = undefined;
+    let catatanApproval = promptInput.trim();
+
+    if (showTimeInput && promptTime.trim() !== "") {
+      jamPulangKoreksi = promptTime;
     }
 
+    setPromptModalConfig({ ...promptModalConfig, isOpen: false });
     setActionLoadingId(id);
     try {
       const res = await fetch(`/api/absen-kantor/pengajuan/${id}`, {
@@ -59,7 +89,7 @@ export default function AdminPersetujuanPage() {
       });
       const result = await res.json();
       if (result.success) {
-        setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: result.message, type: "alert" });
+        setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: dict.notifications?.processSuccess || "Pengajuan berhasil diproses.", type: "alert" });
         fetchPengajuan();
       } else {
         setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
@@ -72,7 +102,7 @@ export default function AdminPersetujuanPage() {
   };
 
   const formatTanggal = (isoString: string) => {
-    return new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(isoString));
+    return new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(isoString));
   };
 
   return (
@@ -120,7 +150,9 @@ export default function AdminPersetujuanPage() {
                         p.jenis === 'SAKIT' ? 'bg-red-50 text-red-700' :
                         'bg-purple-50 text-purple-700'
                       }`}>
-                        {p.jenis.replace('_', ' ')}
+                        {p.jenis === 'SAKIT' ? (dict.leaveType?.sick || "SAKIT") : 
+                         p.jenis === 'IZIN' ? (dict.leaveType?.leave || "IZIN") : 
+                         (dict.leaveType?.clarification || "KLARIFIKASI ABSEN")}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
@@ -129,7 +161,7 @@ export default function AdminPersetujuanPage() {
                       ) : (
                         <div className="flex flex-col">
                           <span>{formatTanggal(p.tanggalMulai)}</span>
-                          <span className="text-xs text-gray-400">s.d</span>
+                          <span className="text-xs text-gray-400">{dict.adminKantor?.persetujuan?.to || "s.d"}</span>
                           <span>{formatTanggal(p.tanggalSelesai)}</span>
                         </div>
                       )}
@@ -149,7 +181,9 @@ export default function AdminPersetujuanPage() {
                         p.status === 'DITOLAK' ? 'bg-red-100 text-red-700' :
                         'bg-yellow-100 text-yellow-700'
                       }`}>
-                        {p.status}
+                        {p.status === 'PENDING' ? (dict.status?.pending || "PENDING") :
+                         p.status === 'DISETUJUI' ? (dict.status?.approved || "DISETUJUI") :
+                         (dict.status?.rejected || "DITOLAK")}
                       </span>
                       {p.catatanApproval && (
                         <p className="text-xs text-gray-500 mt-1 truncate max-w-[150px]" title={p.catatanApproval}>
@@ -162,21 +196,21 @@ export default function AdminPersetujuanPage() {
                         <div className="flex justify-end gap-2">
                           <button
                             disabled={actionLoadingId === p.id}
-                            onClick={() => handleAction(p.id, "DISETUJUI", p.jenis)}
+                            onClick={() => openPrompt(p.id, "DISETUJUI", p.jenis)}
                             className="px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                           >
                             {dict.adminKantor?.persetujuan?.btnApprove || "Setujui"}
                           </button>
                           <button
                             disabled={actionLoadingId === p.id}
-                            onClick={() => handleAction(p.id, "DITOLAK", p.jenis)}
+                            onClick={() => openPrompt(p.id, "DITOLAK", p.jenis)}
                             className="px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                           >
                             {dict.adminKantor?.persetujuan?.btnReject || "Tolak"}
                           </button>
                         </div>
                       ) : (
-                        <span className="text-xs text-gray-400 italic">Telah Diproses</span>
+                        <span className="text-xs text-gray-400 italic">{dict.adminKantor?.persetujuan?.processed || "Telah Diproses"}</span>
                       )}
                     </td>
                   </tr>
@@ -200,6 +234,78 @@ export default function AdminPersetujuanPage() {
           setModalConfig({ ...modalConfig, isOpen: false });
         }}
       />
+
+      {/* Custom Prompt Modal */}
+      {promptModalConfig.isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                {promptModalConfig.status === "DISETUJUI" ? (dict.adminKantor?.persetujuan?.btnApprove || "Setujui") : (dict.adminKantor?.persetujuan?.btnReject || "Tolak")} {dict.adminKantor?.persetujuan?.colRequest || "Pengajuan"}
+              </h3>
+              <p className="text-slate-600 mb-4 text-sm">
+                {dict.adminKantor?.persetujuan?.promptReason?.replace(
+                  "{status}", 
+                  promptModalConfig.status === "DISETUJUI" 
+                    ? (dict.adminKantor?.persetujuan?.btnApprove?.toUpperCase() || "DISETUJUI") 
+                    : (dict.adminKantor?.persetujuan?.btnReject?.toUpperCase() || "DITOLAK")
+                ) || `Masukkan catatan (opsional) untuk tindakan ${promptModalConfig.status}:`}
+              </p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {dict.adminKantor?.persetujuan?.noteLabel || "Catatan"}
+                  </label>
+                  <input
+                    type="text"
+                    value={promptInput}
+                    onChange={(e) => setPromptInput(e.target.value)}
+                    placeholder={dict.adminKantor?.persetujuan?.notePlaceholder || "Contoh: OK, cepat sembuh..."}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                  />
+                </div>
+
+                {promptModalConfig.showTimeInput && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {dict.adminKantor?.persetujuan?.promptTime || "Jam Pulang Koreksi (HH:mm)"}
+                    </label>
+                    <input
+                      type="time"
+                      value={promptTime}
+                      onChange={(e) => setPromptTime(e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {dict.adminKantor?.persetujuan?.promptTimeHint || "Kosongkan/biarkan default jika ingin otomatis ke 17:00."}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="bg-slate-50 px-6 py-4 flex justify-end gap-3 border-t border-slate-100">
+              <button
+                onClick={() => setPromptModalConfig({ ...promptModalConfig, isOpen: false })}
+                className="px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
+              >
+                {dict.dashboard?.btnCancel || "Batal"}
+              </button>
+              <button
+                onClick={submitAction}
+                className={`px-4 py-2 text-sm font-semibold text-white rounded-lg transition-colors shadow-sm ${
+                  promptModalConfig.status === "DISETUJUI" 
+                    ? "bg-green-600 hover:bg-green-700" 
+                    : "bg-red-600 hover:bg-red-700"
+                }`}
+              >
+                {promptModalConfig.status === "DISETUJUI" ? (dict.adminKantor?.persetujuan?.btnApprove || "Setujui") : (dict.adminKantor?.persetujuan?.btnReject || "Tolak")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

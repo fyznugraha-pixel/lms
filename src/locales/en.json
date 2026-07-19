@@ -11,6 +11,16 @@
     "logout": "Sign Out",
     "changePassword": "Change Password"
   },
+  "status": {
+    "pending": "PENDING",
+    "approved": "APPROVED",
+    "rejected": "REJECTED"
+  },
+  "leaveType": {
+    "sick": "SICK",
+    "leave": "LEAVE",
+    "clarification": "ATTENDANCE CLARIFICATION"
+  },
   "bottomNav": {
     "home": "Home",
     "workLog": "Work",
@@ -40,6 +50,8 @@
     "success": "Success",
     "failed": "Failed",
     "codeRequired": "Session code is required!",
+    "successCheckIn": "Successfully checked in!",
+    "successCheckOut": "Successfully checked out!",
     "btnProcessing": "Processing...",
     "serverTime": "Server Time (Local)",
     "loading": "Loading dashboard data...",
@@ -177,6 +189,7 @@
     "deleteSuccess": "Data deleted successfully.",
     "reqSuccess": "Request submitted successfully.",
     "tokenSuccess": "New attendance session created successfully.",
+    "processSuccess": "Request processed successfully.",
     "logSuccess": "Work Log saved successfully!",
     "approveConfirm": "Approve this request?",
     "rejectConfirm": "Reject this request?",
@@ -252,6 +265,7 @@
       "colStatus": "Status",
       "colCode": "Attendance Code (OTP)",
       "colCount": "Checked In",
+      "people": "person(s)",
       "colAction": "Action",
       "noData": "No attendance sessions yet.",
       "btnCopy": "Copy",
@@ -295,6 +309,11 @@
       "btnReject": "Reject",
       "promptReason": "Enter notes (optional) for {status} action:",
       "promptTime": "Enter correction out time (HH:mm). Leave empty for auto 17:00:",
+      "to": "to",
+      "processed": "Processed",
+      "noteLabel": "Notes",
+      "notePlaceholder": "E.g. OK, get well soon...",
+      "promptTimeHint": "Leave empty for auto 17:00.",
       "viewAttachment": "View Proof"
     },
     "rekap": {

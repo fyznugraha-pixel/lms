@@ -14,7 +14,7 @@ async function checkPenanggungJawabAuth() {
   const token = cookieStore.get('session_token')?.value;
   if (!token) return null;
   const payload = await verifyToken(token);
-  if (!payload || !['ADMIN_KANTOR', 'SUPER_ADMIN'].includes(payload.role as string)) {
+  if (!payload || (payload.role !== 'SUPER_ADMIN')) {
     return null;
   }
   return payload;

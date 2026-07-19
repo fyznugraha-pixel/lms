@@ -149,7 +149,7 @@ export default function AbsensiAdminPage() {
                       <span className="text-gray-400 font-medium">- {dict.adminKantor?.absensi?.statusClosed || "CLOSED"} -</span>
                     )}
                   </td>
-                  <td className="p-4">{sesi.jenisAbsen === 'MASUK' ? sesi._count.absensiMasuk : sesi._count.absensiPulang} orang</td>
+                  <td className="p-4">{sesi.jenisAbsen === 'MASUK' ? sesi._count.absensiMasuk : sesi._count.absensiPulang} {dict.adminKantor?.absensi?.people || "orang"}</td>
                   <td className="p-4">
                     <Link 
                       href={`/admin-kantor/absensi/${sesi.id}`}

@@ -43,8 +43,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Tanggal selesai tidak boleh lebih awal dari tanggal mulai.' }, { status: 400 });
     }
 
-    let adaKonflik = false;
-
     // Deteksi Konflik (Jika Izin/Sakit)
     if (data.jenis === 'IZIN' || data.jenis === 'SAKIT') {
       // 1. Cek apakah ada record absensi (Hadir/Terlambat/dll) di rentang waktu tersebut
@@ -57,7 +55,10 @@ export async function POST(request: Request) {
       });
 
       if (absensiConflict) {
-        adaKonflik = true; // Tandai konflik tapi jangan tolak (Bisa jadi izin setengah hari setelah masuk kerja)
+        return NextResponse.json({ 
+          success: false, 
+          error: `Gagal mengajukan. Anda sudah memiliki record kehadiran pada rentang tanggal tersebut.` 
+        }, { status: 400 });
       }
 
       // 2. Cek apakah sudah ada pengajuan izin/sakit lain yang overlap
@@ -72,7 +73,6 @@ export async function POST(request: Request) {
         }
       });
 
-      // Tetap tolak jika bertabrakan dengan pengajuan izin lain (mencegah double-submit izin)
       if (pengajuanConflict) {
         return NextResponse.json({ 
           success: false, 
@@ -89,8 +89,7 @@ export async function POST(request: Request) {
         tanggalSelesai: tSelesai,
         alasan: data.alasan,
         lampiranUrl: data.lampiranUrl || null,
-        status: 'PENDING',
-        adaKonflikAbsen: adaKonflik
+        status: 'PENDING'
       }
     });
 
