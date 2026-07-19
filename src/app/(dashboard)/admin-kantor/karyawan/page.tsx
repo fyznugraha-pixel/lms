@@ -160,15 +160,16 @@ export default function KaryawanPage() {
             />
           </div>
           <div className="flex gap-2">
-            <select
+            <CustomDropdown
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="all">{dict.adminKantor?.karyawan?.filterAll || "Semua Status"}</option>
-              <option value="active">{dict.adminKantor?.karyawan?.filterActive || "Aktif"}</option>
-              <option value="inactive">{dict.adminKantor?.karyawan?.filterInactive || "Nonaktif"}</option>
-            </select>
+              onChange={(val) => setStatusFilter(val as string)}
+              options={[
+                { value: "all", label: dict.adminKantor?.karyawan?.filterAll || "Semua Status" },
+                { value: "active", label: dict.adminKantor?.karyawan?.filterActive || "Aktif" },
+                { value: "inactive", label: dict.adminKantor?.karyawan?.filterInactive || "Nonaktif" }
+              ]}
+              className="w-48"
+            />
           </div>
         </div>
 
