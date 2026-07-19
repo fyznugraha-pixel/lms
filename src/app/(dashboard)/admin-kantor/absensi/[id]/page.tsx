@@ -4,10 +4,11 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle, XCircle, X } from "lucide-react";
 import ConfirmModal from "@/components/ConfirmModal";
-import { useDictionary } from "@/hooks/useDictionary";
+import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 export default function SesiAbsensiDetail(props: { params: Promise<{ id: string }> }) {
   const dict = useDictionary();
+  const locale = useLocale();
   const params = use(props.params);
   const [sesi, setSesi] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,14 +67,20 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
           <ArrowLeft size={20} />
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{dict.adminKantor?.absensi?.detailTitle || "Detail Sesi Absensi"}: {sesi.jenisAbsen}</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {dict.adminKantor?.absensi?.detailTitle || "Detail Sesi Absensi"}: {
+              sesi.jenisAbsen === 'MASUK' 
+                ? (dict.adminKantor?.absensi?.typeIn || "MASUK") 
+                : (dict.adminKantor?.absensi?.typeOut || "PULANG")
+            }
+          </h1>
           <p className="text-gray-500">
-            {new Date(sesi.tanggal).toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            {new Date(sesi.tanggal).toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center">
+      <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm grid grid-cols-2 md:flex md:justify-between items-center gap-4">
         <div>
           <p className="text-sm text-gray-500">{dict.adminKantor?.absensi?.statusSession || "Status Sesi"}</p>
           <div className="mt-1">
@@ -95,12 +102,14 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
           </p>
         </div>
         {sesi.status === 'AKTIF' && (
-          <button
-            onClick={handleCloseClick}
-            className="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg font-medium transition-colors"
-          >
-            {dict.adminKantor?.absensi?.btnClose || "Tutup Sesi"}
-          </button>
+          <div className="col-span-2 md:col-span-1 mt-2 md:mt-0">
+            <button
+              onClick={handleCloseClick}
+              className="w-full md:w-auto bg-red-50 hover:bg-red-100 text-red-600 px-4 py-3 md:py-2 rounded-lg font-medium transition-colors"
+            >
+              {dict.adminKantor?.absensi?.btnClose || "Tutup Sesi"}
+            </button>
+          </div>
         )}
       </div>
 
