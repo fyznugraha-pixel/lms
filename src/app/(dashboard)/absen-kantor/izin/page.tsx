@@ -135,12 +135,12 @@ export default function KaryawanIzinPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">URL / Link</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{dict.leave.proofUrl || "URL / Link"}</label>
                 <input 
                   type="url"
                   value={lampiranUrl}
                   onChange={(e) => setLampiranUrl(e.target.value)}
-                  placeholder="URL Google Drive"
+                  placeholder={dict.leave.proofUrlPlaceholder || "URL Google Drive"}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>

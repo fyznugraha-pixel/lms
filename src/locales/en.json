@@ -127,7 +127,9 @@
     "reasonPlaceholder": "Please explain briefly...",
     "statusPending": "PENDING",
     "statusApproved": "APPROVED",
-    "statusRejected": "REJECTED"
+    "statusRejected": "REJECTED",
+    "proofUrl": "Proof Document / Link (Optional)",
+    "proofUrlPlaceholder": "E.g. Google Drive link or Image URL..."
   },
   "recap": {
     "title": "My Attendance Recap",

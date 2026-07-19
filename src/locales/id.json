@@ -126,7 +126,9 @@
     "reasonPlaceholder": "Jelaskan secara singkat...",
     "statusPending": "MENUNGGU",
     "statusApproved": "DISETUJUI",
-    "statusRejected": "DITOLAK"
+    "statusRejected": "DITOLAK",
+    "proofUrl": "URL Bukti / Lampiran (Opsional)",
+    "proofUrlPlaceholder": "Contoh: Link Google Drive / Foto Surat..."
   },
   "recap": {
     "title": "Rekap Kehadiran Saya",
