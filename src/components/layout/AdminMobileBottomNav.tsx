@@ -10,6 +10,7 @@ export default function AdminMobileBottomNav() {
   const dict = useDictionary();
 
   const navItems = [
+    { name: dict.bottomNav?.home || "Home", href: "/admin-kantor", icon: Home, exact: true },
     { name: dict.adminKantor?.persetujuan?.navLabel || "Persetujuan", href: "/admin-kantor/persetujuan", icon: FileCheck },
     { name: dict.adminKantor?.karyawan?.navLabel || "Karyawan", href: "/admin-kantor/karyawan", icon: Users },
     { name: dict.adminKantor?.absensi?.navLabel || "Sesi", href: "/admin-kantor/absensi", icon: CheckSquare },
@@ -20,7 +21,9 @@ export default function AdminMobileBottomNav() {
     <>
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex items-center justify-around z-50 px-2 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href) && item.href !== "/absen-kantor";
+          const isActive = item.exact 
+            ? pathname === item.href 
+            : pathname.startsWith(item.href) && item.href !== "/absen-kantor";
           return (
             <Link
               key={item.href}
