@@ -93,7 +93,7 @@ export default function AbsensiAdminPage() {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
         {isLoading ? (
-          <div className="p-8 text-center text-gray-500">Memuat sesi...</div>
+          <div className="p-8 text-center text-gray-500">{dict.adminKantor?.absensi?.loading || "Memuat sesi..."}</div>
         ) : !sessions || sessions.length === 0 ? (
           <div className="p-8 text-center text-gray-500">{dict.adminKantor?.absensi?.noData || "Belum ada sesi absensi."}</div>
         ) : (

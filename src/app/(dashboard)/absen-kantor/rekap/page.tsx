@@ -60,7 +60,7 @@ export default function KaryawanRekapPage() {
       </div>
 
       {isLoading ? (
-        <div className="p-12 text-center text-gray-500">Memuat laporan...</div>
+        <div className="p-12 text-center text-gray-500">{dict.bottomNav?.recapLoading || "Memuat laporan..."}</div>
       ) : data ? (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">

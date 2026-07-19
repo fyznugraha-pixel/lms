@@ -194,7 +194,7 @@ export default function AdminRekapPage() {
         </div>
         
         {isLoading ? (
-          <div className="p-12 text-center text-gray-500">Memuat data rekapitulasi...</div>
+          <div className="p-12 text-center text-gray-500">{dict.adminKantor?.rekap?.loading || "Memuat data rekapitulasi..."}</div>
         ) : !data || data.ringkasan.length === 0 ? (
           <div className="p-12 text-center text-gray-500">{dict.adminKantor?.rekap?.noData || "Belum ada data kehadiran untuk bulan ini."}</div>
         ) : (

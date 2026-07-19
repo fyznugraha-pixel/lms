@@ -15,6 +15,7 @@
     "home": "Home",
     "workLog": "Kerja",
     "recap": "Rekap",
+    "recapLoading": "Memuat laporan...",
     "leave": "Izin",
     "profile": "Profil"
   },
@@ -244,7 +245,9 @@
       "btnClose": "Tutup Sesi",
       "btnCloseConfirmMsg": "Tutup sesi absensi ini?",
       "createSuccess": "Sesi absensi berhasil dibuat.",
-      "createFailed": "Gagal membuat sesi absensi."
+      "createFailed": "Gagal membuat sesi absensi.",
+      "loading": "Memuat sesi...",
+      "loadingDetail": "Memuat detail sesi..."
     },
     "persetujuan": {
       "title": "Persetujuan Karyawan",
@@ -280,7 +283,8 @@
       "colTotalHours": "Total Jam",
       "noData": "Belum ada data kehadiran untuk bulan ini.",
       "hourSymbol": "j",
-      "minuteSymbol": "m"
+      "minuteSymbol": "m",
+      "loading": "Memuat data rekapitulasi..."
     },
     "sidebar": {
       "dashboard": "Dashboard",

@@ -59,7 +59,7 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
     });
   };
 
-  if (isLoading) return <div className="p-8">Memuat detail sesi...</div>;
+  if (isLoading) return <div className="p-8">{dict.adminKantor?.absensi?.loadingDetail || "Memuat detail sesi..."}</div>;
   if (!sesi) return <div className="p-8 text-red-500">Sesi tidak ditemukan.</div>;
 
   return (

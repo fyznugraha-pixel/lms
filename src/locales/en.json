@@ -15,6 +15,7 @@
     "home": "Home",
     "workLog": "Work",
     "recap": "Recap",
+    "recapLoading": "Loading report...",
     "leave": "Leave",
     "profile": "Profile"
   },
@@ -245,7 +246,9 @@
       "btnClose": "Close Session",
       "btnCloseConfirmMsg": "Close this attendance session?",
       "createSuccess": "Attendance session created successfully.",
-      "createFailed": "Failed to create attendance session."
+      "createFailed": "Failed to create attendance session.",
+      "loading": "Loading sessions...",
+      "loadingDetail": "Loading session details..."
     },
     "persetujuan": {
       "title": "Employee Approvals",
@@ -282,7 +285,8 @@
       "colTotalHours": "Total Hours",
       "noData": "No attendance data for this month yet.",
       "hourSymbol": "h",
-      "minuteSymbol": "m"
+      "minuteSymbol": "m",
+      "loading": "Loading recap data..."
     },
     "sidebar": {
       "dashboard": "Dashboard",
