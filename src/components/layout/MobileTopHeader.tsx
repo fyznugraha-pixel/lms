@@ -3,7 +3,7 @@
 import LanguageToggle from "@/components/LanguageToggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShieldAlert, User } from "lucide-react";
+import { ShieldAlert, User, LogOut } from "lucide-react";
 import { useDictionary } from "@/hooks/useDictionary";
 
 export default function MobileTopHeader({ langCookie, role }: { langCookie: string; role?: string }) {
@@ -35,6 +35,13 @@ export default function MobileTopHeader({ langCookie, role }: { langCookie: stri
           </Link>
         )}
         <LanguageToggle currentLang={langCookie} compact={true} />
+        {inAdminMode && (
+          <form action="/api/auth/logout" method="POST">
+            <button type="submit" className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center" title={dict.sidebar?.logout || "Keluar"}>
+              <LogOut size={20} />
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
