@@ -253,6 +253,8 @@
       "createFailed": "Gagal membuat sesi absensi.",
       "loading": "Memuat sesi...",
       "loadingDetail": "Memuat detail sesi...",
+      "statusActive": "AKTIF",
+      "statusClosed": "SELESAI",
       "detailTitle": "Detail Sesi Absensi",
       "statusSession": "Status Sesi",
       "totalEmployee": "Total Karyawan",

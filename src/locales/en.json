@@ -254,6 +254,8 @@
       "createFailed": "Failed to create attendance session.",
       "loading": "Loading sessions...",
       "loadingDetail": "Loading session details...",
+      "statusActive": "ACTIVE",
+      "statusClosed": "CLOSED",
       "detailTitle": "Attendance Session Detail",
       "statusSession": "Session Status",
       "totalEmployee": "Total Employees",

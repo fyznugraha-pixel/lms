@@ -87,7 +87,7 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
             <span className={`px-3 py-1 text-sm font-semibold rounded-full ${
               sesi.status === 'AKTIF' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
             }`}>
-              {sesi.status}
+              {sesi.status === 'AKTIF' ? (dict.adminKantor?.absensi?.statusActive || "AKTIF") : (dict.adminKantor?.absensi?.statusClosed || "SELESAI")}
             </span>
           </div>
         </div>
