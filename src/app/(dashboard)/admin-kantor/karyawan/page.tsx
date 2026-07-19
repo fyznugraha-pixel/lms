@@ -115,8 +115,8 @@ export default function KaryawanPage() {
   const toggleStatus = (id: string, currentStatus: boolean) => {
     setModalConfig({
       isOpen: true,
-      title: dict.notifications?.warningTitle || "Konfirmasi Aksi",
-      message: `Yakin ingin ${currentStatus ? 'menonaktifkan' : 'mengaktifkan'} karyawan ini?`,
+      title: dict.adminKantor?.karyawan?.confirmStatusTitle || "Ubah Status Karyawan?",
+      message: dict.adminKantor?.karyawan?.confirmStatusDesc || `Apakah Anda yakin ingin mengubah status karyawan ini?`,
       type: "confirm",
       confirmTheme: currentStatus ? "red" : "blue",
       onConfirm: () => executeToggleStatus(id, currentStatus)
