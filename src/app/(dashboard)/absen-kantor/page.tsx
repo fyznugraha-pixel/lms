@@ -5,6 +5,7 @@ import Link from "next/link";
 import useSWR from "swr";
 import ConfirmModal from "@/components/ConfirmModal";
 import DigitalClock from "@/components/DigitalClock";
+import StatusBadge from "@/components/StatusBadge";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
 type AbsensiHariIni = {
@@ -133,7 +134,7 @@ export default function KaryawanDashboard() {
   return (
     <div className="space-y-8 max-w-5xl mx-auto w-full min-w-0">
       {/* Header & Clock */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 md:p-6 rounded-xl shadow-sm border border-gray-100">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{dict.sidebar.dashboard}</h1>
           <p className="text-gray-500 mt-1 capitalize">
@@ -141,7 +142,7 @@ export default function KaryawanDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-4 w-full md:w-auto">
-          <button onClick={() => mutate()} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 hidden md:flex items-center gap-2 transition-colors">
+          <button onClick={() => mutate()} className="text-sm font-medium text-[#394887] hover:text-[#2D3A6E] bg-[#F4F6FB] px-3 py-1.5 rounded-lg border border-[#D1D9F0] hidden md:flex items-center gap-2 transition-colors">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             Refresh Data
           </button>
@@ -159,10 +160,10 @@ export default function KaryawanDashboard() {
           {/* Action Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Kartu Absen Masuk */}
-            <div className={`rounded-2xl p-5 md:p-6 shadow-sm border ${data?.absensiHariIni?.waktuAbsenMasuk ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100'} transition-all`}>
+            <div className={`rounded-xl p-5 md:p-6 shadow-sm border ${data?.absensiHariIni?.waktuAbsenMasuk ? 'bg-green-50 border-green-200' : 'bg-white border-gray-100'} transition-all`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className={`p-3 rounded-full ${data?.absensiHariIni?.waktuAbsenMasuk ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'}`}>
+                  <div className={`p-3 rounded-full ${data?.absensiHariIni?.waktuAbsenMasuk ? 'bg-green-100 text-green-600' : 'bg-[#F4F6FB] text-[#394887]'}`}>
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                     </svg>
@@ -198,7 +199,7 @@ export default function KaryawanDashboard() {
                     className={`w-full py-3 rounded-xl font-bold text-white transition-all shadow-md ${
                       !data?.bisaAbsenMasuk || kodeMasuk.length < 6
                         ? "bg-gray-300 cursor-not-allowed shadow-none"
-                        : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
+                        : "bg-[#394887] hover:bg-[#2D3A6E]"
                     }`}
                   >
                     {isActionLoading ? dict.dashboard.btnProcessing : data?.bisaAbsenMasuk ? dict.dashboard.btnCheckIn : dict.dashboard.sessionNotOpened}
@@ -208,10 +209,10 @@ export default function KaryawanDashboard() {
             </div>
 
             {/* Kartu Absen Pulang */}
-            <div className={`rounded-2xl p-5 md:p-6 shadow-sm border ${data?.absensiHariIni?.waktuAbsenPulang ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-gray-100'} transition-all`}>
+            <div className={`rounded-xl p-5 md:p-6 shadow-sm border ${data?.absensiHariIni?.waktuAbsenPulang ? 'bg-[#F4F6FB] border-[#D1D9F0]' : 'bg-white border-gray-100'} transition-all`}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className={`p-3 rounded-full ${data?.absensiHariIni?.waktuAbsenPulang ? 'bg-indigo-100 text-indigo-600' : 'bg-orange-100 text-orange-600'}`}>
+                  <div className={`p-3 rounded-full ${data?.absensiHariIni?.waktuAbsenPulang ? 'bg-[#D1D9F0] text-[#394887]' : 'bg-[#FDF8E7] text-[#EFC94B]'}`}>
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
@@ -219,13 +220,13 @@ export default function KaryawanDashboard() {
                   <h3 className="text-xl font-bold text-gray-900">{dict.dashboard.btnCheckOut}</h3>
                 </div>
                 {data?.absensiHariIni?.waktuAbsenPulang && (
-                  <span className="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">{dict.dashboard.success}</span>
+                  <span className="bg-[#D1D9F0] text-[#394887] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">{dict.dashboard.success}</span>
                 )}
               </div>
               
               <div className="mb-6">
                 <p className="text-sm text-gray-500 font-medium">{dict.dashboard.timeOut}</p>
-                <p className={`text-3xl font-black ${data?.absensiHariIni?.waktuAbsenPulang ? 'text-indigo-700' : 'text-gray-900'}`}>
+                <p className={`text-3xl font-black ${data?.absensiHariIni?.waktuAbsenPulang ? 'text-[#394887]' : 'text-gray-900'}`}>
                   {formatJam(data?.absensiHariIni?.waktuAbsenPulang || null)}
                 </p>
               </div>
@@ -247,7 +248,7 @@ export default function KaryawanDashboard() {
                     className={`w-full py-3 rounded-xl font-bold text-white transition-all shadow-md ${
                       !data?.bisaAbsenPulang || !data?.absensiHariIni?.waktuAbsenMasuk || kodePulang.length < 6
                         ? "bg-gray-300 cursor-not-allowed shadow-none"
-                        : "bg-orange-500 hover:bg-orange-600 hover:shadow-lg"
+                        : "bg-[#394887] hover:bg-[#2D3A6E]"
                     }`}
                   >
                     {isActionLoading ? dict.dashboard.btnProcessing : !data?.absensiHariIni?.waktuAbsenMasuk
@@ -263,25 +264,25 @@ export default function KaryawanDashboard() {
 
           {/* Quick Access Pekerjaan */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <Link href="/absen-kantor/pekerjaan" className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:border-blue-300 hover:shadow-md transition-all group block">
+            <Link href="/absen-kantor/pekerjaan" className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:border-[#D1D9F0] transition-all group block">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-50 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <div className="p-3 bg-[#F4F6FB] text-[#394887] rounded-xl group-hover:bg-[#394887] group-hover:text-white transition-colors">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-700 transition-colors">{dict.dashboard.todoTitle}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#394887] transition-colors">{dict.dashboard.todoTitle}</h3>
                   <p className="text-sm text-gray-500">{dict.dashboard.todoDesc}</p>
                 </div>
               </div>
             </Link>
 
-            <Link href="/absen-kantor/pekerjaan" className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:border-blue-300 hover:shadow-md transition-all group block">
+            <Link href="/absen-kantor/pekerjaan" className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:border-[#D1D9F0] transition-all group block">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <div className="p-3 bg-[#FDF8E7] text-[#EFC94B] rounded-xl group-hover:bg-[#EFC94B] group-hover:text-white transition-colors">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">{dict.dashboard.workLogTitle}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#EFC94B] transition-colors">{dict.dashboard.workLogTitle}</h3>
                   <p className="text-sm text-gray-500">{dict.dashboard.workLogDesc}</p>
                 </div>
               </div>
@@ -294,7 +295,9 @@ export default function KaryawanDashboard() {
               <h2 className="text-lg font-bold text-gray-900">{dict.dashboard.historyTitle}</h2>
             </div>
             {data?.histori && data.histori.length > 0 ? (
-              <div className="overflow-x-auto">
+              <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
@@ -328,17 +331,7 @@ export default function KaryawanDashboard() {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          {h.isIncomplete ? (
-                             <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-red-50 text-red-700">INCOMPLETE</span>
-                          ) : (
-                             <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${
-                              h.status === 'HADIR' ? 'bg-green-50 text-green-700' :
-                              h.status === 'TERLAMBAT' ? 'bg-yellow-50 text-yellow-700' :
-                              'bg-gray-100 text-gray-600'
-                            }`}>
-                              {h.status}
-                            </span>
-                          )}
+                          <StatusBadge status={h.isIncomplete ? 'INCOMPLETE' : h.status} />
                         </td>
                         <td className="px-6 py-4 text-right">
                           {h.isIncomplete && (
@@ -358,6 +351,35 @@ export default function KaryawanDashboard() {
                   </tbody>
                 </table>
               </div>
+              {/* Mobile Card List View */}
+              <div className="md:hidden flex flex-col divide-y divide-gray-100">
+                {data.histori.map((h) => (
+                  <div key={h.id} className="p-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-start">
+                      <span className="font-bold text-gray-900">{formatTanggal(h.tanggal)}</span>
+                      <StatusBadge status={h.isIncomplete ? 'INCOMPLETE' : h.status} />
+                    </div>
+                    <div className="text-sm text-gray-700">
+                      <p>Masuk: {formatJam(h.waktuAbsenMasuk)} <span className="mx-2 text-gray-300">|</span> Pulang: {formatJam(h.waktuAbsenPulang)}</p>
+                      <p className="mt-1">Durasi: <span className="font-medium text-gray-900">{h.durasiKerja ? `${Math.floor(h.durasiKerja / 60)}j ${h.durasiKerja % 60}m` : '-'}</span></p>
+                    </div>
+                    {h.isIncomplete && (
+                      <div className="mt-1">
+                        <button 
+                          onClick={() => {
+                            setKlarifikasiDate(h.tanggal);
+                            setIsKlarifikasiModalOpen(true);
+                          }}
+                          className="text-sm text-[#394887] hover:text-[#2D3A6E] font-bold underline"
+                        >
+                            {dict.dashboard.clarify}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              </>
             ) : (
               <div className="p-12 text-center text-gray-500">
                 {dict.dashboard.noHistory}
@@ -369,8 +391,8 @@ export default function KaryawanDashboard() {
 
       {/* Modal Klarifikasi */}
       {isKlarifikasiModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md my-8 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md my-8 relative">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
               <h2 className="text-xl font-bold text-gray-900">{dict.dashboard.clarifyTitle}</h2>
               <button onClick={() => setIsKlarifikasiModalOpen(false)} className="text-gray-400 hover:text-gray-600">
@@ -403,9 +425,9 @@ export default function KaryawanDashboard() {
                 <button 
                   type="submit" 
                   disabled={isActionLoading}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-sm disabled:opacity-50"
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#394887] hover:bg-[#2D3A6E] rounded-lg transition-colors disabled:bg-gray-400"
                 >
-                  {isActionLoading ? dict.dashboard.submitting : dict.dashboard.btnSubmit}
+                  {isActionLoading ? dict.dashboard.btnProcessing : dict.dashboard.btnSubmit}
                 </button>
               </div>
             </form>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useDictionary } from "@/hooks/useDictionary";
-import { Plus, Search, RefreshCw } from "lucide-react";
+import { Plus, Search, RefreshCw, MoreVertical } from "lucide-react";
 import useSWR from "swr";
 
 type Karyawan = {
@@ -20,6 +20,13 @@ export default function KaryawanPage() {
   const dict = useDictionary();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter]);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -147,7 +154,7 @@ export default function KaryawanPage() {
       </div>
 
       {/* Filter & Search Card */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
         <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between bg-gray-50/50">
           <div className="relative max-w-md w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -176,8 +183,15 @@ export default function KaryawanPage() {
         {/* Data List */}
         {isLoading ? (
           <div className="p-8 text-center text-gray-500">{dict.adminKantor?.karyawan?.loading || "Memuat data..."}</div>
-        ) : (
-          <div className="overflow-x-auto">
+        ) : (() => {
+          const safeList = karyawanList || [];
+          const totalPages = Math.ceil(safeList.length / itemsPerPage);
+          const paginatedData = safeList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+          return (
+          <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-100 text-gray-600 text-sm">
@@ -188,21 +202,21 @@ export default function KaryawanPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {karyawanList.length === 0 ? (
+                {safeList.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="py-12 text-center text-gray-500">
                       {dict.adminKantor?.karyawan?.noData || "Tidak ada data karyawan ditemukan."}
                     </td>
                   </tr>
                 ) : (
-                  karyawanList.map((k: Karyawan) => (
+                  paginatedData.map((k: Karyawan) => (
                     <tr key={k.id} className="hover:bg-gray-50 transition-colors group">
                       <td className="px-6 py-4">
                         <div className="font-medium text-gray-900">{k.namaLengkap || "-"}</div>
                         <div className="text-sm text-gray-500">{k.email}</div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#394887]/10 text-[#394887] border border-[#394887]/20">
                           {k.role === 'ADMIN_KANTOR' 
                             ? (dict.dashboard?.roleAdmin || "Admin Kantor")
                             : k.role === 'KARYAWAN'
@@ -223,7 +237,7 @@ export default function KaryawanPage() {
                     <td className="px-6 py-4 text-right">
                       <button 
                         onClick={() => openModal(k)}
-                        className="text-blue-600 hover:text-blue-800 font-medium text-sm mr-4 transition-opacity"
+                        className="text-[#394887] hover:text-[#2D3A6E] font-medium text-sm mr-4 transition-opacity"
                       >
                         {dict.adminKantor?.karyawan?.btnEdit || "Edit"}
                       </button>
@@ -240,7 +254,116 @@ export default function KaryawanPage() {
               </tbody>
             </table>
           </div>
-        )}
+
+          {/* Mobile Card List View (Compact Row with Kebab Menu) */}
+          <div className="md:hidden flex flex-col divide-y divide-gray-100 bg-white border-t border-gray-100">
+            {safeList.length === 0 ? (
+              <div className="py-12 text-center text-gray-500">
+                {dict.adminKantor?.karyawan?.noData || "Tidak ada data karyawan ditemukan."}
+              </div>
+            ) : (
+              paginatedData.map((k: Karyawan) => {
+                const initial = (k.namaLengkap || k.email || "?").charAt(0).toUpperCase();
+                return (
+                  <div key={k.id} className={`p-4 flex items-center gap-3 relative hover:bg-gray-50 transition-colors ${activeDropdownId === k.id ? 'z-30' : 'z-10'}`}>
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#394887]/10 flex items-center justify-center font-bold text-[#394887] text-lg">
+                      {initial}
+                    </div>
+                    
+                    <div className="flex-grow min-w-0 flex flex-col justify-center h-full">
+                      <div className="font-bold text-gray-900 text-sm truncate">{k.namaLengkap || "-"}</div>
+                      <div className="text-xs text-gray-500 truncate mt-0.5">{k.email}</div>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className="text-[10px] font-bold text-[#394887] uppercase tracking-wide">
+                          {k.role === 'ADMIN_KANTOR' ? "Admin" : k.role === 'KARYAWAN' ? "Employee" : k.role.replace(/_/g, ' ')}
+                        </span>
+                        <span className="text-gray-300">&middot;</span>
+                        <span className={`flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide ${k.isActive ? "text-green-600" : "text-red-600"}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${k.isActive ? "bg-green-600" : "bg-red-600"}`}></span>
+                          {k.isActive ? "Active" : "Inactive"}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveDropdownId(activeDropdownId === k.id ? null : k.id);
+                      }}
+                      className="p-2 -mr-2 text-gray-400 hover:text-[#394887] rounded-full hover:bg-gray-100 transition-colors ml-auto flex-shrink-0"
+                    >
+                      <MoreVertical size={20} />
+                    </button>
+
+                    {/* Kebab Dropdown Menu */}
+                    {activeDropdownId === k.id && (
+                      <>
+                        <div 
+                          className="fixed inset-0 z-40"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveDropdownId(null);
+                          }}
+                        />
+                        <div className="absolute right-6 top-12 z-50 w-40 bg-white rounded-xl shadow-xl border border-gray-100 py-1 animate-in fade-in slide-in-from-top-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveDropdownId(null);
+                              openModal(k);
+                            }}
+                            className="w-full text-left px-4 py-3 text-sm font-semibold text-[#394887] hover:bg-gray-50 transition-colors"
+                          >
+                            Edit Profil
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveDropdownId(null);
+                              toggleStatus(k.id, k.isActive);
+                            }}
+                            className={`w-full text-left px-4 py-3 text-sm font-semibold hover:bg-gray-50 transition-colors ${
+                              k.isActive ? "text-red-600" : "text-green-600"
+                            }`}
+                          >
+                            {k.isActive ? "Nonaktifkan" : "Aktifkan"}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between p-4 border-t border-gray-100 bg-gray-50/50">
+              <span className="text-sm text-gray-500">
+                Halaman <span className="font-bold text-gray-900">{currentPage}</span> dari <span className="font-bold text-gray-900">{totalPages}</span>
+              </span>
+              <div className="flex gap-2">
+                <button 
+                  disabled={currentPage === 1} 
+                  onClick={() => setCurrentPage(p => p - 1)}
+                  className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-bold"
+                >
+                  Prev
+                </button>
+                <button 
+                  disabled={currentPage === totalPages} 
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-bold"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+          </>
+          );
+        })()}
       </div>
 
       {/* Modal */}

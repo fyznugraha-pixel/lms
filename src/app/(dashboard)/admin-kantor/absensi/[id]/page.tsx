@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle, XCircle, X } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, X, Search } from "lucide-react";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 
@@ -18,6 +18,13 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
     message: "",
     type: "alert"
   });
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   useEffect(() => {
     fetchSesiDetail();
@@ -114,10 +121,33 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-4 border-b border-gray-200 bg-gray-50">
-          <h3 className="font-semibold text-gray-700">{dict.adminKantor?.absensi?.employeeListTitle || "Daftar Kehadiran Karyawan"}</h3>
+        <div className="p-4 md:p-6 border-b border-gray-200 bg-gray-50 flex flex-col md:flex-row gap-4 justify-between items-center">
+          <h3 className="font-semibold text-gray-700 w-full md:w-auto">{dict.adminKantor?.absensi?.employeeListTitle || "Daftar Kehadiran Karyawan"}</h3>
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Cari karyawan..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#394887] focus:border-[#394887] bg-white outline-none transition-all"
+            />
+          </div>
         </div>
-        <div className="overflow-x-auto">
+        {(() => {
+          const filtered = sesi.tokens.filter((t: any) => 
+            (t.karyawan.namaLengkap || "").toLowerCase().includes(search.toLowerCase()) || 
+            (t.karyawan.email || "").toLowerCase().includes(search.toLowerCase())
+          );
+          const totalPages = Math.ceil(filtered.length / itemsPerPage);
+          const paginatedData = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+          if (filtered.length === 0) return <div className="p-12 text-center text-gray-500">Tidak ada karyawan yang cocok dengan pencarian "{search}".</div>;
+
+          return (
+            <>
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[500px]">
           <thead>
             <tr className="border-b border-gray-200 text-sm">
@@ -128,7 +158,7 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
             </tr>
           </thead>
           <tbody>
-            {sesi.tokens.map((tokenObj: any) => {
+            {paginatedData.map((tokenObj: any) => {
               const absensiRecord = sesi.jenisAbsen === 'MASUK'
                 ? sesi.absensiMasuk.find((a: any) => a.karyawan?.id === tokenObj.karyawan.id)
                 : sesi.absensiPulang.find((a: any) => a.karyawan?.id === tokenObj.karyawan.id);
@@ -161,6 +191,75 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
           </tbody>
         </table>
         </div>
+
+        {/* Mobile Card List View */}
+        <div className="md:hidden flex flex-col divide-y divide-gray-100">
+          {paginatedData.map((tokenObj: any) => {
+            const absensiRecord = sesi.jenisAbsen === 'MASUK'
+              ? sesi.absensiMasuk.find((a: any) => a.karyawan?.id === tokenObj.karyawan.id)
+              : sesi.absensiPulang.find((a: any) => a.karyawan?.id === tokenObj.karyawan.id);
+            
+            const waktuAbsen = sesi.jenisAbsen === 'MASUK'
+              ? absensiRecord?.waktuAbsenMasuk
+              : absensiRecord?.waktuAbsenPulang;
+
+            return (
+            <div key={tokenObj.id} className="p-4 flex flex-col gap-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="font-bold text-gray-900 text-lg">{tokenObj.karyawan.namaLengkap}</div>
+                  <div className="text-sm text-gray-500">{tokenObj.karyawan.email}</div>
+                </div>
+                <div>
+                  {tokenObj.isUsed ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-green-50 text-green-700 border border-green-200 text-xs font-bold shadow-sm">
+                      <CheckCircle size={14} /> {dict.adminKantor?.absensi?.alreadyCheckedIn || "Sudah Absen"}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-100 text-gray-500 border border-gray-200 text-xs font-bold shadow-sm">
+                      <XCircle size={14} /> {dict.adminKantor?.absensi?.statusNotYet || "Belum"}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 mt-1 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                <span className="text-sm text-gray-500">{dict.adminKantor?.absensi?.colTime || "Waktu Absen"}:</span>
+                <span className="text-sm font-bold text-[#394887]">
+                  {waktuAbsen ? new Date(waktuAbsen).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : '-'}
+                </span>
+              </div>
+            </div>
+            );
+          })}
+        </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between p-4 border-t border-gray-100 bg-gray-50/50">
+            <span className="text-sm text-gray-500">
+              Halaman <span className="font-bold text-gray-900">{currentPage}</span> dari <span className="font-bold text-gray-900">{totalPages}</span>
+            </span>
+            <div className="flex gap-2">
+              <button 
+                disabled={currentPage === 1} 
+                onClick={() => setCurrentPage(p => p - 1)}
+                className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-bold"
+              >
+                Prev
+              </button>
+              <button 
+                disabled={currentPage === totalPages} 
+                onClick={() => setCurrentPage(p => p + 1)}
+                className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-bold"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+          )}
+          </>
+          );
+        })()}
       </div>
 
       <ConfirmModal

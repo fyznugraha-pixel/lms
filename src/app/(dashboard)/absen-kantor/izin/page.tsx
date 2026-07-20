@@ -5,6 +5,7 @@ import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import ConfirmModal from "@/components/ConfirmModal";
 import CustomDropdown from "@/components/CustomDropdown";
 import CustomDatePicker from "@/components/CustomDatePicker";
+import StatusBadge from "@/components/StatusBadge";
 
 export default function KaryawanIzinPage() {
   const dict = useDictionary();
@@ -92,7 +93,7 @@ export default function KaryawanIzinPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Form Pengajuan */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 md:p-6">
             <h2 className="text-lg font-bold text-gray-900 mb-6 border-b pb-4">{dict.leave.formTitle}</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
@@ -147,7 +148,7 @@ export default function KaryawanIzinPage() {
               <button 
                 type="submit" 
                 disabled={isSubmitting}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-50"
+                className="w-full py-3 bg-[#394887] hover:bg-[#2D3A6E] text-white font-bold rounded-xl shadow-sm transition-colors disabled:bg-gray-400"
               >
                 {isSubmitting ? dict.dashboard.submitting : dict.leave.btnNewReq}
               </button>
@@ -157,7 +158,7 @@ export default function KaryawanIzinPage() {
 
         {/* Daftar Riwayat */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-0 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-0 overflow-hidden">
             <div className="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
               <h2 className="text-lg font-bold text-gray-900">{dict.leave.reqHistory}</h2>
             </div>
@@ -170,7 +171,9 @@ export default function KaryawanIzinPage() {
             ) : pengajuanList.length === 0 ? (
               <div className="p-12 text-center text-gray-500">{dict.leave.noReq}</div>
             ) : (
-              <div className="overflow-x-auto">
+              <>
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
@@ -184,15 +187,12 @@ export default function KaryawanIzinPage() {
                     {pengajuanList.map((p) => (
                       <tr key={p.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${
-                            p.jenis === 'IZIN' ? 'bg-blue-50 text-blue-700' :
-                            p.jenis === 'SAKIT' ? 'bg-red-50 text-red-700' :
-                            'bg-purple-50 text-purple-700'
-                          }`}>
-                            {p.jenis === 'SAKIT' ? (dict.leaveType?.sick || "SAKIT") : 
-                             p.jenis === 'IZIN' ? (dict.leaveType?.leave || "IZIN") : 
-                             (dict.leaveType?.clarification || "KLARIFIKASI ABSEN")}
-                          </span>
+                          <StatusBadge 
+                            status={p.jenis === 'SAKIT' ? (dict.leaveType?.sick || "SAKIT") : 
+                                    p.jenis === 'IZIN' ? (dict.leaveType?.leave || "IZIN") : 
+                                    (dict.leaveType?.clarification || "KLARIFIKASI ABSEN")} 
+                            type={p.jenis} 
+                          />
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900">
                           {p.tanggalMulai === p.tanggalSelesai ? (
@@ -211,14 +211,11 @@ export default function KaryawanIzinPage() {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col gap-1">
-                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold w-fit ${
-                              p.status === 'DISETUJUI' ? 'bg-green-100 text-green-700' :
-                              p.status === 'DITOLAK' ? 'bg-red-100 text-red-700' :
-                              'bg-yellow-100 text-yellow-700'
-                            }`}>
-                              {p.status === 'DISETUJUI' ? dict.leave.statusApproved : 
-                               p.status === 'DITOLAK' ? dict.leave.statusRejected : dict.leave.statusPending}
-                            </span>
+                            <StatusBadge 
+                              status={p.status === 'DISETUJUI' ? dict.leave.statusApproved : 
+                                      p.status === 'DITOLAK' ? dict.leave.statusRejected : dict.leave.statusPending} 
+                              type={p.status} 
+                            />
                             {p.catatanApproval && (
                               <p className="text-xs text-gray-500 truncate max-w-[150px]" title={p.catatanApproval}>
                                 Note: {p.catatanApproval}
@@ -231,6 +228,47 @@ export default function KaryawanIzinPage() {
                   </tbody>
                 </table>
               </div>
+              {/* Mobile Card List View */}
+              <div className="md:hidden flex flex-col divide-y divide-gray-100">
+                {pengajuanList.map((p) => (
+                  <div key={p.id} className="p-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-start">
+                      <StatusBadge 
+                        status={p.jenis === 'SAKIT' ? (dict.leaveType?.sick || "SAKIT") : 
+                                p.jenis === 'IZIN' ? (dict.leaveType?.leave || "IZIN") : 
+                                (dict.leaveType?.clarification || "KLARIFIKASI ABSEN")} 
+                        type={p.jenis} 
+                      />
+                      <StatusBadge 
+                        status={p.status === 'DISETUJUI' ? dict.leave.statusApproved : 
+                                p.status === 'DITOLAK' ? dict.leave.statusRejected : dict.leave.statusPending} 
+                        type={p.status} 
+                      />
+                    </div>
+                    <div className="text-sm text-gray-700 mt-1 space-y-1">
+                      <p className="font-bold text-gray-900">
+                        {p.tanggalMulai === p.tanggalSelesai ? (
+                          formatTanggal(p.tanggalMulai)
+                        ) : (
+                          `${formatTanggal(p.tanggalMulai)} ${dict.adminKantor?.persetujuan?.to || "s.d"} ${formatTanggal(p.tanggalSelesai)}`
+                        )}
+                      </p>
+                      <p className="line-clamp-2">{p.alasan}</p>
+                      {p.lampiranUrl && (
+                        <a href={p.lampiranUrl} target="_blank" rel="noreferrer" className="text-xs text-[#394887] font-bold hover:underline block pt-1">
+                          {dict.adminKantor?.persetujuan?.viewAttachment || "Lihat Lampiran"}
+                        </a>
+                      )}
+                      {p.catatanApproval && (
+                        <p className="text-xs text-red-600 font-medium bg-red-50 p-2 rounded-md mt-2 border border-red-100">
+                          Note: {p.catatanApproval}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              </>
             )}
           </div>
         </div>

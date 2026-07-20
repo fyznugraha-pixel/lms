@@ -62,7 +62,7 @@ export default async function AdminKantorDashboard() {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-blue-50 text-blue-600 rounded-xl">
+          <div className="p-4 bg-[#394887]/10 text-[#394887] rounded-xl">
             <Users size={28} />
           </div>
           <div>
@@ -71,7 +71,7 @@ export default async function AdminKantorDashboard() {
           </div>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-amber-50 text-amber-500 rounded-xl">
+          <div className="p-4 bg-[#EFC94B]/40 text-[#394887] rounded-xl">
             <FileText size={28} />
           </div>
           <div>
@@ -80,7 +80,7 @@ export default async function AdminKantorDashboard() {
           </div>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-emerald-50 text-emerald-500 rounded-xl">
+          <div className="p-4 bg-[#394887]/10 text-[#394887] rounded-xl">
             <CheckCircle size={28} />
           </div>
           <div>
@@ -95,32 +95,32 @@ export default async function AdminKantorDashboard() {
         <div className="lg:col-span-1 space-y-4">
           <h2 className="text-lg font-bold text-gray-900">{dict.adminKantor?.dashboard?.quickLinks || "Akses Cepat"}</h2>
           <div className="grid grid-cols-1 gap-3">
-            <Link href="/admin-kantor/absensi" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all flex items-center gap-4 group">
-              <div className="p-3 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <Link href="/admin-kantor/absensi" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#394887]/30 hover:shadow-md transition-all flex items-center gap-4 group">
+              <div className="p-3 bg-[#394887]/10 text-[#394887] rounded-lg group-hover:bg-[#394887] group-hover:text-white transition-colors">
                 <CheckCircle size={20} />
               </div>
               <div>
-                <p className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{dict.adminKantor?.dashboard?.manageSession || "Kelola Sesi Absensi"}</p>
+                <p className="font-bold text-gray-900 group-hover:text-[#394887] transition-colors">{dict.adminKantor?.dashboard?.manageSession || "Kelola Sesi Absensi"}</p>
                 <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.manageSessionDesc || "Buka atau tutup sesi absen"}</p>
               </div>
             </Link>
             
-            <Link href="/admin-kantor/karyawan" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all flex items-center gap-4 group">
-              <div className="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <Link href="/admin-kantor/karyawan" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#394887]/30 hover:shadow-md transition-all flex items-center gap-4 group">
+              <div className="p-3 bg-[#394887]/10 text-[#394887] rounded-lg group-hover:bg-[#394887] group-hover:text-white transition-colors">
                 <Users size={20} />
               </div>
               <div>
-                <p className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{dict.adminKantor?.dashboard?.manageEmployees || "Kelola Karyawan"}</p>
+                <p className="font-bold text-gray-900 group-hover:text-[#394887] transition-colors">{dict.adminKantor?.dashboard?.manageEmployees || "Kelola Karyawan"}</p>
                 <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.manageEmployeesDesc || "Tambah atau nonaktifkan akun"}</p>
               </div>
             </Link>
 
-            <Link href="/admin-kantor/rekap" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-300 hover:shadow-md transition-all flex items-center gap-4 group">
-              <div className="p-3 bg-green-50 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors">
+            <Link href="/admin-kantor/rekap" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#EFC94B]/50 hover:shadow-md transition-all flex items-center gap-4 group">
+              <div className="p-3 bg-[#EFC94B]/40 text-[#394887] rounded-lg group-hover:bg-[#EFC94B] group-hover:text-[#394887] transition-colors">
                 <Download size={20} />
               </div>
               <div>
-                <p className="font-bold text-gray-900 group-hover:text-green-600 transition-colors">{dict.adminKantor?.dashboard?.exportReport || "Export Laporan"}</p>
+                <p className="font-bold text-gray-900 group-hover:text-[#2D3A6E] transition-colors">{dict.adminKantor?.dashboard?.exportReport || "Export Laporan"}</p>
                 <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.exportReportDesc || "Unduh rekap bulanan CSV"}</p>
               </div>
             </Link>

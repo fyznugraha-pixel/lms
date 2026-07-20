@@ -5,6 +5,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import CustomDropdown from "@/components/CustomDropdown";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
+import { Search } from "lucide-react";
 
 export default function AdminRekapPage() {
   const dict = useDictionary();
@@ -15,6 +16,14 @@ export default function AdminRekapPage() {
   const currentDate = new Date();
   const [bulan, setBulan] = useState(currentDate.getMonth() + 1);
   const [tahun, setTahun] = useState(currentDate.getFullYear());
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset pagination when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, bulan, tahun]);
 
   const fetchRekap = async () => {
     setIsLoading(true);
@@ -179,7 +188,7 @@ export default function AdminRekapPage() {
           <button 
             onClick={handleExportXLSX}
             disabled={!data || data.ringkasan.length === 0}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-sm"
+            className="flex items-center gap-2 bg-[#394887] hover:bg-[#2D3A6E] disabled:opacity-50 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-sm"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
@@ -190,16 +199,38 @@ export default function AdminRekapPage() {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-          <h2 className="text-lg font-bold text-gray-900">{dict.adminKantor?.rekap?.listTitle || "Data Ringkasan Bulan Ini"}</h2>
+        <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-50/50">
+          <h2 className="text-lg font-bold text-gray-900 w-full md:w-auto">{dict.adminKantor?.rekap?.listTitle || "Data Ringkasan Bulan Ini"}</h2>
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Cari karyawan..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#394887] focus:border-[#394887] bg-white outline-none transition-all"
+            />
+          </div>
         </div>
         
         {isLoading ? (
           <div className="p-12 text-center text-gray-500">{dict.adminKantor?.rekap?.loading || "Memuat data rekapitulasi..."}</div>
         ) : !data || data.ringkasan.length === 0 ? (
           <div className="p-12 text-center text-gray-500">{dict.adminKantor?.rekap?.noData || "Belum ada data kehadiran untuk bulan ini."}</div>
-        ) : (
-          <div className="overflow-x-auto">
+        ) : (() => {
+          const filtered = data.ringkasan.filter((k: any) => 
+            (k.namaLengkap || "").toLowerCase().includes(search.toLowerCase()) || 
+            (k.email || "").toLowerCase().includes(search.toLowerCase())
+          );
+          const totalPages = Math.ceil(filtered.length / itemsPerPage);
+          const paginatedData = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+          if (filtered.length === 0) return <div className="p-12 text-center text-gray-500">Tidak ada data yang cocok dengan pencarian "{search}".</div>;
+
+          return (
+          <>
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[800px] whitespace-nowrap">
               <thead>
                 <tr className="bg-white text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
@@ -209,11 +240,11 @@ export default function AdminRekapPage() {
                   <th className="px-6 py-4 font-semibold text-center text-red-600">{dict.adminKantor?.rekap?.colSick || "Sakit"}</th>
                   <th className="px-6 py-4 font-semibold text-center text-gray-900">{dict.adminKantor?.rekap?.colAlpha || "Alpha"}</th>
                   <th className="px-6 py-4 font-semibold text-center text-orange-600">{dict.adminKantor?.rekap?.colIncomplete || "Incomplete"}</th>
-                  <th className="px-6 py-4 font-semibold text-right text-indigo-600">{dict.adminKantor?.rekap?.colTotalHours || "Total Jam"}</th>
+                  <th className="px-6 py-4 font-semibold text-right text-[#394887]">{dict.adminKantor?.rekap?.colTotalHours || "Total Jam"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {data.ringkasan.map((k: any) => (
+                {paginatedData.map((k: any) => (
                   <tr key={k.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="font-bold text-gray-900">{k.namaLengkap || "-"}</div>
@@ -224,7 +255,7 @@ export default function AdminRekapPage() {
                     <td className="px-6 py-4 text-center font-bold text-red-600">{k.sakit}</td>
                     <td className="px-6 py-4 text-center font-bold text-gray-900">{k.alpha}</td>
                     <td className="px-6 py-4 text-center font-bold text-orange-600">{k.incomplete}</td>
-                    <td className="px-6 py-4 text-right font-bold text-indigo-600">
+                    <td className="px-6 py-4 text-right font-bold text-[#394887]">
                       {Math.floor(k.totalDurasiMenit / 60)}{dict.adminKantor?.rekap?.hourSymbol || "j"} {k.totalDurasiMenit % 60}{dict.adminKantor?.rekap?.minuteSymbol || "m"}
                     </td>
                   </tr>
@@ -232,7 +263,75 @@ export default function AdminRekapPage() {
               </tbody>
             </table>
           </div>
-        )}
+
+          {/* Mobile Card List View */}
+          <div className="md:hidden flex flex-col divide-y divide-gray-100">
+            {paginatedData.map((k: any) => (
+              <div key={k.id} className="p-4 flex flex-col gap-3">
+                <div>
+                  <div className="font-bold text-gray-900 text-lg">{k.namaLengkap || "-"}</div>
+                  <div className="text-sm text-gray-500">{k.email}</div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-gray-50 rounded-xl p-2 text-center border border-gray-100">
+                    <div className="text-xs text-gray-500 font-medium mb-1">{dict.adminKantor?.rekap?.colPresent || "Hadir"}</div>
+                    <div className="font-bold text-green-600 text-xl">{k.hadir + k.terlambat}</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-2 text-center border border-gray-100">
+                    <div className="text-xs text-gray-500 font-medium mb-1">{dict.adminKantor?.rekap?.colLeave || "Izin"}</div>
+                    <div className="font-bold text-blue-600 text-xl">{k.izin}</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-2 text-center border border-gray-100">
+                    <div className="text-xs text-gray-500 font-medium mb-1">{dict.adminKantor?.rekap?.colSick || "Sakit"}</div>
+                    <div className="font-bold text-red-600 text-xl">{k.sakit}</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-2 text-center border border-gray-100">
+                    <div className="text-xs text-gray-500 font-medium mb-1">{dict.adminKantor?.rekap?.colAlpha || "Alpha"}</div>
+                    <div className="font-bold text-gray-900 text-xl">{k.alpha}</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-2 text-center border border-gray-100">
+                    <div className="text-xs text-gray-500 font-medium mb-1">{dict.adminKantor?.rekap?.colIncomplete || "Incomp"}</div>
+                    <div className="font-bold text-orange-600 text-xl">{k.incomplete}</div>
+                  </div>
+                  <div className="bg-[#394887]/5 rounded-xl p-2 text-center border border-[#394887]/10 flex flex-col justify-center">
+                    <div className="text-[10px] text-gray-500 font-bold mb-1 uppercase tracking-wider">{dict.adminKantor?.rekap?.colTotalHours || "Jam"}</div>
+                    <div className="font-bold text-[#394887] text-sm">
+                      {Math.floor(k.totalDurasiMenit / 60)}{dict.adminKantor?.rekap?.hourSymbol || "j"} {k.totalDurasiMenit % 60}{dict.adminKantor?.rekap?.minuteSymbol || "m"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between p-4 border-t border-gray-100 bg-gray-50/50">
+              <span className="text-sm text-gray-500">
+                Halaman <span className="font-bold text-gray-900">{currentPage}</span> dari <span className="font-bold text-gray-900">{totalPages}</span>
+              </span>
+              <div className="flex gap-2">
+                <button 
+                  disabled={currentPage === 1} 
+                  onClick={() => setCurrentPage(p => p - 1)}
+                  className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-bold"
+                >
+                  Prev
+                </button>
+                <button 
+                  disabled={currentPage === totalPages} 
+                  onClick={() => setCurrentPage(p => p + 1)}
+                  className="px-3 py-1 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-gray-700 font-bold"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+          </>
+          );
+        })()}
       </div>
     </div>
   );

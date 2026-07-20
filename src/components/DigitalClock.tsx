@@ -14,10 +14,10 @@ export default function DigitalClock({ label }: { label: string }) {
 
   return (
     <div className="mt-4 md:mt-0 text-center md:text-right">
-      <div className="text-4xl font-black text-blue-600 tracking-tight">
+      <div className="text-2xl font-bold text-[#394887]/70 tracking-tight">
         {new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(currentTime)}
       </div>
-      <p className="text-sm text-gray-400 font-medium uppercase tracking-widest mt-1">{label}</p>
+      <p className="text-xs text-[#394887]/50 font-medium uppercase tracking-wider mt-1">{label}</p>
     </div>
   );
 }

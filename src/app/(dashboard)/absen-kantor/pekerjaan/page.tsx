@@ -173,7 +173,7 @@ export default function PekerjaanPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="w-full mx-auto space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">{dict.work.title}</h1>
         <p className="text-gray-500 mt-1">{dict.work.subtitle}</p>
@@ -183,7 +183,7 @@ export default function PekerjaanPage() {
         <button
           onClick={() => setActiveTab('SAYA')}
           className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            activeTab === 'SAYA' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'
+            activeTab === 'SAYA' ? 'bg-white text-[#394887] shadow-sm' : 'text-gray-500 hover:text-gray-900'
           }`}
         >
           {dict.work.todoTab}
@@ -191,7 +191,7 @@ export default function PekerjaanPage() {
         <button
           onClick={() => setActiveTab('FEED')}
           className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
-            activeTab === 'FEED' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-900'
+            activeTab === 'FEED' ? 'bg-white text-[#394887] shadow-sm' : 'text-gray-500 hover:text-gray-900'
           }`}
         >
           {dict.work.worklogTab}
@@ -202,7 +202,7 @@ export default function PekerjaanPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
         
         {/* TO-DO LIST MODULE */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-auto lg:h-[600px]">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-auto lg:h-[600px]">
           <div className="p-5 md:p-6 border-b border-gray-100 bg-gray-50/50">
             <h2 className="text-lg font-bold text-gray-900">{dict.work.todoTab}</h2>
             <p className="text-sm text-gray-500 mt-1">{dict.dashboard.todoDesc}</p>
@@ -231,7 +231,7 @@ export default function PekerjaanPage() {
                 <button 
                   type="submit" 
                   disabled={isSubmittingTodo || !judulTodo.trim()}
-                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-bold transition-colors disabled:opacity-50 shadow-sm"
+                  className="w-full sm:w-auto bg-[#394887] hover:bg-[#2D3A6E] text-white px-4 py-2.5 rounded-lg font-bold transition-colors disabled:opacity-50 shadow-sm"
                 >
                   {dict.work.addBtn}
                 </button>
@@ -246,13 +246,13 @@ export default function PekerjaanPage() {
               todos.map(t => (
                 <div key={t.id} className={`flex items-start gap-3 p-3 rounded-xl border ${
                   t.status === 'DONE' ? 'bg-gray-50 border-gray-200 opacity-60' : 
-                  t.status === 'IN_PROGRESS' ? 'bg-blue-50 border-blue-100' : 'bg-white border-gray-200 shadow-sm'
+                  t.status === 'IN_PROGRESS' ? 'bg-[#F4F6FB] border-[#D1D9F0]' : 'bg-white border-gray-200 shadow-sm'
                 } transition-all`}>
                   <button 
                     onClick={() => handleUpdateTodoStatus(t.id, t.status)}
                     className={`mt-1 flex-shrink-0 w-5 h-5 rounded border flex items-center justify-center transition-colors ${
                       t.status === 'DONE' ? 'bg-green-500 border-green-500 text-white' : 
-                      t.status === 'IN_PROGRESS' ? 'bg-blue-500 border-blue-500 text-white' : 'border-gray-300 hover:border-blue-500'
+                      t.status === 'IN_PROGRESS' ? 'bg-[#394887] border-[#394887] text-white' : 'border-gray-300 hover:border-[#394887]'
                     }`}
                     title="Ubah Status"
                   >
@@ -287,14 +287,14 @@ export default function PekerjaanPage() {
         </div>
 
         {/* DAILY WORK LOG MODULE */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-auto lg:h-[600px]">
-          <div className="p-6 border-b border-gray-100 bg-blue-50/50">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-auto lg:h-[600px]">
+          <div className="p-6 border-b border-gray-100 bg-[#F4F6FB]">
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-lg font-bold text-gray-900">{dict.work.logFormTitle}</h2>
                 <p className="text-sm text-gray-500 mt-1">{dict.dashboard.workLogDesc}</p>
               </div>
-              <div className="bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200 text-xs font-bold text-blue-700 capitalize">
+              <div className="bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200 text-xs font-bold text-[#394887] capitalize">
                 {new Intl.DateTimeFormat(locale, { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())}
               </div>
             </div>
@@ -339,7 +339,7 @@ export default function PekerjaanPage() {
                 type="checkbox" 
                 checked={isPrivat}
                 onChange={(e) => setIsPrivat(e.target.checked)}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-[#394887] border-gray-300 rounded focus:ring-[#394887]"
               />
               <span className="text-sm font-medium text-gray-700">{dict.work.logPrivateToggle || "Jadikan Privat"} <span className="font-normal text-gray-500">{dict.work.logPrivateDesc || "(Hanya terlihat oleh Anda dan Atasan)"}</span></span>
             </label>
@@ -348,7 +348,7 @@ export default function PekerjaanPage() {
               <button 
                 type="submit" 
                 disabled={isSubmittingLog || !dikerjakanHariIni.trim() || !rencanaBesok.trim()}
-                className="w-full py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3 bg-[#394887] hover:bg-[#2D3A6E] text-white font-bold rounded-xl shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isSubmittingLog ? (
                   dict.work.logSavingBtn || "Menyimpan..."
@@ -368,17 +368,17 @@ export default function PekerjaanPage() {
       {activeTab === 'FEED' && (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
           {feedLogs.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-gray-200 p-10 text-center">
+            <div className="bg-white rounded-xl border border-gray-200 p-10 text-center">
               <Inbox className="w-12 h-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500 font-medium">{dict.work.logEmptyFeed}</p>
             </div>
           ) : (
             <div className="grid gap-4">
               {feedLogs.map(log => (
-                <div key={log.id} className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <div key={log.id} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-lg">
+                      <div className="w-10 h-10 bg-[#F4F6FB] text-[#394887] rounded-full flex items-center justify-center font-bold text-lg">
                         {log.karyawan.namaLengkap.charAt(0).toUpperCase()}
                       </div>
                       <div>

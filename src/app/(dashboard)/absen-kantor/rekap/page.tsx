@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import CustomDropdown from "@/components/CustomDropdown";
+import StatusBadge from "@/components/StatusBadge";
 import useSWR from "swr";
 
 export default function KaryawanRekapPage() {
@@ -34,7 +35,7 @@ export default function KaryawanRekapPage() {
           <p className="text-gray-500 mt-1">{dict.recap.subtitle}</p>
         </div>
         <div className="flex gap-3 items-center">
-          <button onClick={() => mutate()} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 hidden md:flex items-center gap-2 transition-colors">
+          <button onClick={() => mutate()} className="text-sm font-medium text-[#394887] hover:text-[#2D3A6E] bg-[#F4F6FB] px-3 py-1.5 rounded-lg border border-[#D1D9F0] hidden md:flex items-center gap-2 transition-colors">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             Refresh
           </button>
@@ -67,40 +68,42 @@ export default function KaryawanRekapPage() {
       ) : data ? (
         <>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalPresent}</span>
               <span className="text-3xl font-black text-green-600">{data.ringkasan.hadir + data.ringkasan.terlambat}</span>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalSick}</span>
-              <span className="text-3xl font-black text-red-500">{data.ringkasan.sakit}</span>
+              <span className="text-3xl font-black text-orange-500">{data.ringkasan.sakit}</span>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalLeave}</span>
-              <span className="text-3xl font-black text-blue-500">{data.ringkasan.izin}</span>
+              <span className="text-3xl font-black text-[#EFC94B]">{data.ringkasan.izin}</span>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalAlpha}</span>
-              <span className="text-3xl font-black text-gray-900">{data.ringkasan.alpha}</span>
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">Alpha</span>
+              <span className="text-3xl font-black text-red-600">{data.ringkasan.alpha}</span>
             </div>
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalIncomplete}</span>
-              <span className="text-3xl font-black text-orange-500">{data.ringkasan.incomplete}</span>
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center min-w-0">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 truncate w-full">Perlu Klarifikasi</span>
+              <span className="text-3xl font-black text-[#EFC94B]">{data.ringkasan.incomplete}</span>
             </div>
-            <div className="bg-blue-600 p-4 rounded-2xl shadow-sm flex flex-col items-center justify-center text-center text-white min-w-0">
-              <span className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalHours}</span>
+            <div className="bg-[#394887] p-4 rounded-xl shadow-sm flex flex-col items-center justify-center text-center text-white min-w-0">
+              <span className="text-xs font-bold text-[#D1D9F0] uppercase tracking-wider mb-1 truncate w-full">{dict.recap.totalHours}</span>
               <span className="text-3xl font-black">{Math.floor(data.ringkasan.totalDurasiMenit / 60)}<span className="text-lg">h</span></span>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-5 md:p-6 border-b border-gray-100">
               <h2 className="text-lg font-bold text-gray-900">{dict.dashboard.historyTitle}</h2>
             </div>
             {data.detail.length === 0 ? (
               <div className="p-12 text-center text-gray-500">{dict.dashboard.noHistory}</div>
             ) : (
-              <div className="overflow-x-auto">
+              <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left border-collapse min-w-[600px] whitespace-nowrap">
                   <thead>
                     <tr className="bg-gray-50 text-gray-600 text-sm border-b border-gray-200">
@@ -127,28 +130,43 @@ export default function KaryawanRekapPage() {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          {h.isIncomplete ? (
-                            <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-orange-50 text-orange-700">{dict.dashboard.statusIncomplete || "INCOMPLETE"}</span>
-                          ) : (
-                            <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${
-                              h.status === 'HADIR' ? 'bg-green-50 text-green-700' :
-                              h.status === 'TERLAMBAT' ? 'bg-yellow-50 text-yellow-700' :
-                              h.status === 'IZIN' ? 'bg-blue-50 text-blue-700' :
-                              h.status === 'SAKIT' ? 'bg-red-50 text-red-700' :
-                              'bg-gray-100 text-gray-600'
-                            }`}>
-                              {h.status === 'HADIR' ? (dict.dashboard.statusHadir || h.status) : 
-                               h.status === 'TERLAMBAT' ? (dict.dashboard.statusTerlambat || h.status) :
-                               h.status === 'IZIN' ? (dict.dashboard.statusIzin || h.status) :
-                               h.status === 'SAKIT' ? (dict.dashboard.statusSakit || h.status) : h.status}
-                            </span>
-                          )}
+                          <StatusBadge 
+                            status={h.isIncomplete ? (dict.dashboard.statusIncomplete || "INCOMPLETE") : 
+                                    h.status === 'HADIR' ? (dict.dashboard.statusHadir || h.status) : 
+                                    h.status === 'TERLAMBAT' ? (dict.dashboard.statusTerlambat || h.status) :
+                                    h.status === 'IZIN' ? (dict.dashboard.statusIzin || h.status) :
+                                    h.status === 'SAKIT' ? (dict.dashboard.statusSakit || h.status) : h.status}
+                            type={h.isIncomplete ? 'INCOMPLETE' : h.status}
+                          />
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+              {/* Mobile Card List View */}
+              <div className="md:hidden flex flex-col divide-y divide-gray-100">
+                {data.detail.map((h: any) => (
+                  <div key={h.id} className="p-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-start">
+                      <span className="font-bold text-gray-900">{formatTanggal(h.tanggal)}</span>
+                      <StatusBadge 
+                        status={h.isIncomplete ? (dict.dashboard.statusIncomplete || "INCOMPLETE") : 
+                                h.status === 'HADIR' ? (dict.dashboard.statusHadir || h.status) : 
+                                h.status === 'TERLAMBAT' ? (dict.dashboard.statusTerlambat || h.status) :
+                                h.status === 'IZIN' ? (dict.dashboard.statusIzin || h.status) :
+                                h.status === 'SAKIT' ? (dict.dashboard.statusSakit || h.status) : h.status}
+                        type={h.isIncomplete ? 'INCOMPLETE' : h.status}
+                      />
+                    </div>
+                    <div className="text-sm text-gray-700 mt-1">
+                      <p>Masuk: {formatJam(h.waktuAbsenMasuk)} <span className="mx-2 text-gray-300">|</span> Pulang: {formatJam(h.waktuAbsenPulang)}</p>
+                      <p className="mt-1">Durasi: <span className="font-medium text-gray-900">{h.durasiKerja ? `${Math.floor(h.durasiKerja / 60)}j ${h.durasiKerja % 60}m` : '-'}</span></p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              </>
             )}
           </div>
         </>

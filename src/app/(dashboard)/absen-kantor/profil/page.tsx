@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import DashboardPasswordButton from "@/components/DashboardPasswordButton";
-import { LogOut, RefreshCw } from "lucide-react";
+import { LogOut, RefreshCw, Monitor, Smartphone, Tablet } from "lucide-react";
 import useSWR from "swr";
+import { UAParser } from "ua-parser-js";
 
 export default function ProfilPage() {
   const dict = useDictionary();
@@ -62,7 +63,7 @@ export default function ProfilPage() {
           <p className="text-gray-500 mt-1">{dict.profile.subtitle}</p>
         </div>
         <div className="flex items-center gap-4">
-          <button onClick={() => mutate()} className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 hidden md:flex items-center gap-2 transition-colors">
+          <button onClick={() => mutate()} className="text-sm font-medium text-[#394887] hover:text-[#2D3A6E] bg-[#F4F6FB] px-3 py-1.5 rounded-lg border border-[#D1D9F0] hidden md:flex items-center gap-2 transition-colors">
             <RefreshCw size={16} />
             Refresh
           </button>
@@ -81,8 +82,8 @@ export default function ProfilPage() {
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-[#F4F6FB]">
           <div>
             <h2 className="text-lg font-bold text-gray-900">{dict.sidebar.profile}</h2>
             <p className="text-sm text-gray-500 mt-1">{dict.profile.secTitle}</p>
@@ -110,19 +111,25 @@ export default function ProfilPage() {
                 const isExpired = new Date(s.expiresAt) < new Date();
                 const isActive = !isRevoked && !isExpired;
                 
+                const parsedUA = new UAParser(s.deviceInfo || "").getResult();
+                const browserInfo = `${parsedUA.browser.name || ""} ${parsedUA.browser.version || ""}`.trim();
+                const osInfo = `${parsedUA.os.name || ""} ${parsedUA.os.version || ""}`.trim();
+                const deviceName = `${parsedUA.device.vendor || ""} ${parsedUA.device.model || ""}`.trim() || osInfo || (dict.profile?.unknownDevice || "Perangkat Tidak Dikenal");
+                const isMobile = parsedUA.device.type === 'mobile';
+                const isTablet = parsedUA.device.type === 'tablet';
+                
                 return (
-                  <li key={s.id} className={`p-6 flex items-center justify-between transition-colors ${isActive ? 'bg-white' : 'bg-gray-50/50'}`}>
+                  <li key={s.id} className={`p-6 flex items-center justify-between transition-colors ${isActive ? 'bg-white' : 'bg-gray-50/50 opacity-60'}`}>
                     <div className="flex items-start gap-4">
-                      <div className={`p-3 rounded-xl mt-1 ${isActive ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-500'}`}>
-                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
+                      <div className={`p-3 rounded-xl mt-1 flex-shrink-0 ${isActive ? 'bg-[#D1D9F0] text-[#394887]' : 'bg-gray-200 text-gray-500'}`}>
+                        {isMobile ? <Smartphone className="w-6 h-6" /> : isTablet ? <Tablet className="w-6 h-6" /> : <Monitor className="w-6 h-6" />}
                       </div>
                       <div>
-                        <p className={`font-bold ${isActive ? 'text-gray-900' : 'text-gray-500'}`}>
-                          {s.deviceInfo || (dict.profile?.unknownDevice || "Perangkat Tidak Dikenal")}
+                        <p className={`font-bold ${isActive ? 'text-gray-900' : 'text-gray-500 line-through decoration-gray-400'}`}>
+                          {deviceName}
                         </p>
                         <div className="text-sm text-gray-500 space-y-0.5 mt-1">
+                          {browserInfo && <p className="text-xs font-medium text-gray-600 mb-1">{browserInfo}</p>}
                           <p>IP Address: <span className="font-mono text-xs">{s.ipAddress || "Unknown"}</span></p>
                           <p>{dict.profile?.lastActivity || "Aktivitas Terakhir:"} {new Date(s.lastUsedAt).toLocaleString(locale)}</p>
                           {isRevoked && <p className="text-red-500 font-medium">{dict.profile?.sessionRevoked || "Sesi telah dicabut pada"} {new Date(s.revokedAt).toLocaleString(locale)}</p>}
@@ -131,9 +138,13 @@ export default function ProfilPage() {
                       </div>
                     </div>
                     <div>
-                      {isActive && (
-                        <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200">
+                      {isActive ? (
+                        <span className="px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200">
                           {dict.profile?.activeStatus || "Sedang Aktif"}
+                        </span>
+                      ) : (
+                         <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full border border-gray-200">
+                          Dicabut
                         </span>
                       )}
                     </div>
