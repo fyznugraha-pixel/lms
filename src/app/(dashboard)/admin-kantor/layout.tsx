@@ -27,7 +27,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
 
   return (
     <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0 overflow-x-hidden w-full max-w-[100vw]">
-      <MobileTopHeader langCookie={langCookie} />
+      <MobileTopHeader langCookie={langCookie} role={payload.role as string} />
       
       {/* Sidebar Khusus Kantor */}
       <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col flex-shrink-0">

@@ -9,17 +9,21 @@ import { useDictionary } from "@/hooks/useDictionary";
 export default function MobileTopHeader({ langCookie, role }: { langCookie: string; role?: string }) {
   const pathname = usePathname();
   const dict = useDictionary();
-  const isAdmin = role === 'ADMIN_KANTOR' || role === 'SUPER_ADMIN' ;
-  
+  const isAdmin = role === 'ADMIN_KANTOR' || role === 'SUPER_ADMIN';
+
   // If we are currently in admin-kantor, the switch button should go to absen-kantor (employee mode)
   const isCurrentlyAdmin = pathname?.startsWith('/admin-kantor');
-  
+
   // If Penanggung Jawab, their admin portal is /absen-kantor/penanggung-jawab
   const isCurrentlyPJ = pathname?.startsWith('/absen-kantor/penanggung-jawab');
-  
+
   const inAdminMode = isCurrentlyAdmin || isCurrentlyPJ;
-  
+
   const switchTarget = inAdminMode ? '/absen-kantor' : '/admin-kantor';
+
+  // Fallback disesuaikan dengan locale, bukan hardcode Inggris
+  const employeeLabel =
+    dict.dashboard?.roleEmployee || (langCookie === 'id' ? 'Karyawan' : 'Employee');
 
   return (
     <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200 fixed top-0 left-0 w-full z-40">
@@ -27,18 +31,24 @@ export default function MobileTopHeader({ langCookie, role }: { langCookie: stri
         <img src="/logo/LOGO%20TACTLINK%20TRANSPARAN.png" alt="TactLink Logo" className="h-8 w-auto object-contain" />
         <span className="font-bold text-gray-900 text-lg">TactLink</span>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         {isAdmin && !inAdminMode && (
           <Link href={switchTarget} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors bg-indigo-50 text-indigo-600 border-indigo-100 hover:bg-indigo-100">
             <ShieldAlert size={16} />
             <span className="text-xs font-bold">Admin</span>
           </Link>
         )}
+        {isAdmin && inAdminMode && (
+          <Link href={switchTarget} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100">
+            <User size={16} />
+            <span className="text-xs font-bold">{employeeLabel}</span>
+          </Link>
+        )}
         <LanguageToggle currentLang={langCookie} compact={true} />
         {inAdminMode && (
-          <Link 
-            href={isCurrentlyAdmin ? "/admin-kantor/profil" : "/absen-kantor/profil"} 
-            className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center" 
+          <Link
+            href={isCurrentlyAdmin ? "/admin-kantor/profil" : "/absen-kantor/profil"}
+            className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center"
             title={dict.sidebar?.profile || "Profil"}
           >
             <User size={20} />

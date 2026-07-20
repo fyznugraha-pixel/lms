@@ -77,9 +77,19 @@ export async function GET(request: Request) {
       }
     });
 
+    // 3. Auto-delete work logs older than 2 hari (sebelum H-2)
+    const twoDaysAgo = new Date(today);
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+    const deletedWorkLogs = await prisma.workLog.deleteMany({
+      where: {
+        tanggal: { lt: twoDaysAgo }
+      }
+    });
+
     return NextResponse.json({ 
       success: true, 
-      message: `Cron job berhasil dijalankan. Sesi ditutup: ${closedSessionsCount.count}, Alpha ditambahkan: ${alphaCount}.` 
+      message: `Cron job berhasil dijalankan. Sesi ditutup: ${closedSessionsCount.count}, Alpha ditambahkan: ${alphaCount}. Work logs dihapus: ${deletedWorkLogs.count}.` 
     });
 
   } catch (error: any) {

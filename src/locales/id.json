@@ -209,6 +209,7 @@
       "manageEmployeesDesc": "Tambah atau nonaktifkan akun",
       "exportReport": "Export Laporan",
       "exportReportDesc": "Unduh rekap bulanan CSV",
+      "workLogDesc": "Pantau laporan harian karyawan",
       "todayActivity": "Aktivitas Absensi Hari Ini",
       "noActivity": "Belum ada karyawan yang absen hari ini.",
       "in": "Masuk",
@@ -337,7 +338,25 @@
       "leaveApproval": "Persetujuan Izin & Sakit",
       "recapExport": "Rekap & Export CSV",
       "attendanceSession": "Sesi Absensi",
+      "workLog": "Log Pekerjaan",
       "enterEmployeePortal": "Masuk Portal Karyawan"
+    },
+    "workLog": {
+      "title": "Laporan Pekerjaan",
+      "subtitle": "Pantau seluruh log aktivitas dan rencana kerja karyawan (termasuk Privat).",
+      "feedTitle": "Feed Pekerjaan Keseluruhan",
+      "feedSubtitle": "Data diurutkan dari yang terbaru.",
+      "loading": "Memuat laporan...",
+      "empty": "Belum ada laporan pekerjaan yang masuk.",
+      "privateBadge": "PRIVAT (Only Admin)",
+      "doneToday": "Dikerjakan Hari Ini",
+      "planTomorrow": "Rencana Besok",
+      "obstacle": "Blocker / Kendala",
+      "btnRefresh": "Refresh",
+      "feedbackPlaceholder": "Tulis masukan atau tanggapan untuk laporan ini...",
+      "btnSend": "Kirim",
+      "sending": "Mengirim...",
+      "adminFeedbackTitle": "Admin Feedback"
     }
   },
   "penanggungJawab": {

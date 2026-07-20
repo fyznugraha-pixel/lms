@@ -186,6 +186,7 @@ model WorkLog {
   dikerjakanHariIni String
   rencanaBesok      String
   blocker           String?
+  adminFeedback     String?  @db.Text
   isPrivat          Boolean  @default(false)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt

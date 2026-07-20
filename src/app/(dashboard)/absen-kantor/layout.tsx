@@ -10,6 +10,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import MobileTopHeader from "@/components/layout/MobileTopHeader";
 import AdminMobileMenu from "@/components/layout/AdminMobileMenu";
+import { ArrowRightLeft } from "lucide-react";
 
 export default async function AbsenKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -71,17 +72,16 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
 
           {/* Menu Admin Kantor */}
           {(payload.role === 'ADMIN_KANTOR' || payload.role === 'SUPER_ADMIN') && (
-            <div className="pt-2">
-              <SidebarLink href="/admin-kantor/persetujuan">
-                {dict.sidebar.approval}
-              </SidebarLink>
+            <div className="pt-6 pb-2">
+              <p className="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Portal Admin</p>
+              
+              <div className="space-y-1">
+                <Link href="/admin-kantor/karyawan" className="block px-4 py-2.5 font-bold text-indigo-700 bg-indigo-50/80 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors flex items-center justify-between group">
+                  {dict.sidebar.manageEmployees}
+                  <ArrowRightLeft className="w-4 h-4 text-indigo-400 group-hover:text-indigo-700 transition-colors" />
+                </Link>
+              </div>
             </div>
-          )}
-
-          {(payload.role === 'ADMIN_KANTOR' || payload.role === 'SUPER_ADMIN') && (
-            <SidebarLink href="/admin-kantor/karyawan">
-              {dict.sidebar.manageEmployees}
-            </SidebarLink>
           )}
         </nav>
         <div className="p-4 border-t border-gray-200">

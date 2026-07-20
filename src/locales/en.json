@@ -209,7 +209,8 @@
       "manageEmployees": "Manage Employees",
       "manageEmployeesDesc": "Add or deactivate accounts",
       "exportReport": "Export Reports",
-      "exportReportDesc": "Download monthly CSV recaps",
+      "exportReportDesc": "Download monthly CSV recap",
+      "workLogDesc": "Monitor daily employee reports",
       "todayActivity": "Today's Attendance Activity",
       "noActivity": "No employees have checked in today.",
       "in": "In",
@@ -339,7 +340,25 @@
       "leaveApproval": "Leave & Sick Approval",
       "recapExport": "Recap & Export CSV",
       "attendanceSession": "Attendance Session",
+      "workLog": "Work Logs",
       "enterEmployeePortal": "Enter Employee Portal"
+    },
+    "workLog": {
+      "title": "Work Logs",
+      "subtitle": "Monitor all employee activity logs and work plans (including Private).",
+      "feedTitle": "Overall Work Feed",
+      "feedSubtitle": "Data is sorted by newest.",
+      "loading": "Loading logs...",
+      "empty": "No work logs submitted yet.",
+      "privateBadge": "PRIVATE (Only Admin)",
+      "doneToday": "Done Today",
+      "planTomorrow": "Plan Tomorrow",
+      "obstacle": "Blocker / Obstacle",
+      "btnRefresh": "Refresh",
+      "feedbackPlaceholder": "Write feedback or response for this log...",
+      "btnSend": "Send",
+      "sending": "Sending...",
+      "adminFeedbackTitle": "Admin Feedback"
     }
   },
   "penanggungJawab": {

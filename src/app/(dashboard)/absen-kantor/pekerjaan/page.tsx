@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import ConfirmModal from "@/components/ConfirmModal";
 import CustomDropdown from "@/components/CustomDropdown";
-import { CheckCircle2, Calendar, AlertTriangle, Link as LinkIcon, Inbox, Lock } from "lucide-react";
+import { CheckCircle2, Calendar, AlertTriangle, Link as LinkIcon, Inbox, Lock, MessageSquare } from "lucide-react";
 
 export default function PekerjaanPage() {
   const dict = useDictionary();
@@ -423,6 +423,17 @@ export default function PekerjaanPage() {
                         <a href={log.linkLampiran} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
                           {log.linkLampiran}
                         </a>
+                      </div>
+                    )}
+                    {log.adminFeedback && (
+                      <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-200 mt-4 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-[#394887]"></div>
+                        <p className="font-bold text-[#394887] mb-1 flex items-center gap-1.5">
+                          <MessageSquare className="w-4 h-4" /> Admin Feedback
+                        </p>
+                        <p className="text-gray-800 whitespace-pre-wrap leading-relaxed font-medium">
+                          {log.adminFeedback}
+                        </p>
                       </div>
                     )}
                   </div>

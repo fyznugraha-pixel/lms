@@ -2,7 +2,7 @@ import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { Users, FileText, QrCode, Download, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Users, FileText, QrCode, Download, Clock, CheckCircle, XCircle, ClipboardList } from "lucide-react";
 import { getDictionary } from "@/lib/dictionaries";
 import { cookies } from "next/headers";
 
@@ -94,36 +94,48 @@ export default async function AdminKantorDashboard() {
         {/* Quick Links */}
         <div className="lg:col-span-1 space-y-4">
           <h2 className="text-lg font-bold text-gray-900">{dict.adminKantor?.dashboard?.quickLinks || "Akses Cepat"}</h2>
-          <div className="grid grid-cols-1 gap-3">
-            <Link href="/admin-kantor/absensi" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#394887]/30 hover:shadow-md transition-all flex items-center gap-4 group">
+          <div className="flex flex-col gap-3">
+            <Link href="/admin-kantor/worklog" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#394887]/30 hover:shadow-md transition-all flex items-center gap-4 group">
               <div className="p-3 bg-[#394887]/10 text-[#394887] rounded-lg group-hover:bg-[#394887] group-hover:text-white transition-colors">
-                <CheckCircle size={20} />
+                <ClipboardList size={20} />
               </div>
               <div>
-                <p className="font-bold text-gray-900 group-hover:text-[#394887] transition-colors">{dict.adminKantor?.dashboard?.manageSession || "Kelola Sesi Absensi"}</p>
-                <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.manageSessionDesc || "Buka atau tutup sesi absen"}</p>
-              </div>
-            </Link>
-            
-            <Link href="/admin-kantor/karyawan" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#394887]/30 hover:shadow-md transition-all flex items-center gap-4 group">
-              <div className="p-3 bg-[#394887]/10 text-[#394887] rounded-lg group-hover:bg-[#394887] group-hover:text-white transition-colors">
-                <Users size={20} />
-              </div>
-              <div>
-                <p className="font-bold text-gray-900 group-hover:text-[#394887] transition-colors">{dict.adminKantor?.dashboard?.manageEmployees || "Kelola Karyawan"}</p>
-                <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.manageEmployeesDesc || "Tambah atau nonaktifkan akun"}</p>
+                <p className="font-bold text-gray-900 group-hover:text-[#394887] transition-colors">{dict.adminKantor?.sidebar?.workLog || "Log Pekerjaan"}</p>
+                <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.workLogDesc || "Pantau laporan harian karyawan"}</p>
               </div>
             </Link>
 
-            <Link href="/admin-kantor/rekap" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#EFC94B]/50 hover:shadow-md transition-all flex items-center gap-4 group">
-              <div className="p-3 bg-[#EFC94B]/40 text-[#394887] rounded-lg group-hover:bg-[#EFC94B] group-hover:text-[#394887] transition-colors">
-                <Download size={20} />
-              </div>
-              <div>
-                <p className="font-bold text-gray-900 group-hover:text-[#2D3A6E] transition-colors">{dict.adminKantor?.dashboard?.exportReport || "Export Laporan"}</p>
-                <p className="text-xs text-gray-500">{dict.adminKantor?.dashboard?.exportReportDesc || "Unduh rekap bulanan CSV"}</p>
-              </div>
-            </Link>
+            <div className="grid grid-cols-3 md:grid-cols-1 gap-3">
+              <Link href="/admin-kantor/absensi" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-green-500 hover:bg-green-500 hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.manageSession || "Kelola Sesi Absensi"}>
+                <div className="text-[#394887] md:bg-[#394887]/10 md:p-3 md:rounded-lg group-hover:text-white group-hover:scale-110 transition-all">
+                  <CheckCircle size={24} className="md:w-5 md:h-5" />
+                </div>
+                <div className="hidden md:block">
+                  <p className="font-bold text-gray-900 group-hover:text-white transition-colors">{dict.adminKantor?.dashboard?.manageSession || "Kelola Sesi Absensi"}</p>
+                  <p className="text-xs text-gray-500 group-hover:text-green-50 transition-colors">{dict.adminKantor?.dashboard?.manageSessionDesc || "Buka atau tutup sesi absen"}</p>
+                </div>
+              </Link>
+              
+              <Link href="/admin-kantor/karyawan" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-600 hover:bg-blue-600 hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.manageEmployees || "Kelola Karyawan"}>
+                <div className="text-[#394887] md:bg-[#394887]/10 md:p-3 md:rounded-lg group-hover:text-white group-hover:scale-110 transition-all">
+                  <Users size={24} className="md:w-5 md:h-5" />
+                </div>
+                <div className="hidden md:block">
+                  <p className="font-bold text-gray-900 group-hover:text-white transition-colors">{dict.adminKantor?.dashboard?.manageEmployees || "Kelola Karyawan"}</p>
+                  <p className="text-xs text-gray-500 group-hover:text-blue-50 transition-colors">{dict.adminKantor?.dashboard?.manageEmployeesDesc || "Tambah atau nonaktifkan akun"}</p>
+                </div>
+              </Link>
+
+              <Link href="/admin-kantor/rekap" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#EFC94B] hover:bg-[#EFC94B] hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.exportReport || "Export Laporan"}>
+                <div className="text-[#394887] md:bg-[#EFC94B]/40 md:p-3 md:rounded-lg group-hover:text-[#394887] group-hover:scale-110 transition-all">
+                  <Download size={24} className="md:w-5 md:h-5" />
+                </div>
+                <div className="hidden md:block">
+                  <p className="font-bold text-gray-900 group-hover:text-[#394887] transition-colors">{dict.adminKantor?.dashboard?.exportReport || "Export Laporan"}</p>
+                  <p className="text-xs text-gray-500 group-hover:text-[#394887] transition-colors">{dict.adminKantor?.dashboard?.exportReportDesc || "Unduh rekap bulanan CSV"}</p>
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
 
