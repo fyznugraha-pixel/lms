@@ -1,16 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getSession } from '@/lib/session';
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getSession();
     if (!session.userId || (session.userRole !== 'ADMIN_KANTOR' && session.userRole !== 'SUPER_ADMIN')) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { id } = await params;
 
     const body = await request.json();
     const { feedback } = body;
@@ -19,12 +21,8 @@ export async function PUT(
       return NextResponse.json({ success: false, error: 'Feedback is required' }, { status: 400 });
     }
 
-    // Await params for Next.js 15+ compatibility, fallback to direct access if needed
-    // In many setups, `const { id } = await params;` or just `params.id` works.
-    // For safety in older Next versions, we can just use `params.id`
     const updatedLog = await prisma.workLog.update({
-      where: { id: params.id },
-      // @ts-ignore
+      where: { id },
       data: { adminFeedback: feedback }
     });
 
