@@ -3,6 +3,7 @@ import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 import { cookies } from 'next/headers';
+import crypto from 'crypto';
 
 const absenSchema = z.object({
   jenisAbsen: z.enum(['MASUK', 'PULANG']),
@@ -143,24 +144,59 @@ export async function GET(request: Request) {
       }
     });
 
-    // Cek apakah ada sesi masuk/pulang aktif yang mana user punya token
-    const tokenMasuk = await prisma.tokenAbsenKaryawan.findFirst({
-      where: {
-        karyawanId: userId,
-        isUsed: false,
-        expiresAt: { gt: new Date() },
-        sesiAbsenKantor: { tanggal: today, jenisAbsen: 'MASUK', status: 'AKTIF' }
-      }
+    // 1. Cek Sesi Masuk Aktif
+    const sesiMasukAktif = await prisma.sesiAbsenKantor.findFirst({
+      where: { tanggal: today, jenisAbsen: 'MASUK', status: 'AKTIF' }
     });
 
-    const tokenPulang = await prisma.tokenAbsenKaryawan.findFirst({
-      where: {
-        karyawanId: userId,
-        isUsed: false,
-        expiresAt: { gt: new Date() },
-        sesiAbsenKantor: { tanggal: today, jenisAbsen: 'PULANG', status: 'AKTIF' }
+    let tokenMasuk = null;
+    if (sesiMasukAktif) {
+      tokenMasuk = await prisma.tokenAbsenKaryawan.findFirst({
+        where: { karyawanId: userId, sesiAbsenKantorId: sesiMasukAktif.id }
+      });
+      // Jika belum punya sama sekali (misal karyawan baru diregistrasi setelah sesi dibuka), buat otomatis
+      if (!tokenMasuk) {
+        const expiresAt = new Date();
+        expiresAt.setHours(23, 59, 59, 999);
+        tokenMasuk = await prisma.tokenAbsenKaryawan.create({
+          data: {
+            sesiAbsenKantorId: sesiMasukAktif.id,
+            karyawanId: userId,
+            token: crypto.randomBytes(32).toString('hex'),
+            expiresAt,
+            isUsed: false
+          }
+        });
       }
+    }
+    const bisaAbsenMasuk = !!tokenMasuk && !tokenMasuk.isUsed && tokenMasuk.expiresAt > new Date();
+
+    // 2. Cek Sesi Pulang Aktif
+    const sesiPulangAktif = await prisma.sesiAbsenKantor.findFirst({
+      where: { tanggal: today, jenisAbsen: 'PULANG', status: 'AKTIF' }
     });
+
+    let tokenPulang = null;
+    if (sesiPulangAktif) {
+      tokenPulang = await prisma.tokenAbsenKaryawan.findFirst({
+        where: { karyawanId: userId, sesiAbsenKantorId: sesiPulangAktif.id }
+      });
+      // Jika belum punya (misal karyawan baru diregistrasi setelah sesi dibuka), buat otomatis
+      if (!tokenPulang) {
+        const expiresAt = new Date();
+        expiresAt.setHours(23, 59, 59, 999);
+        tokenPulang = await prisma.tokenAbsenKaryawan.create({
+          data: {
+            sesiAbsenKantorId: sesiPulangAktif.id,
+            karyawanId: userId,
+            token: crypto.randomBytes(32).toString('hex'),
+            expiresAt,
+            isUsed: false
+          }
+        });
+      }
+    }
+    const bisaAbsenPulang = !!tokenPulang && !tokenPulang.isUsed && tokenPulang.expiresAt > new Date();
 
     // Ambil histori 7 hari terakhir
     const histori = await prisma.absensiKantor.findMany({
@@ -173,8 +209,8 @@ export async function GET(request: Request) {
       success: true, 
       data: {
         absensiHariIni,
-        bisaAbsenMasuk: !!tokenMasuk,
-        bisaAbsenPulang: !!tokenPulang,
+        bisaAbsenMasuk,
+        bisaAbsenPulang,
         histori
       }
     });
