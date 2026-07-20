@@ -176,7 +176,9 @@
     "lastActivity": "Aktivitas Terakhir:",
     "sessionRevoked": "Sesi telah dicabut pada",
     "sessionExpired": "Sesi telah kedaluwarsa",
-    "activeStatus": "Sedang Aktif"
+    "activeStatus": "Sedang Aktif",
+    "currentDevice": "Perangkat Ini",
+    "loadError": "Gagal memuat data perangkat."
   },
   "notifications": {
     "successTitle": "Berhasil",

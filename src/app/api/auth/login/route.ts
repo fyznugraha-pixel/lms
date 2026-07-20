@@ -9,18 +9,17 @@ const loginSchema = z.object({
   email: z.string().email('Format email tidak valid'),
   password: z.string().min(1, 'Password harus diisi'),
   rememberMe: z.boolean().optional().default(false),
+  deviceId: z.string().min(1, 'Device ID wajib diisi'),
 });
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, rememberMe } = loginSchema.parse(body);
+    const { email, password, rememberMe, deviceId } = loginSchema.parse(body);
 
     const subdomain = request.headers.get('x-subdomain');
 
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       return NextResponse.json(
@@ -37,12 +36,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Tenant check
     const isTactLinkRole = ['KARYAWAN', 'ADMIN_KANTOR'].includes(user.role);
-    
+
     if (user.role !== 'SUPER_ADMIN') {
       if (isTactLinkRole) {
-        // Karyawan HANYA boleh login dari subdomain "absensi"
         if (subdomain !== 'absensi') {
           return NextResponse.json(
             { success: false, error: { message: 'Akun ini khusus untuk Absensi Kantor. Silakan akses via absensi.byfayiz.web.id (atau absensi.localhost:3000)', code: 'WRONG_TENANT' } },
@@ -57,14 +54,10 @@ export async function POST(request: Request) {
       }
     }
 
-    // Default session is 1 day, or 30 days if they use rememberMe
     const isUsingRememberMe = rememberMe;
     const maxAgeAccess = isUsingRememberMe ? 30 * 24 * 60 * 60 : 60 * 60 * 24;
 
-    const token = await signToken({
-      userId: user.id,
-      role: user.role
-    }, isUsingRememberMe ? "30d" : "1d");
+    const token = await signToken({ userId: user.id, role: user.role }, isUsingRememberMe ? "30d" : "1d");
 
     const response = NextResponse.json({ success: true, data: { role: user.role } });
 
@@ -78,23 +71,43 @@ export async function POST(request: Request) {
       expires: new Date(Date.now() + maxAgeAccess * 1000),
     });
 
-    // Generate refresh token jika remember me
     if (isUsingRememberMe) {
       const refreshToken = crypto.randomBytes(32).toString('hex');
       const refreshTokenHash = await bcrypt.hash(refreshToken, 10);
-      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      const deviceInfo = request.headers.get('user-agent') || 'Unknown';
+      const ipAddress = request.headers.get('x-forwarded-for') || 'Unknown';
 
-      const sesiLogin = await prisma.sesiLogin.create({
-        data: {
-          userId: user.id,
-          refreshTokenHash,
-          expiresAt,
-          deviceInfo: request.headers.get('user-agent') || 'Unknown',
-          ipAddress: request.headers.get('x-forwarded-for') || 'Unknown',
-        }
+      const existingSession = await prisma.sesiLogin.findUnique({
+        where: { userId_deviceId: { userId: user.id, deviceId } },
       });
 
-      // Simpan format: id:token
+      let sesiLogin;
+      if (existingSession) {
+        sesiLogin = await prisma.sesiLogin.update({
+          where: { id: existingSession.id },
+          data: {
+            refreshTokenHash,
+            expiresAt,
+            deviceInfo,
+            ipAddress,
+            lastUsedAt: new Date(),
+            revokedAt: null,
+          },
+        });
+      } else {
+        sesiLogin = await prisma.sesiLogin.create({
+          data: {
+            userId: user.id,
+            deviceId,
+            refreshTokenHash,
+            expiresAt,
+            deviceInfo,
+            ipAddress,
+          },
+        });
+      }
+
       const cookieValue = `${sesiLogin.id}:${refreshToken}`;
 
       response.cookies.set({
@@ -103,7 +116,7 @@ export async function POST(request: Request) {
         httpOnly: true,
         path: '/',
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 30 * 24 * 60 * 60, // 30 days
+        maxAge: 30 * 24 * 60 * 60,
       });
     }
 

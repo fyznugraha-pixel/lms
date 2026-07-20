@@ -8,6 +8,7 @@ import DashboardPasswordButton from "@/components/DashboardPasswordButton";
 import { LogOut, RefreshCw, Monitor, Smartphone, Tablet } from "lucide-react";
 import useSWR from "swr";
 import { UAParser } from "ua-parser-js";
+import { apiFetch } from "@/lib/fetchClient";
 
 export default function ProfilPage() {
   const dict = useDictionary();
@@ -20,14 +21,14 @@ export default function ProfilPage() {
     type: "alert"
   });
 
-  const fetcher = (url: string) => fetch(url).then(res => res.json()).then(res => res.data);
+  const fetcher = (url: string) => apiFetch(url).then(res => res.json()).then(res => res.data);
   const { data: sessions, error, isLoading: isSwrLoading, mutate } = useSWR(`/api/absen-kantor/profil/sessions`, fetcher, { revalidateOnFocus: true });
-  
+
   const isLoading = isSwrLoading && !sessions;
 
   const handleLogoutAll = async () => {
     try {
-      const res = await fetch("/api/auth/logout-all", { method: "POST" });
+      const res = await apiFetch("/api/auth/logout-all", { method: "POST" });
       const result = await res.json();
       if (result.success) {
         setModalConfig({
@@ -56,7 +57,7 @@ export default function ProfilPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8 px-4 md:px-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{dict.sidebar.profile}</h1>
@@ -88,7 +89,7 @@ export default function ProfilPage() {
             <h2 className="text-lg font-bold text-gray-900">{dict.sidebar.profile}</h2>
             <p className="text-sm text-gray-500 mt-1">{dict.profile.secTitle}</p>
           </div>
-          <button 
+          <button
             onClick={confirmLogoutAll}
             className="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 text-sm border border-red-200 shadow-sm"
           >
@@ -98,34 +99,36 @@ export default function ProfilPage() {
             {dict.sidebar.logout}
           </button>
         </div>
-        
-        <div className="p-0">
+
+        <div className="p-4 md:p-6">
           {isLoading ? (
             <div className="p-6 text-center text-gray-500">{dict.dashboard.loading}</div>
+          ) : error ? (
+            <div className="p-6 text-center text-red-500">Gagal memuat data perangkat.</div>
           ) : sessions.length === 0 ? (
             <div className="p-6 text-center text-gray-500">{dict.dashboard.noHistory}</div>
           ) : (
-            <ul className="divide-y divide-gray-100">
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {sessions.map((s: any) => {
                 const isRevoked = !!s.revokedAt;
                 const isExpired = new Date(s.expiresAt) < new Date();
                 const isActive = !isRevoked && !isExpired;
-                
+
                 const parsedUA = new UAParser(s.deviceInfo || "").getResult();
                 const browserInfo = `${parsedUA.browser.name || ""} ${parsedUA.browser.version || ""}`.trim();
                 const osInfo = `${parsedUA.os.name || ""} ${parsedUA.os.version || ""}`.trim();
                 const deviceName = `${parsedUA.device.vendor || ""} ${parsedUA.device.model || ""}`.trim() || osInfo || (dict.profile?.unknownDevice || "Perangkat Tidak Dikenal");
                 const isMobile = parsedUA.device.type === 'mobile';
                 const isTablet = parsedUA.device.type === 'tablet';
-                
+
                 return (
-                  <li key={s.id} className={`p-6 flex items-center justify-between transition-colors ${isActive ? 'bg-white' : 'bg-gray-50/50 opacity-60'}`}>
-                    <div className="flex items-start gap-4">
-                      <div className={`p-3 rounded-xl mt-1 flex-shrink-0 ${isActive ? 'bg-[#D1D9F0] text-[#394887]' : 'bg-gray-200 text-gray-500'}`}>
+                  <li key={s.id} className={`rounded-xl border p-5 flex items-start justify-between gap-4 transition-colors ${isActive ? 'bg-white border-gray-200' : 'bg-gray-50/50 border-gray-100 opacity-60'}`}>
+                    <div className="flex items-start gap-4 min-w-0">
+                      <div className={`p-3 rounded-xl flex-shrink-0 ${isActive ? 'bg-[#D1D9F0] text-[#394887]' : 'bg-gray-200 text-gray-500'}`}>
                         {isMobile ? <Smartphone className="w-6 h-6" /> : isTablet ? <Tablet className="w-6 h-6" /> : <Monitor className="w-6 h-6" />}
                       </div>
-                      <div>
-                        <p className={`font-bold ${isActive ? 'text-gray-900' : 'text-gray-500 line-through decoration-gray-400'}`}>
+                      <div className="min-w-0">
+                        <p className={`font-bold truncate ${isActive ? 'text-gray-900' : 'text-gray-500 line-through decoration-gray-400'}`}>
                           {deviceName}
                         </p>
                         <div className="text-sm text-gray-500 space-y-0.5 mt-1">
@@ -137,14 +140,18 @@ export default function ProfilPage() {
                         </div>
                       </div>
                     </div>
-                    <div>
-                      {isActive ? (
-                        <span className="px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200">
+                    <div className="flex-shrink-0">
+                      {s.isCurrent ? (
+                        <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200 whitespace-nowrap">
+                          This Device
+                        </span>
+                      ) : isActive ? (
+                        <span className="px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200 whitespace-nowrap">
                           {dict.profile?.activeStatus || "Sedang Aktif"}
                         </span>
                       ) : (
-                         <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full border border-gray-200">
-                          Dicabut
+                        <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded-full border border-gray-200 whitespace-nowrap">
+                          Logout
                         </span>
                       )}
                     </div>
@@ -155,7 +162,7 @@ export default function ProfilPage() {
           )}
         </div>
       </div>
-      
+
       <ConfirmModal
         isOpen={modalConfig.isOpen}
         title={modalConfig.title}

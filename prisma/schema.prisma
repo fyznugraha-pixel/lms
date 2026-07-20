@@ -1,11 +1,147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  id                String               @id @default(uuid())
+  email             String               @unique
+  passwordHash      String
+  role              Role
+  isActive          Boolean              @default(true)
+  namaLengkap       String?
+  absensiKantor     AbsensiKantor[]      @relation("KaryawanAbsensi")
+  exportLog         ExportLog[]          @relation("ExportLogUser")
+  pengajuanDiproses PengajuanIzin[]      @relation("AdminPengajuan")
+  pengajuanIzin     PengajuanIzin[]      @relation("KaryawanPengajuan")
+  sesiAbsenDibuat   SesiAbsenKantor[]    @relation("DibuatOlehSesi")
+  sesiLogin         SesiLogin[]          @relation("UserSesiLogin")
+  todoItem          TodoItem[]           @relation("TodoKaryawan")
+  tokenAbsenKantor  TokenAbsenKaryawan[] @relation("KaryawanToken")
+  workLog           WorkLog[]            @relation("WorkLogKaryawan")
+}
+
+model SesiAbsenKantor {
+  id            String               @id @default(uuid())
+  tanggal       DateTime             @db.Date
+  jenisAbsen    JenisAbsenKantor
+  dibuatOlehId  String
+  waktuDibuat   DateTime             @default(now())
+  status        StatusSesiKantor     @default(AKTIF)
+  absensiMasuk  AbsensiKantor[]      @relation("SesiMasuk")
+  absensiPulang AbsensiKantor[]      @relation("SesiPulang")
+  dibuatOleh    User                 @relation("DibuatOlehSesi", fields: [dibuatOlehId], references: [id])
+  tokens        TokenAbsenKaryawan[]
+}
+
+model TokenAbsenKaryawan {
+  id                String          @id @default(uuid())
+  sesiAbsenKantorId String
+  karyawanId        String
+  token             String          @unique
+  expiresAt         DateTime
+  isUsed            Boolean         @default(false)
+  karyawan          User            @relation("KaryawanToken", fields: [karyawanId], references: [id])
+  sesiAbsenKantor   SesiAbsenKantor @relation(fields: [sesiAbsenKantorId], references: [id])
+
+  @@unique([sesiAbsenKantorId, karyawanId])
+}
+
+model AbsensiKantor {
+  id               String              @id @default(uuid())
+  karyawanId       String
+  tanggal          DateTime            @db.Date
+  sesiMasukId      String?
+  sesiPulangId     String?
+  waktuAbsenMasuk  DateTime?
+  waktuAbsenPulang DateTime?
+  status           StatusAbsensiKantor
+  durasiKerja      Int?
+  isIncomplete     Boolean             @default(false)
+  metode           MetodeAbsensiKantor
+  karyawan         User                @relation("KaryawanAbsensi", fields: [karyawanId], references: [id])
+  sesiMasuk        SesiAbsenKantor?    @relation("SesiMasuk", fields: [sesiMasukId], references: [id])
+  sesiPulang       SesiAbsenKantor?    @relation("SesiPulang", fields: [sesiPulangId], references: [id])
+
+  @@unique([karyawanId, tanggal])
+}
+
+model PengajuanIzin {
+  id              String             @id @default(uuid())
+  karyawanId      String
+  jenis           JenisPengajuanIzin
+  tanggalMulai    DateTime           @db.Date
+  tanggalSelesai  DateTime           @db.Date
+  alasan          String
+  lampiranUrl     String?
+  status          StatusPengajuan    @default(PENDING)
+  diprosesOlehId  String?
+  catatanApproval String?
+  adaKonflikAbsen Boolean            @default(false)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  diprosesOleh    User?              @relation("AdminPengajuan", fields: [diprosesOlehId], references: [id])
+  karyawan        User               @relation("KaryawanPengajuan", fields: [karyawanId], references: [id])
+}
+
+model ExportLog {
+  id           String   @id @default(uuid())
+  exportedById String
+  bulan        Int
+  tahun        Int
+  createdAt    DateTime @default(now())
+  exportedBy   User     @relation("ExportLogUser", fields: [exportedById], references: [id])
+}
+
+model SesiLogin {
+  id               String    @id @default(cuid())
+  userId           String
+  refreshTokenHash String    @unique
+  deviceInfo       String?
+  ipAddress        String?
+  createdAt        DateTime  @default(now())
+  expiresAt        DateTime
+  lastUsedAt       DateTime  @default(now())
+  revokedAt        DateTime?
+  deviceId         String?
+  user             User      @relation("UserSesiLogin", fields: [userId], references: [id])
+
+  @@unique([userId, deviceId])
+  @@index([userId])
+}
+
+model WorkLog {
+  id                String   @id @default(uuid())
+  karyawanId        String
+  tanggal           DateTime @db.Date
+  dikerjakanHariIni String
+  rencanaBesok      String
+  blocker           String?
+  isPrivat          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  adminFeedback     String?
+  karyawan          User     @relation("WorkLogKaryawan", fields: [karyawanId], references: [id])
+
+  @@unique([karyawanId, tanggal])
+}
+
+model TodoItem {
+  id         String        @id @default(uuid())
+  karyawanId String
+  judul      String
+  deskripsi  String?
+  deadline   DateTime?     @db.Date
+  status     StatusTodo    @default(TODO)
+  prioritas  PrioritasTodo @default(SEDANG)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  karyawan   User          @relation("TodoKaryawan", fields: [karyawanId], references: [id])
 }
 
 enum Role {
@@ -13,30 +149,6 @@ enum Role {
   KARYAWAN
   ADMIN_KANTOR
 }
-
-model User {
-  id           String  @id @default(uuid())
-  email        String  @unique // Global unique
-  passwordHash String
-  role         Role
-  namaLengkap  String? // Ditambahkan untuk karyawan/admin
-  isActive     Boolean @default(true) // Untuk menonaktifkan akun (soft-delete karyawan)
-
-  // --- Relasi Modul Kantor ---
-  sesiAbsenDibuat   SesiAbsenKantor[]    @relation("DibuatOlehSesi")
-  tokenAbsenKantor  TokenAbsenKaryawan[] @relation("KaryawanToken")
-  absensiKantor     AbsensiKantor[]      @relation("KaryawanAbsensi")
-  pengajuanIzin     PengajuanIzin[]      @relation("KaryawanPengajuan")
-  pengajuanDiproses PengajuanIzin[]      @relation("AdminPengajuan")
-  exportLog         ExportLog[]          @relation("ExportLogUser")
-  sesiLogin         SesiLogin[]          @relation("UserSesiLogin")
-  workLog           WorkLog[]            @relation("WorkLogKaryawan")
-  todoItem          TodoItem[]           @relation("TodoKaryawan")
-}
-
-// ==========================================
-// ENUM & MODEL MODUL KANTOR TACTLINK
-// ==========================================
 
 enum JenisAbsenKantor {
   MASUK
@@ -84,128 +196,4 @@ enum StatusTodo {
   TODO
   IN_PROGRESS
   DONE
-}
-
-model SesiAbsenKantor {
-  id           String           @id @default(uuid())
-  tanggal      DateTime         @db.Date
-  jenisAbsen   JenisAbsenKantor
-  dibuatOlehId String
-  waktuDibuat  DateTime         @default(now())
-  status       StatusSesiKantor @default(AKTIF)
-
-  dibuatOleh    User                 @relation("DibuatOlehSesi", fields: [dibuatOlehId], references: [id])
-  tokens        TokenAbsenKaryawan[]
-  absensiMasuk  AbsensiKantor[]      @relation("SesiMasuk")
-  absensiPulang AbsensiKantor[]      @relation("SesiPulang")
-}
-
-model TokenAbsenKaryawan {
-  id                String   @id @default(uuid())
-  sesiAbsenKantorId String
-  karyawanId        String
-  token             String   @unique
-  expiresAt         DateTime
-  isUsed            Boolean  @default(false)
-
-  sesiAbsenKantor SesiAbsenKantor @relation(fields: [sesiAbsenKantorId], references: [id])
-  karyawan        User            @relation("KaryawanToken", fields: [karyawanId], references: [id])
-
-  @@unique([sesiAbsenKantorId, karyawanId])
-}
-
-model AbsensiKantor {
-  id               String              @id @default(uuid())
-  karyawanId       String
-  tanggal          DateTime            @db.Date
-  sesiMasukId      String?
-  sesiPulangId     String?
-  waktuAbsenMasuk  DateTime?
-  waktuAbsenPulang DateTime?
-  status           StatusAbsensiKantor
-  durasiKerja      Int? // Durasi dalam menit
-  isIncomplete     Boolean             @default(false)
-  metode           MetodeAbsensiKantor
-
-  karyawan   User             @relation("KaryawanAbsensi", fields: [karyawanId], references: [id])
-  sesiMasuk  SesiAbsenKantor? @relation("SesiMasuk", fields: [sesiMasukId], references: [id])
-  sesiPulang SesiAbsenKantor? @relation("SesiPulang", fields: [sesiPulangId], references: [id])
-
-  @@unique([karyawanId, tanggal])
-}
-
-model PengajuanIzin {
-  id              String             @id @default(uuid())
-  karyawanId      String
-  jenis           JenisPengajuanIzin
-  tanggalMulai    DateTime           @db.Date
-  tanggalSelesai  DateTime           @db.Date
-  alasan          String
-  lampiranUrl     String?
-  status          StatusPengajuan    @default(PENDING)
-  diprosesOlehId  String?
-  catatanApproval String?
-  adaKonflikAbsen Boolean            @default(false)
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-
-  karyawan     User  @relation("KaryawanPengajuan", fields: [karyawanId], references: [id])
-  diprosesOleh User? @relation("AdminPengajuan", fields: [diprosesOlehId], references: [id])
-}
-
-model ExportLog {
-  id           String   @id @default(uuid())
-  exportedById String
-  bulan        Int
-  tahun        Int
-  createdAt    DateTime @default(now())
-
-  exportedBy User @relation("ExportLogUser", fields: [exportedById], references: [id])
-}
-
-model SesiLogin {
-  id               String    @id @default(cuid())
-  userId           String
-  refreshTokenHash String    @unique
-  deviceInfo       String?
-  ipAddress        String?
-  createdAt        DateTime  @default(now())
-  expiresAt        DateTime
-  lastUsedAt       DateTime  @default(now())
-  revokedAt        DateTime?
-
-  user User @relation("UserSesiLogin", fields: [userId], references: [id])
-
-  @@index([userId])
-}
-
-model WorkLog {
-  id                String   @id @default(uuid())
-  karyawanId        String
-  tanggal           DateTime @db.Date
-  dikerjakanHariIni String
-  rencanaBesok      String
-  blocker           String?
-  adminFeedback     String?  @db.Text
-  isPrivat          Boolean  @default(false)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  karyawan User @relation("WorkLogKaryawan", fields: [karyawanId], references: [id])
-
-  @@unique([karyawanId, tanggal])
-}
-
-model TodoItem {
-  id         String        @id @default(uuid())
-  karyawanId String
-  judul      String
-  deskripsi  String?
-  deadline   DateTime?     @db.Date
-  status     StatusTodo    @default(TODO)
-  prioritas  PrioritasTodo @default(SEDANG)
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-
-  karyawan User @relation("TodoKaryawan", fields: [karyawanId], references: [id])
 }

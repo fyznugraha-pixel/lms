@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getDeviceId } from "@/lib/device"; // tambahkan import ini di atas
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import Grainient from "@/components/Grainient";
@@ -24,6 +25,7 @@ export default function LoginPage() {
         email,
         password,
         rememberMe,
+        deviceId: getDeviceId(),
       };
 
       const res = await fetch("/api/auth/login", {
