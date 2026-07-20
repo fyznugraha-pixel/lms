@@ -62,7 +62,7 @@ export default async function AdminKantorDashboard() {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-[#394887]/10 text-[#394887] rounded-xl">
+          <div className="p-4 bg-[#394887] text-white rounded-xl">
             <Users size={28} />
           </div>
           <div>
@@ -80,7 +80,7 @@ export default async function AdminKantorDashboard() {
           </div>
         </div>
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-          <div className="p-4 bg-[#394887]/10 text-[#394887] rounded-xl">
+          <div className="p-4 bg-green-600 text-white rounded-xl">
             <CheckCircle size={28} />
           </div>
           <div>
