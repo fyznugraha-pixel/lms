@@ -26,10 +26,6 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
     setCurrentPage(1);
   }, [search]);
 
-  useEffect(() => {
-    fetchSesiDetail();
-  }, []);
-
   const fetchSesiDetail = async () => {
     try {
       const res = await fetch(`/api/admin-kantor/absensi/sesi/${params.id}`);
@@ -43,6 +39,10 @@ export default function SesiAbsensiDetail(props: { params: Promise<{ id: string 
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchSesiDetail();
+  }, []);
 
   const closeSesi = async () => {
     try {
