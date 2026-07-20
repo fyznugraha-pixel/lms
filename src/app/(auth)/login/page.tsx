@@ -70,7 +70,7 @@ export default function LoginPage() {
       {/* Branding - Top Left (Desktop) */}
       <div className="absolute top-8 left-8 md:top-12 md:left-12 z-10 hidden md:block">
         <div className="flex items-center gap-4">
-          <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-12 w-auto object-contain bg-white p-2 rounded-xl shadow-lg" />
+          <img src="/logo/LOGO%20TACTLINK%20TRANSPARAN.png" alt="TactLink Logo" className="h-12 w-auto object-contain bg-white p-2 rounded-xl shadow-lg" />
           <div className="flex flex-col">
             <h1 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md">TactLink</h1>
             <p className="text-white/90 mt-0.5 text-sm font-light drop-shadow-md">Integrated Attendance & Management System</p>
@@ -94,7 +94,7 @@ export default function LoginPage() {
         
         {/* Mobile Header (Hidden on Desktop) */}
         <div className="text-center mb-6 flex flex-col items-center md:hidden">
-          <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-16 w-auto object-contain bg-white p-2.5 rounded-2xl shadow-sm mb-5" />
+          <img src="/logo/LOGO%20TACTLINK%20TRANSPARAN.png" alt="TactLink Logo" className="h-16 w-auto object-contain bg-white p-2.5 rounded-2xl shadow-sm mb-5" />
           <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">TactLink</h2>
           <p className="text-sm text-gray-500 mt-1 font-medium">Integrated Attendance & Management System</p>
         </div>

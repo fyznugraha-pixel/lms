@@ -24,7 +24,7 @@ export default function MobileTopHeader({ langCookie, role }: { langCookie: stri
   return (
     <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200 fixed top-0 left-0 w-full z-40">
       <div className="flex items-center gap-2">
-        <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-8 w-auto object-contain" />
+        <img src="/logo/LOGO%20TACTLINK%20TRANSPARAN.png" alt="TactLink Logo" className="h-8 w-auto object-contain" />
         <span className="font-bold text-gray-900 text-lg">TactLink</span>
       </div>
       <div className="flex items-center gap-3">

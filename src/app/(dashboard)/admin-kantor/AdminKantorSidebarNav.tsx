@@ -14,6 +14,7 @@ export default function AdminKantorSidebarNav() {
     { name: dict.adminKantor?.sidebar?.leaveApproval || "Persetujuan Izin & Sakit", href: "/admin-kantor/persetujuan" },
     { name: dict.adminKantor?.sidebar?.recapExport || "Rekap & Export CSV", href: "/admin-kantor/rekap" },
     { name: dict.adminKantor?.sidebar?.attendanceSession || "Sesi Absensi", href: "/admin-kantor/absensi" },
+    { name: "Log Pekerjaan", href: "/admin-kantor/worklog" },
   ];
 
   return (

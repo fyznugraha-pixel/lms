@@ -53,7 +53,7 @@ export default function LupaPasswordPage() {
         
         <div className="relative z-10">
           <div className="flex items-center gap-6 mb-4">
-            <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-24 w-auto object-contain bg-white p-3 rounded-2xl shadow-xl" />
+            <img src="/logo/LOGO%20TACTLINK%20TRANSPARAN.png" alt="TactLink Logo" className="h-24 w-auto object-contain bg-white p-3 rounded-2xl shadow-xl" />
             <div className="flex flex-col">
               <h1 className="text-6xl font-extrabold tracking-tight">TactLink</h1>
               <p className="text-white mt-2 text-xl font-light">Integrated Attendance & Management System</p>

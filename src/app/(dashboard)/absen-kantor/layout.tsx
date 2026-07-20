@@ -35,7 +35,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
       <aside className="hidden md:flex w-64 bg-white border-r border-gray-200 flex-shrink-0 flex-col">
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-10 w-auto object-contain" />
+            <img src="/logo/LOGO%20TACTLINK%20TRANSPARAN.png" alt="TactLink Logo" className="h-10 w-auto object-contain" />
             <div>
               <h2 className="text-2xl font-bold text-gray-900">TactLink</h2>
               <p className="text-sm text-gray-500">Employee Portal</p>

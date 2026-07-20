@@ -33,7 +33,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
       <aside className="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col flex-shrink-0">
         <div className="p-6 border-b border-gray-200">
           <Link href="/admin-kantor" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img src="/logo/LOGO%20TACTLINK.png" alt="TactLink Logo" className="h-10 w-auto object-contain" />
+            <img src="/logo/LOGO%20TACTLINK%20TRANSPARAN.png" alt="TactLink Logo" className="h-10 w-auto object-contain" />
             <div>
               <h2 className="text-2xl font-bold text-gray-900">TactLink</h2>
               <p className="text-sm text-gray-500">Admin Office Portal</p>

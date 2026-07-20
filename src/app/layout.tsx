@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   title: "TactLink",
   description: "Aplikasi Absensi & Manajemen Internal TactLink",
   icons: {
-    icon: "/logo/LOGO TACTLINK.png",
-    apple: "/logo/LOGO TACTLINK.png",
+    icon: "/logo/LOGO TACTLINK TRANSPARAN.png",
+    apple: "/logo/LOGO TACTLINK TRANSPARAN.png",
   },
 };
 
