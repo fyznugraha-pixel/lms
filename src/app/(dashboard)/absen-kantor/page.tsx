@@ -144,7 +144,6 @@ export default function KaryawanDashboard() {
           <div>
             <h3 className="font-bold text-blue-900">{dict.dashboard?.updateTitle || "System Update"}</h3>
             <ul className="text-sm text-blue-800 mt-2 list-disc list-inside space-y-1">
-              <li>{dict.dashboard?.updateInfo1 || "Update info 1"}</li>
               <li>{dict.dashboard?.updateInfo2 || "Update info 2"}</li>
             </ul>
           </div>
