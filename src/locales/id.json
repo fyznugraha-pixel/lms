@@ -9,7 +9,8 @@
     "approval": "Persetujuan Pengajuan",
     "manageEmployees": "Kelola Karyawan",
     "logout": "Keluar",
-    "changePassword": "Ubah Password"
+    "changePassword": "Ubah Password",
+    "enterAdminPortal": "Masuk Portal Admin"
   },
   "status": {
     "pending": "PENDING",

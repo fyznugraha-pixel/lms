@@ -9,7 +9,8 @@
     "approval": "Request Approval",
     "manageEmployees": "Manage Employees",
     "logout": "Sign Out",
-    "changePassword": "Change Password"
+    "changePassword": "Change Password",
+    "enterAdminPortal": "Enter Admin Portal"
   },
   "status": {
     "pending": "PENDING",
