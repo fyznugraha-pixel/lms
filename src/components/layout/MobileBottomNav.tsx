@@ -48,7 +48,7 @@ export default function MobileBottomNav({ dict, role, totalFeedbackCount = 0 }: 
                 isActive ? "text-blue-600" : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              <div className="relative">
+              <div className="relative inline-block">
                 <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-blue-100" : ""}`} />
                 {item.href === "/absen-kantor/pekerjaan" && newFeedbackCount > 0 && (
                   <span className="absolute -top-1 -right-2 bg-amber-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">

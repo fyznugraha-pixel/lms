@@ -58,7 +58,7 @@ export default function AdminMobileBottomNav({ pendingLeaveCount = 0, todayWorkL
                 isActive ? "text-indigo-600" : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              <div className="relative">
+              <div className="relative inline-block">
                 <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-indigo-100" : ""}`} />
                 {item.href === "/admin-kantor/persetujuan" && pendingLeaveCount > 0 && (
                   <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
