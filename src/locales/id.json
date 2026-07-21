@@ -169,6 +169,7 @@
     "email": "Email",
     "role": "Peran (Role)",
     "secTitle": "Keamanan Akun",
+    "secDesc": "Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun.",
     "changePass": "Ubah Password",
     "oldPass": "Password Lama",
     "newPass": "Password Baru",

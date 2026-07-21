@@ -170,6 +170,7 @@
   "email": "Email",
   "role": "Role",
   "secTitle": "Security",
+  "secDesc": "Update your password regularly to keep your account secure.",
   "changePass": "Change Password",
   "oldPass": "Old Password",
   "newPass": "New Password",

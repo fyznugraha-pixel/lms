@@ -71,8 +71,8 @@ export default function ProfilPage() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">{dict.sidebar.changePassword || "Keamanan Akun"}</h2>
-          <p className="text-sm text-gray-500 mt-1">Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun.</p>
+          <h2 className="text-lg font-bold text-gray-900">{dict.profile?.secTitle || "Keamanan Akun"}</h2>
+          <p className="text-sm text-gray-500 mt-1">{dict.profile?.secDesc || "Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun."}</p>
         </div>
         <div className="w-full md:w-auto min-w-[200px] border border-gray-200 rounded-lg">
           <DashboardPasswordButton label={dict.sidebar.changePassword} />

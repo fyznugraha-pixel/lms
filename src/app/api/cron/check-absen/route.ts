@@ -66,6 +66,38 @@ export async function GET(request: Request) {
       }
     }
 
+    // 1.5 Cari absensi kemarin yang masuk tapi belum pulang (lupa checkout)
+    const incompleteCheckouts = await prisma.absensiKantor.findMany({
+      where: {
+        tanggal: yesterday,
+        waktuAbsenMasuk: { not: null },
+        waktuAbsenPulang: null,
+      }
+    });
+
+    let autoCheckoutCount = 0;
+    for (const absensi of incompleteCheckouts) {
+      // Set jam checkout default ke 16.00 waktu lokal (atau server time)
+      const defaultCheckoutTime = new Date(yesterday);
+      defaultCheckoutTime.setHours(16, 0, 0, 0);
+
+      let durasiMenit = null;
+      if (absensi.waktuAbsenMasuk) {
+        durasiMenit = Math.floor((defaultCheckoutTime.getTime() - absensi.waktuAbsenMasuk.getTime()) / (1000 * 60));
+        if (durasiMenit < 0) durasiMenit = 0;
+      }
+
+      await prisma.absensiKantor.update({
+        where: { id: absensi.id },
+        data: {
+          waktuAbsenPulang: defaultCheckoutTime,
+          durasiKerja: durasiMenit,
+          isIncomplete: true // Tetap ditandai incomplete agar karyawan sadar mereka lupa absen pulang
+        }
+      });
+      autoCheckoutCount++;
+    }
+
     // 2. Pastikan sesi kemarin yang masih AKTIF diubah jadi SELESAI
     const closedSessionsCount = await prisma.sesiAbsenKantor.updateMany({
       where: {
@@ -89,7 +121,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ 
       success: true, 
-      message: `Cron job berhasil dijalankan. Sesi ditutup: ${closedSessionsCount.count}, Alpha ditambahkan: ${alphaCount}. Work logs dihapus: ${deletedWorkLogs.count}.` 
+      message: `Cron job berhasil dijalankan. Sesi ditutup: ${closedSessionsCount.count}, Alpha: ${alphaCount}, Auto-Checkout (16:00): ${autoCheckoutCount}. Work logs dihapus: ${deletedWorkLogs.count}.` 
     });
 
   } catch (error: any) {

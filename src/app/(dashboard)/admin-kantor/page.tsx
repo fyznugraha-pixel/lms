@@ -114,7 +114,7 @@ export default async function AdminKantorDashboard() {
           <h2 className="text-lg font-bold text-gray-900">{dict.adminKantor?.dashboard?.quickLinks || "Akses Cepat"}</h2>
           <div className="flex flex-col gap-3">
             <Link href="/admin-kantor/worklog" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#394887]/30 hover:shadow-md transition-all flex items-center gap-4 group">
-              <div className="p-3 bg-[#394887]/10 text-[#394887] rounded-lg group-hover:bg-[#394887] group-hover:text-white transition-colors">
+              <div className="p-3 bg-[#394887] text-white rounded-lg transition-colors">
                 <ClipboardList size={20} />
               </div>
               <div>
@@ -124,8 +124,8 @@ export default async function AdminKantorDashboard() {
             </Link>
 
             <div className="grid grid-cols-3 md:grid-cols-1 gap-3">
-              <Link href="/admin-kantor/absensi" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-green-500 hover:bg-green-500 hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.manageSession || "Kelola Sesi Absensi"}>
-                <div className="text-[#394887] md:bg-[#394887]/10 md:p-3 md:rounded-lg group-hover:text-white group-hover:scale-110 transition-all">
+              <Link href="/admin-kantor/absensi" className="bg-green-500 md:bg-white p-4 rounded-xl border border-transparent md:border-gray-100 shadow-sm md:hover:border-green-500 md:hover:bg-green-500 md:hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.manageSession || "Kelola Sesi Absensi"}>
+                <div className="text-white md:text-[#394887] md:bg-[#394887]/10 md:p-3 md:rounded-lg md:group-hover:text-white md:group-hover:scale-110 transition-all">
                   <CheckCircle size={24} className="md:w-5 md:h-5" />
                 </div>
                 <div className="hidden md:block">
@@ -134,8 +134,8 @@ export default async function AdminKantorDashboard() {
                 </div>
               </Link>
               
-              <Link href="/admin-kantor/karyawan" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-blue-600 hover:bg-blue-600 hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.manageEmployees || "Kelola Karyawan"}>
-                <div className="text-[#394887] md:bg-[#394887]/10 md:p-3 md:rounded-lg group-hover:text-white group-hover:scale-110 transition-all">
+              <Link href="/admin-kantor/karyawan" className="bg-blue-600 md:bg-white p-4 rounded-xl border border-transparent md:border-gray-100 shadow-sm md:hover:border-blue-600 md:hover:bg-blue-600 md:hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.manageEmployees || "Kelola Karyawan"}>
+                <div className="text-white md:text-[#394887] md:bg-[#394887]/10 md:p-3 md:rounded-lg md:group-hover:text-white md:group-hover:scale-110 transition-all">
                   <Users size={24} className="md:w-5 md:h-5" />
                 </div>
                 <div className="hidden md:block">
@@ -144,8 +144,8 @@ export default async function AdminKantorDashboard() {
                 </div>
               </Link>
 
-              <Link href="/admin-kantor/rekap" className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:border-[#EFC94B] hover:bg-[#EFC94B] hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.exportReport || "Export Laporan"}>
-                <div className="text-[#394887] md:bg-[#EFC94B]/40 md:p-3 md:rounded-lg group-hover:text-[#394887] group-hover:scale-110 transition-all">
+              <Link href="/admin-kantor/rekap" className="bg-amber-400 md:bg-white p-4 rounded-xl border border-transparent md:border-gray-100 shadow-sm md:hover:border-amber-400 md:hover:bg-amber-400 md:hover:shadow-md transition-all flex justify-center md:justify-start items-center gap-4 group h-14 md:h-auto" title={dict.adminKantor?.dashboard?.exportReport || "Export Laporan"}>
+                <div className="text-[#394887] md:bg-amber-400/40 md:p-3 md:rounded-lg md:group-hover:text-[#394887] md:group-hover:scale-110 transition-all">
                   <Download size={24} className="md:w-5 md:h-5" />
                 </div>
                 <div className="hidden md:block">
