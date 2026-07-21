@@ -3,11 +3,23 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useDictionary } from "@/hooks/useDictionary";
-import { ArrowRightLeft } from "lucide-react";
+import { ArrowRightLeft, Bell } from "lucide-react";
+import { useState, useEffect } from "react";
 
-export default function AdminKantorSidebarNav() {
+export default function AdminKantorSidebarNav({ pendingLeaveCount = 0 }: { pendingLeaveCount?: number }) {
   const pathname = usePathname();
   const dict = useDictionary();
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    // Only show toast if there are pending leaves and we haven't shown it yet in this session
+    if (pendingLeaveCount > 0 && !sessionStorage.getItem("hasShownPendingToast")) {
+      setShowToast(true);
+      sessionStorage.setItem("hasShownPendingToast", "true");
+      // Auto hide after 5 seconds
+      setTimeout(() => setShowToast(false), 5000);
+    }
+  }, [pendingLeaveCount]);
 
   const navItems = [
     { name: dict.adminKantor?.sidebar?.dashboard || "Dashboard", href: "/admin-kantor" },
@@ -34,18 +46,43 @@ export default function AdminKantorSidebarNav() {
             className={
               item.isPortal
                 ? "block px-4 py-2.5 mt-6 mb-2 font-bold text-indigo-700 bg-indigo-50/80 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors flex items-center justify-between group"
-                : `block px-4 py-2.5 font-medium rounded-lg transition-colors ${
+                : `block px-4 py-2.5 font-medium rounded-lg transition-colors flex items-center justify-between ${
                   isActive
                     ? "bg-blue-50 text-blue-700"
                     : "text-gray-700 hover:bg-gray-50"
                 }`
             }
           >
-            {item.name}
+            <div className="flex items-center gap-2">
+              {item.name}
+            </div>
             {item.isPortal && <ArrowRightLeft className="w-4 h-4 text-indigo-400 group-hover:text-indigo-700 transition-colors" />}
+            
+            {/* Notification Badge for pending leaves */}
+            {item.href === "/admin-kantor/persetujuan" && pendingLeaveCount > 0 && (
+              <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {pendingLeaveCount}
+              </span>
+            )}
           </Link>
         );
       })}
+      
+      {/* Floating Toast Notification */}
+      {showToast && (
+        <div className="fixed top-20 right-6 bg-white border-l-4 border-amber-400 p-4 rounded shadow-lg z-50 flex items-start gap-3 animate-in fade-in slide-in-from-top-5 max-w-sm">
+          <Bell className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-bold text-gray-900 text-sm">Ada Pengajuan Baru!</h4>
+            <p className="text-xs text-gray-600 mt-1">
+              Terdapat <strong>{pendingLeaveCount}</strong> pengajuan izin/sakit yang menunggu persetujuan Anda.
+            </p>
+          </div>
+          <button onClick={() => setShowToast(false)} className="text-gray-400 hover:text-gray-600">
+            ×
+          </button>
+        </div>
+      )}
       
     </nav>
   );

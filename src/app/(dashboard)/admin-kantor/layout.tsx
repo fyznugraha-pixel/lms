@@ -9,6 +9,7 @@ import AdminKantorSidebarNav from "./AdminKantorSidebarNav";
 import AdminMobileBottomNav from "@/components/layout/AdminMobileBottomNav";
 import MobileTopHeader from "@/components/layout/MobileTopHeader";
 import { getDictionary } from "@/lib/dictionaries";
+import prisma from "@/lib/prisma";
 
 export default async function AdminKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -25,6 +26,11 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
   const langCookie = cookieStore.get("lang")?.value || "en";
   const dict = getDictionary(langCookie);
 
+  // Fetch pending leave request count
+  const pendingLeaveCount = await prisma.pengajuanIzin.count({
+    where: { status: "PENDING" }
+  });
+
   return (
     <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0 overflow-x-hidden w-full max-w-[100vw]">
       <MobileTopHeader langCookie={langCookie} role={payload.role as string} />
@@ -40,7 +46,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
             </div>
           </Link>
         </div>
-        <AdminKantorSidebarNav />
+        <AdminKantorSidebarNav pendingLeaveCount={pendingLeaveCount} />
         <div className="p-4 border-t border-gray-200">
           <LanguageToggle currentLang={langCookie} />
           <DashboardPasswordButton label={dict.sidebar?.changePassword} />
