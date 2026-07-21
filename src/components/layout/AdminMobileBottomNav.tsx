@@ -59,14 +59,14 @@ export default function AdminMobileBottomNav({ pendingLeaveCount = 0, todayWorkL
               }`}
             >
               <div className="relative w-[22px] h-[22px]">
-                <item.icon className={`w-full h-full ${isActive ? "fill-indigo-100" : ""}`} />
+                <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-indigo-100" : ""}`} />
                 {item.href === "/admin-kantor/persetujuan" && pendingLeaveCount > 0 && (
-                  <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/3 bg-red-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                  <span style={{ position: 'absolute', top: '-10px', right: '-12px', width: '16px', height: '16px' }} className="bg-red-500 text-white text-[8px] font-bold flex items-center justify-center rounded-full border border-white">
                     {pendingLeaveCount > 9 ? "9+" : pendingLeaveCount}
                   </span>
                 )}
                 {item.href === "/admin-kantor/worklog" && newWorkLogCount > 0 && (
-                  <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/3 bg-amber-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                  <span style={{ position: 'absolute', top: '-10px', right: '-12px', width: '16px', height: '16px' }} className="bg-amber-500 text-white text-[8px] font-bold flex items-center justify-center rounded-full border border-white">
                     {newWorkLogCount > 9 ? "9+" : newWorkLogCount}
                   </span>
                 )}

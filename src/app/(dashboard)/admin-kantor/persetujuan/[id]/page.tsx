@@ -94,6 +94,7 @@ export default function DetailPersetujuanPage({ params }: { params: Promise<{ id
         const refreshRes = await fetch(`/api/absen-kantor/pengajuan/${id}`);
         const refreshResult = await refreshRes.json();
         if (refreshResult.success) setPengajuan(refreshResult.data);
+        router.refresh();
       } else {
         setAlertConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
       }

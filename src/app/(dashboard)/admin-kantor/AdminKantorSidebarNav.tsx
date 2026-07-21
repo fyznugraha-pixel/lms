@@ -92,14 +92,14 @@ export default function AdminKantorSidebarNav({ pendingLeaveCount = 0, todayWork
             
             {/* Notification Badge for pending leaves */}
             {item.href === "/admin-kantor/persetujuan" && pendingLeaveCount > 0 && (
-              <span className="bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shrink-0">
+              <span className="bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shrink-0 leading-none">
                 {pendingLeaveCount > 99 ? "99+" : pendingLeaveCount}
               </span>
             )}
             
             {/* Notification Badge for new work logs */}
             {item.href === "/admin-kantor/worklog" && newWorkLogCount > 0 && (
-              <span className="bg-amber-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shrink-0">
+              <span className="bg-amber-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shrink-0 leading-none">
                 {newWorkLogCount > 99 ? "99+" : newWorkLogCount}
               </span>
             )}
