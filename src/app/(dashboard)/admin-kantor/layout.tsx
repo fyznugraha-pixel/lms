@@ -31,6 +31,13 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
     where: { status: "PENDING" }
   });
 
+  // Fetch today's work log count
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayWorkLogCount = await prisma.workLog.count({
+    where: { createdAt: { gte: today } }
+  });
+
   return (
     <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0 overflow-x-hidden w-full max-w-[100vw]">
       <MobileTopHeader langCookie={langCookie} role={payload.role as string} />
@@ -46,7 +53,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
             </div>
           </Link>
         </div>
-        <AdminKantorSidebarNav pendingLeaveCount={pendingLeaveCount} />
+        <AdminKantorSidebarNav pendingLeaveCount={pendingLeaveCount} todayWorkLogCount={todayWorkLogCount} />
         <div className="p-4 border-t border-gray-200">
           <LanguageToggle currentLang={langCookie} />
           <DashboardPasswordButton label={dict.sidebar?.changePassword} />
