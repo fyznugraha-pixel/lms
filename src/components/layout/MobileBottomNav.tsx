@@ -3,9 +3,29 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Briefcase, CalendarClock, User, FileText } from "lucide-react";
+import { useState, useEffect } from "react";
 
-export default function MobileBottomNav({ dict, role }: { dict: any; role: string }) {
+export default function MobileBottomNav({ dict, role, totalFeedbackCount = 0 }: { dict: any; role: string, totalFeedbackCount?: number }) {
   const pathname = usePathname();
+  const [newFeedbackCount, setNewFeedbackCount] = useState(0);
+
+  useEffect(() => {
+    // When visiting the work log page, reset the badge and store the current total
+    if (pathname === "/absen-kantor/pekerjaan") {
+      localStorage.setItem("lastViewedFeedbackCount", totalFeedbackCount.toString());
+      setNewFeedbackCount(0);
+      return;
+    }
+
+    // Otherwise, check if there are new feedbacks compared to the last time they viewed it
+    const storedCount = parseInt(localStorage.getItem("lastViewedFeedbackCount") || "0", 10);
+
+    if (totalFeedbackCount > storedCount) {
+      setNewFeedbackCount(totalFeedbackCount - storedCount);
+    } else {
+      setNewFeedbackCount(0);
+    }
+  }, [pathname, totalFeedbackCount]);
 
   const navItems = [
     { name: dict.bottomNav?.home || "Home", href: "/absen-kantor", icon: Home },
@@ -24,11 +44,18 @@ export default function MobileBottomNav({ dict, role }: { dict: any; role: strin
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center w-full py-3 gap-1 transition-colors ${
+              className={`relative flex flex-col items-center justify-center w-full py-3 gap-1 transition-colors ${
                 isActive ? "text-blue-600" : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-blue-100" : ""}`} />
+              <div className="relative">
+                <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-blue-100" : ""}`} />
+                {item.href === "/absen-kantor/pekerjaan" && newFeedbackCount > 0 && (
+                  <span className="absolute -top-1 -right-2 bg-amber-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                    {newFeedbackCount > 9 ? "9+" : newFeedbackCount}
+                  </span>
+                )}
+              </div>
               <span className="text-[10px] font-bold whitespace-nowrap text-center">{item.name}</span>
             </Link>
           );

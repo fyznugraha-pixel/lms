@@ -11,6 +11,8 @@ import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import MobileTopHeader from "@/components/layout/MobileTopHeader";
 import AdminMobileMenu from "@/components/layout/AdminMobileMenu";
 import { ArrowRightLeft } from "lucide-react";
+import prisma from "@/lib/prisma";
+import WorkLogSidebarLink from "@/components/WorkLogSidebarLink";
 
 export default async function AbsenKantorLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -27,6 +29,15 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
 
   const langCookie = cookieStore.get("lang")?.value || "en";
   const dict = getDictionary(langCookie);
+
+  const totalFeedbackCount = await prisma.workLog.count({
+    where: {
+      karyawanId: payload.id as string,
+      adminFeedback: {
+        not: null
+      }
+    }
+  });
 
   return (
     <div className="min-h-[100dvh] md:h-screen bg-gray-50 flex flex-col md:flex-row md:overflow-hidden pb-[72px] md:pb-0 overflow-x-hidden w-full max-w-[100vw]">
@@ -54,9 +65,11 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
           <SidebarLink href="/absen-kantor/rekap">
             {dict.sidebar.myAttendance}
           </SidebarLink>
-          <SidebarLink href="/absen-kantor/pekerjaan">
-            {dict.sidebar.workLog}
-          </SidebarLink>
+          <WorkLogSidebarLink 
+            href="/absen-kantor/pekerjaan" 
+            label={dict.sidebar.workLog} 
+            totalFeedbackCount={totalFeedbackCount} 
+          />
           <SidebarLink href="/absen-kantor/profil">
             {dict.sidebar.profile}
           </SidebarLink>
@@ -101,7 +114,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
         {children}
       </main>
 
-      <MobileBottomNav dict={dict} role={payload.role as string} />
+      <MobileBottomNav dict={dict} role={payload.role as string} totalFeedbackCount={totalFeedbackCount} />
     </div>
   );
 }
