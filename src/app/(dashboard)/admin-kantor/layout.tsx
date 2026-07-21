@@ -70,7 +70,7 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
         {children}
       </main>
 
-      <AdminMobileBottomNav />
+      <AdminMobileBottomNav pendingLeaveCount={pendingLeaveCount} todayWorkLogCount={todayWorkLogCount} />
     </div>
   );
 }

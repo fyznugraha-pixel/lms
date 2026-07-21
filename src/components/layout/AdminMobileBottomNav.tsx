@@ -2,12 +2,38 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, FileCheck, CheckSquare, BarChart, Home } from "lucide-react";
+import { Users, FileCheck, CheckSquare, BarChart, Home, Briefcase } from "lucide-react";
 import { useDictionary } from "@/hooks/useDictionary";
+import { useState, useEffect } from "react";
 
-export default function AdminMobileBottomNav() {
+export default function AdminMobileBottomNav({ pendingLeaveCount = 0, todayWorkLogCount = 0 }: { pendingLeaveCount?: number, todayWorkLogCount?: number }) {
   const pathname = usePathname();
   const dict = useDictionary();
+  const [newWorkLogCount, setNewWorkLogCount] = useState(0);
+
+  useEffect(() => {
+    const currentDateString = new Date().toISOString().split('T')[0];
+    
+    if (pathname === "/admin-kantor/worklog") {
+      localStorage.setItem('lastViewedWorkLogDate', currentDateString);
+      localStorage.setItem('lastViewedWorkLogCount', todayWorkLogCount.toString());
+      setNewWorkLogCount(0);
+      return;
+    }
+
+    const storedDate = localStorage.getItem('lastViewedWorkLogDate');
+    const storedCount = parseInt(localStorage.getItem('lastViewedWorkLogCount') || '0', 10);
+
+    if (storedDate !== currentDateString) {
+      setNewWorkLogCount(todayWorkLogCount);
+    } else {
+      if (todayWorkLogCount > storedCount) {
+        setNewWorkLogCount(todayWorkLogCount - storedCount);
+      } else {
+        setNewWorkLogCount(0);
+      }
+    }
+  }, [pathname, todayWorkLogCount]);
 
   const navItems = [
     { name: dict.bottomNav?.home || "Home", href: "/admin-kantor", icon: Home, exact: true },
@@ -28,11 +54,23 @@ export default function AdminMobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center w-full py-3 gap-1 transition-colors ${
+              className={`relative flex flex-col items-center justify-center w-full py-3 gap-1 transition-colors ${
                 isActive ? "text-indigo-600" : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-indigo-100" : ""}`} />
+              <div className="relative">
+                <item.icon className={`w-[22px] h-[22px] ${isActive ? "fill-indigo-100" : ""}`} />
+                {item.href === "/admin-kantor/persetujuan" && pendingLeaveCount > 0 && (
+                  <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                    {pendingLeaveCount > 9 ? "9+" : pendingLeaveCount}
+                  </span>
+                )}
+                {item.href === "/admin-kantor/worklog" && newWorkLogCount > 0 && (
+                  <span className="absolute -top-1 -right-2 bg-amber-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                    {newWorkLogCount > 9 ? "9+" : newWorkLogCount}
+                  </span>
+                )}
+              </div>
               <span className="text-[10px] font-bold whitespace-nowrap text-center">{item.name}</span>
             </Link>
           );
