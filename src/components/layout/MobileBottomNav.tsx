@@ -48,10 +48,10 @@ export default function MobileBottomNav({ dict, role, totalFeedbackCount = 0 }: 
                 isActive ? "text-blue-600" : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              <div className="relative flex items-center justify-center w-[22px] h-[22px]">
+              <div className="relative w-[22px] h-[22px]">
                 <item.icon className={`w-full h-full ${isActive ? "fill-blue-100" : ""}`} />
                 {item.href === "/absen-kantor/pekerjaan" && newFeedbackCount > 0 && (
-                  <span className="absolute -top-1 -right-2 bg-amber-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                  <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/3 bg-amber-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
                     {newFeedbackCount > 9 ? "9+" : newFeedbackCount}
                   </span>
                 )}

@@ -58,15 +58,15 @@ export default function AdminMobileBottomNav({ pendingLeaveCount = 0, todayWorkL
                 isActive ? "text-indigo-600" : "text-gray-500 hover:text-gray-900"
               }`}
             >
-              <div className="relative flex items-center justify-center w-[22px] h-[22px]">
+              <div className="relative w-[22px] h-[22px]">
                 <item.icon className={`w-full h-full ${isActive ? "fill-indigo-100" : ""}`} />
                 {item.href === "/admin-kantor/persetujuan" && pendingLeaveCount > 0 && (
-                  <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                  <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/3 bg-red-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
                     {pendingLeaveCount > 9 ? "9+" : pendingLeaveCount}
                   </span>
                 )}
                 {item.href === "/admin-kantor/worklog" && newWorkLogCount > 0 && (
-                  <span className="absolute -top-1 -right-2 bg-amber-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
+                  <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/3 bg-amber-500 text-white text-[8px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">
                     {newWorkLogCount > 9 ? "9+" : newWorkLogCount}
                   </span>
                 )}
