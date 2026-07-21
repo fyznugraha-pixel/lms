@@ -81,7 +81,10 @@
     "btnSubmit": "Submit Request",
     "submitting": "Submitting...",
     "attendanceBtn": "Refresh Attendance Data",
-    "warning": "Warning"
+    "warning": "Warning",
+    "updateTitle": "System Update v1.1.0",
+    "updateInfo1": "Approval Detail page added so reasons are no longer truncated.",
+    "updateInfo2": "Optional photo attachment feature on daily Work Log."
   },
   "work": {
     "title": "My Work",

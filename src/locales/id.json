@@ -81,7 +81,10 @@
     "btnSubmit": "Kirim Pengajuan",
     "submitting": "Mengirim...",
     "attendanceBtn": "Perbarui Data Kehadiran",
-    "warning": "Peringatan"
+    "warning": "Peringatan",
+    "updateTitle": "Pembaruan Sistem v1.1.0",
+    "updateInfo1": "Halaman Detail Persetujuan ditambahkan, kini baca alasan karyawan tidak akan terpotong.",
+    "updateInfo2": "Fitur unggah lampiran foto (opsional) pada pengisian laporan Work Log harian."
   },
   "work": {
     "title": "Pekerjaan Saya",

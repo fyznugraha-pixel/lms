@@ -59,6 +59,24 @@ export default async function AdminKantorDashboard() {
           {dict.adminKantor?.dashboard?.subtitle || "Selamat datang di panel administrasi kantor (internal TactLink)."} 
         </p>
       </div>
+
+      {/* Update Information Card */}
+      <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="p-2 bg-blue-100 text-blue-700 rounded-lg shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="font-bold text-blue-900">{dict.dashboard?.updateTitle || "System Update"}</h3>
+            <ul className="text-sm text-blue-800 mt-2 list-disc list-inside space-y-1">
+              <li>{dict.dashboard?.updateInfo1 || "Update info 1"}</li>
+              <li>{dict.dashboard?.updateInfo2 || "Update info 2"}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">

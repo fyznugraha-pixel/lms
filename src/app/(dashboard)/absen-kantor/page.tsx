@@ -132,7 +132,25 @@ export default function KaryawanDashboard() {
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto w-full min-w-0">
+    <div className="space-y-6">
+      {/* Update Information Card */}
+      <div className="bg-blue-50 border border-blue-200 p-5 rounded-2xl mb-6 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="p-2 bg-blue-100 text-blue-700 rounded-lg shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="font-bold text-blue-900">{dict.dashboard?.updateTitle || "System Update"}</h3>
+            <ul className="text-sm text-blue-800 mt-2 list-disc list-inside space-y-1">
+              <li>{dict.dashboard?.updateInfo1 || "Update info 1"}</li>
+              <li>{dict.dashboard?.updateInfo2 || "Update info 2"}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       {/* Header & Clock */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 md:p-6 rounded-xl shadow-sm border border-gray-100">
         <div>
