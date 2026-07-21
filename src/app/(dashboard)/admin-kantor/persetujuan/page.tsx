@@ -198,7 +198,7 @@ export default function AdminPersetujuanPage() {
                     href={`/admin-kantor/persetujuan/${p.id}`}
                     className="flex w-full items-center justify-center gap-2 px-4 py-3 bg-[#394887]/5 text-[#394887] border border-[#394887]/20 hover:bg-[#394887] hover:text-white rounded-xl text-sm font-bold transition-all"
                   >
-                    <FileText className="w-4 h-4" /> Lihat Detail Lengkap
+                    <FileText className="w-4 h-4" /> {dict.adminKantor?.persetujuan?.detailTitle || "Detail"}
                   </Link>
                 </div>
               </div>
