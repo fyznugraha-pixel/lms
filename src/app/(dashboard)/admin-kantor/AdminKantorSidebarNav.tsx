@@ -60,8 +60,8 @@ export default function AdminKantorSidebarNav({ pendingLeaveCount = 0 }: { pendi
             
             {/* Notification Badge for pending leaves */}
             {item.href === "/admin-kantor/persetujuan" && pendingLeaveCount > 0 && (
-              <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                {pendingLeaveCount}
+              <span className="bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shrink-0">
+                {pendingLeaveCount > 99 ? "99+" : pendingLeaveCount}
               </span>
             )}
           </Link>
