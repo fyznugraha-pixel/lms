@@ -56,7 +56,12 @@ export default async function AdminKantorLayout({ children }: { children: ReactN
         <AdminKantorSidebarNav pendingLeaveCount={pendingLeaveCount} todayWorkLogCount={todayWorkLogCount} />
         <div className="p-4 border-t border-gray-200">
           <LanguageToggle currentLang={langCookie} />
-          <DashboardPasswordButton label={dict.sidebar?.changePassword} />
+          <Link href="/admin-kantor/profil" className="w-full text-left px-4 py-2 flex items-center gap-3 text-gray-700 font-medium hover:bg-gray-50 rounded-lg transition-colors mb-1">
+            <svg className="w-[18px] h-[18px] text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span>{dict.sidebar?.profile || "Profil & Perangkat"}</span>
+          </Link>
           <form action="/api/auth/logout" method="POST">
             <button type="submit" className="w-full text-left px-4 py-2 text-red-600 font-medium hover:bg-red-50 rounded-lg transition-colors flex items-center gap-3">
               {dict.sidebar?.logout || "Keluar"}

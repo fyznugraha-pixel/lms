@@ -69,16 +69,14 @@ export default function ProfilPage() {
         </div>
       </div>
 
-      <div className="md:hidden grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-1">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-bold text-gray-900">{dict.sidebar.changePassword || "Keamanan Akun"}</h2>
+          <p className="text-sm text-gray-500 mt-1">Perbarui kata sandi Anda secara berkala untuk menjaga keamanan akun.</p>
+        </div>
+        <div className="w-full md:w-auto min-w-[200px] border border-gray-200 rounded-lg">
           <DashboardPasswordButton label={dict.sidebar.changePassword} />
         </div>
-        <form action="/api/auth/logout" method="POST" className="bg-white rounded-xl shadow-sm border border-gray-100 p-1">
-          <button type="submit" className="w-full text-left px-4 py-2 flex items-center justify-center gap-2 text-red-600 font-bold hover:bg-red-50 rounded-lg transition-colors">
-            <LogOut size={18} />
-            <span>{dict.sidebar.logout}</span>
-          </button>
-        </form>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
