@@ -319,7 +319,21 @@
       "noteLabel": "Notes",
       "notePlaceholder": "E.g. OK, get well soon...",
       "promptTimeHint": "Leave empty for auto 17:00.",
-      "viewAttachment": "View Proof"
+      "viewAttachment": "View Proof",
+      "detailTitle": "Request Detail",
+      "detailSubtitle": "Review complete information on employee reasons and proof.",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "fullReason": "Full Reason",
+      "attachment": "Attachment / Proof",
+      "adminNote": "Admin Note",
+      "noteOptional": "Add note for employee (optional)",
+      "setCheckoutTime": "Set Checkout Time",
+      "checkoutTimeHint": "Employee forgot to checkout. Determine what time their checkout will be auto-corrected (24-hour format).",
+      "btnConfirm": "Confirm",
+      "loadingDetail": "Loading detail...",
+      "notFound": "Request data not found.",
+      "back": "Back to List"
     },
     "rekap": {
       "title": "Employee Recap",

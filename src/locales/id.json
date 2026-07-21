@@ -317,7 +317,21 @@
       "noteLabel": "Catatan",
       "notePlaceholder": "Contoh: OK, cepat sembuh...",
       "promptTimeHint": "Kosongkan/biarkan default jika ingin otomatis ke 17:00.",
-      "viewAttachment": "Lihat Bukti"
+      "viewAttachment": "Lihat Bukti",
+      "detailTitle": "Detail Pengajuan",
+      "detailSubtitle": "Tinjau informasi lengkap alasan dan bukti karyawan.",
+      "startDate": "Tanggal Mulai",
+      "endDate": "Tanggal Selesai",
+      "fullReason": "Alasan Lengkap",
+      "attachment": "Lampiran / Bukti",
+      "adminNote": "Catatan Admin",
+      "noteOptional": "Tambahkan catatan untuk karyawan (opsional)",
+      "setCheckoutTime": "Set Jam Pulang",
+      "checkoutTimeHint": "Karyawan lupa checkout. Tentukan jam berapa absen pulangnya akan dikoreksi otomatis (format 24 jam).",
+      "btnConfirm": "Konfirmasi",
+      "loadingDetail": "Memuat detail...",
+      "notFound": "Data pengajuan tidak ditemukan.",
+      "back": "Kembali ke Daftar"
     },
     "rekap": {
       "title": "Rekapitulasi Karyawan",
