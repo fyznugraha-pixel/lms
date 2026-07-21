@@ -45,15 +45,15 @@ export default function AdminKantorSidebarNav({ pendingLeaveCount = 0 }: { pendi
             href={item.href}
             className={
               item.isPortal
-                ? "block px-4 py-2.5 mt-6 mb-2 font-bold text-indigo-700 bg-indigo-50/80 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors flex items-center justify-between group"
-                : `block px-4 py-2.5 font-medium rounded-lg transition-colors flex items-center justify-between ${
+                ? "flex px-4 py-2.5 mt-6 mb-2 font-bold text-indigo-700 bg-indigo-50/80 border border-indigo-200 rounded-lg hover:bg-indigo-100 transition-colors items-center justify-between gap-3 group"
+                : `flex px-4 py-2.5 font-medium rounded-lg transition-colors items-center justify-between gap-3 ${
                   isActive
                     ? "bg-blue-50 text-blue-700"
                     : "text-gray-700 hover:bg-gray-50"
                 }`
             }
           >
-            <div className="flex items-center gap-2">
+            <div className="flex-1 leading-tight">
               {item.name}
             </div>
             {item.isPortal && <ArrowRightLeft className="w-4 h-4 text-indigo-400 group-hover:text-indigo-700 transition-colors" />}
