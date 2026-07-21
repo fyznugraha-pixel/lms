@@ -101,6 +101,8 @@
     "logResultPlaceholder": "Misal: Menyelesaikan UI dashboard, fix bug login...",
     "logLink": "Link File / Dokumen (Opsional)",
     "logLinkPlaceholder": "https://docs.google.com/...",
+    "logPhoto": "Foto Pendukung (Opsional)",
+    "uploadPhoto": "Klik untuk mengunggah foto",
     "logTomorrow": "Rencana prioritas besok?",
     "logTomorrowPlaceholder": "Misal: Melanjutkan desain dashboard...",
     "logObstacle": "Kendala / Hambatan",

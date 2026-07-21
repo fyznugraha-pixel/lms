@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
-import { CheckCircle2, Calendar, AlertTriangle, Inbox, Lock, User, RefreshCw, MessageSquare, Send } from "lucide-react";
+import { CheckCircle2, Calendar, AlertTriangle, Inbox, Lock, User, RefreshCw, MessageSquare, Send, Image as ImageIcon } from "lucide-react";
 
 export default function AdminWorkLogPage() {
   const dict = useDictionary();
@@ -145,6 +145,17 @@ export default function AdminWorkLogPage() {
                         </div>
                         <div className="text-gray-700 text-sm whitespace-pre-wrap pl-6 bg-red-50/50 p-3 rounded-lg border border-red-100 mt-1">
                           {log.blocker}
+                        </div>
+                      </div>
+                    )}
+                    {log.fotoUrl && (
+                      <div className="space-y-2 md:col-span-2 mt-2 pt-4 border-t border-gray-100/60">
+                        <div className="flex items-center gap-2 text-sm font-bold text-gray-700">
+                          <ImageIcon className="w-4 h-4" />
+                          {dict.work?.logPhoto || "Foto Pendukung"}
+                        </div>
+                        <div className="pl-6 mt-2">
+                          <img src={log.fotoUrl} alt="Foto Pendukung" className="w-full h-auto max-h-96 object-contain rounded-lg border border-gray-200" />
                         </div>
                       </div>
                     )}

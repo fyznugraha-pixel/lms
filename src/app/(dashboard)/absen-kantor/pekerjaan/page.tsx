@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDictionary, useLocale } from "@/hooks/useDictionary";
 import ConfirmModal from "@/components/ConfirmModal";
 import CustomDropdown from "@/components/CustomDropdown";
-import { CheckCircle2, Calendar, AlertTriangle, Link as LinkIcon, Inbox, Lock, MessageSquare } from "lucide-react";
+import { CheckCircle2, Calendar, AlertTriangle, Link as LinkIcon, Inbox, Lock, MessageSquare, Image as ImageIcon, X } from "lucide-react";
 
 export default function PekerjaanPage() {
   const dict = useDictionary();
@@ -17,6 +17,8 @@ export default function PekerjaanPage() {
   const [dikerjakanHariIni, setDikerjakanHariIni] = useState("");
   const [rencanaBesok, setRencanaBesok] = useState("");
   const [blocker, setBlocker] = useState("");
+  const [foto, setFoto] = useState<File | null>(null);
+  const [fotoPreview, setFotoPreview] = useState<string | null>(null);
   
   const [isSubmittingTodo, setIsSubmittingTodo] = useState(false);
   const [isSubmittingLog, setIsSubmittingLog] = useState(false);
@@ -54,6 +56,8 @@ export default function PekerjaanPage() {
         setRencanaBesok(result.data.rencanaBesok);
         setBlocker(result.data.blocker || "");
         setIsPrivat(result.data.isPrivat || false);
+        setFotoPreview(result.data.fotoUrl || null);
+        setFoto(null);
       }
     } catch (e) {
       console.error(e);
@@ -148,6 +152,24 @@ export default function PekerjaanPage() {
     e.preventDefault();
     setIsSubmittingLog(true);
     try {
+      let uploadedFotoUrl = fotoPreview && !foto ? fotoPreview : null;
+      if (foto) {
+        const formData = new FormData();
+        formData.append('file', foto);
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.success) {
+          uploadedFotoUrl = uploadData.url;
+        } else {
+          setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: "Gagal mengunggah foto: " + uploadData.error, type: "alert", confirmTheme: "red" });
+          setIsSubmittingLog(false);
+          return;
+        }
+      }
+
       const date = new Date().toISOString().split('T')[0];
       const res = await fetch("/api/absen-kantor/worklog", {
         method: "POST",
@@ -157,16 +179,21 @@ export default function PekerjaanPage() {
           dikerjakanHariIni,
           rencanaBesok,
           blocker,
-          isPrivat
+          isPrivat,
+          fotoUrl: uploadedFotoUrl
         })
       });
       const result = await res.json();
       if (result.success) {
         setModalConfig({ isOpen: true, title: dict.notifications?.successTitle || "Berhasil", message: dict.notifications?.logSuccess || "Work Log berhasil disimpan!", type: "alert" });
+        setFoto(null);
         fetchWorkLog();
       } else {
         setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: result.error, type: "alert", confirmTheme: "red" });
       }
+    } catch (err) {
+      console.error(err);
+      setModalConfig({ isOpen: true, title: dict.notifications?.errorTitle || "Gagal", message: "Terjadi kesalahan sistem", type: "alert", confirmTheme: "red" });
     } finally {
       setIsSubmittingLog(false);
     }
@@ -334,6 +361,46 @@ export default function PekerjaanPage() {
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{dict.work.logPhoto || "Foto Pendukung (Opsional)"}</label>
+              
+              {!fotoPreview ? (
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <ImageIcon className="w-8 h-8 mb-3 text-gray-400" />
+                    <p className="mb-2 text-sm text-gray-500 font-semibold">{dict.work.uploadPhoto || "Klik untuk mengunggah foto"}</p>
+                    <p className="text-xs text-gray-500">PNG, JPG, JPEG (Max. 5MB)</p>
+                  </div>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setFoto(file);
+                        setFotoPreview(URL.createObjectURL(file));
+                      }
+                    }} 
+                  />
+                </label>
+              ) : (
+                <div className="relative w-full rounded-xl overflow-hidden border border-gray-200 group">
+                  <img src={fotoPreview} alt="Preview" className="w-full h-48 object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFoto(null);
+                      setFotoPreview(null);
+                    }}
+                    className="absolute top-3 right-3 p-1.5 bg-white/90 text-red-600 rounded-lg shadow-md hover:bg-red-50 transition-colors border border-red-100 opacity-0 group-hover:opacity-100"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+
             <label className="flex items-center gap-2 cursor-pointer mt-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
               <input 
                 type="checkbox" 
@@ -413,6 +480,11 @@ export default function PekerjaanPage() {
                           <AlertTriangle className="w-4 h-4 text-orange-600" /> {dict.work.logObstacle}
                         </p>
                         <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{log.blocker}</p>
+                      </div>
+                    )}
+                    {log.fotoUrl && (
+                      <div className="bg-gray-50 p-2 rounded-xl border border-gray-200 mt-4 overflow-hidden">
+                        <img src={log.fotoUrl} alt="Foto Pendukung" className="w-full h-auto max-h-96 object-contain rounded-lg" />
                       </div>
                     )}
                     {log.linkLampiran && (

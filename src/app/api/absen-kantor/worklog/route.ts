@@ -9,7 +9,8 @@ const workLogSchema = z.object({
   rencanaBesok: z.string(),
   blocker: z.string().optional(),
   tanggal: z.string(), // ISO Date
-  isPrivat: z.boolean().default(false)
+  isPrivat: z.boolean().default(false),
+  fotoUrl: z.string().optional()
 });
 
 async function checkAuth() {
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
         rencanaBesok: data.rencanaBesok,
         blocker: data.blocker || null,
         isPrivat: data.isPrivat,
+        fotoUrl: data.fotoUrl || null,
         updatedAt: new Date()
       },
       create: {
@@ -82,7 +84,8 @@ export async function POST(request: Request) {
         dikerjakanHariIni: data.dikerjakanHariIni,
         rencanaBesok: data.rencanaBesok,
         blocker: data.blocker || null,
-        isPrivat: data.isPrivat
+        isPrivat: data.isPrivat,
+        fotoUrl: data.fotoUrl || null
       }
     });
 

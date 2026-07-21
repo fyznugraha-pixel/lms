@@ -101,6 +101,8 @@
     "logResultPlaceholder": "Example: Completed dashboard UI, fixed login bug...",
     "logLink": "File / Document Link (Optional)",
     "logLinkPlaceholder": "https://docs.google.com/...",
+    "logPhoto": "Supporting Photo (Optional)",
+    "uploadPhoto": "Click to upload a photo",
     "logTomorrow": "Tomorrow's priority plan?",
     "logTomorrowPlaceholder": "Example: Continue dashboard design...",
     "logObstacle": "Obstacles / Issues",

@@ -21,6 +21,35 @@ async function checkAdminAuth() {
   return payload;
 }
 
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const admin = await checkAdminAuth();
+    if (!admin) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await params;
+
+    const pengajuan = await prisma.pengajuanIzin.findUnique({
+      where: { id },
+      include: {
+        karyawan: {
+          select: { namaLengkap: true, email: true }
+        }
+      }
+    });
+
+    if (!pengajuan) {
+      return NextResponse.json({ success: false, error: 'Pengajuan tidak ditemukan.' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, data: pengajuan });
+  } catch (error: any) {
+    console.error('Error fetching pengajuan detail:', error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const admin = await checkAdminAuth();

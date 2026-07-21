@@ -126,6 +126,7 @@ model WorkLog {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   adminFeedback     String?
+  fotoUrl           String?
   karyawan          User     @relation("WorkLogKaryawan", fields: [karyawanId], references: [id])
 
   @@unique([karyawanId, tanggal])
