@@ -32,7 +32,7 @@ export default async function AbsenKantorLayout({ children }: { children: ReactN
 
   const totalFeedbackCount = await prisma.workLog.count({
     where: {
-      karyawanId: payload.id as string,
+      karyawanId: payload.userId as string,
       adminFeedback: {
         not: null
       }
